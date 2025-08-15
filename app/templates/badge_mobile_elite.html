@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Badge - Globibat</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.0.0/fonts/remixicon.css" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        :root {
+            --noir: #0A0A0B;
+            --blanc: #FFFFFF;
+            --gris-clair: #F7F8FA;
+            --gris: #E8EAED;
+            --bleu: #1E40AF;
+            --orange: #F97316;
+            --vert: #16A34A;
+            --rouge: #DC2626;
+            
+            --safe-area-top: env(safe-area-inset-top);
+            --safe-area-bottom: env(safe-area-inset-bottom);
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gris-clair);
+            color: var(--noir);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Background animation */
+        .bg-gradient {
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 20% 50%, rgba(30, 64, 175, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(249, 115, 22, 0.1) 0%, transparent 50%);
+            animation: bgRotate 30s linear infinite;
+            z-index: -1;
+        }
+        
+        @keyframes bgRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Header */
+        .header {
+            padding: calc(var(--safe-area-top) + 20px) 20px 20px;
+            background: var(--blanc);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: relative;
+            z-index: 10;
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--bleu), #0F172A);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .logo-icon::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            0% { transform: rotate(45deg) translateX(-100%); }
+            100% { transform: rotate(45deg) translateX(100%); }
+        }
+        
+        .logo-text {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+        
+        .time-display {
+            text-align: right;
+        }
+        
+        .time {
+            font-size: 28px;
+            font-weight: 300;
+            font-variant-numeric: tabular-nums;
+        }
+        
+        .date {
+            font-size: 14px;
+            color: #666;
+            margin-top: -4px;
+        }
+        
+        /* Main content */
+        .main {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            padding-bottom: calc(var(--safe-area-bottom) + 20px);
+        }
+        
+        /* Status card */
+        .status-card {
+            background: var(--blanc);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .status-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--bleu), var(--orange));
+            transform: scaleX(0);
+            transform-origin: left;
+            animation: loadBar 2s ease-out forwards;
+        }
+        
+        @keyframes loadBar {
+            to { transform: scaleX(1); }
+        }
+        
+        .status-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 16px;
+            background: linear-gradient(135deg, rgba(30, 64, 175, 0.1), rgba(30, 64, 175, 0.05));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            color: var(--bleu);
+            position: relative;
+        }
+        
+        .status-icon::after {
+            content: '';
+            position: absolute;
+            inset: -10px;
+            border-radius: 50%;
+            background: radial-gradient(circle, transparent 60%, rgba(30, 64, 175, 0.1));
+            animation: pulse 2s infinite;
+        }
+        
+        .status-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .status-subtitle {
+            font-size: 16px;
+            color: #666;
+        }
+        
+        /* Badge input */
+        .badge-section {
+            background: var(--blanc);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .matricule-input {
+            width: 100%;
+            padding: 20px;
+            font-size: 24px;
+            font-weight: 600;
+            text-align: center;
+            letter-spacing: 0.1em;
+            border: 2px solid var(--gris);
+            border-radius: 16px;
+            background: var(--gris-clair);
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            text-transform: uppercase;
+        }
+        
+        .matricule-input:focus {
+            outline: none;
+            border-color: var(--bleu);
+            background: var(--blanc);
+            box-shadow: 0 0 0 4px rgba(30, 64, 175, 0.1);
+            transform: scale(1.02);
+        }
+        
+        /* Action buttons */
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 24px;
+        }
+        
+        .action-btn {
+            padding: 24px;
+            border: none;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .action-btn:active::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .action-btn.arrive {
+            background: linear-gradient(135deg, var(--vert), #059669);
+            color: white;
+        }
+        
+        .action-btn.depart {
+            background: linear-gradient(135deg, var(--orange), #DC2626);
+            color: white;
+        }
+        
+        .action-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .action-btn i {
+            font-size: 32px;
+        }
+        
+        .action-btn.selected {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            transform: scale(1.05);
+        }
+        
+        /* Success animation */
+        .success-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+        
+        .success-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .success-content {
+            text-align: center;
+            transform: scale(0.8);
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        
+        .success-overlay.show .success-content {
+            transform: scale(1);
+        }
+        
+        .success-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 24px;
+            background: linear-gradient(135deg, var(--vert), #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 60px;
+            position: relative;
+        }
+        
+        .success-icon::after {
+            content: '';
+            position: absolute;
+            inset: -20px;
+            border-radius: 50%;
+            border: 4px solid var(--vert);
+            opacity: 0;
+            animation: successRing 1s ease-out forwards;
+        }
+        
+        @keyframes successRing {
+            to {
+                inset: -40px;
+                opacity: 0;
+            }
+        }
+        
+        .success-title {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+        
+        .success-message {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 16px;
+        }
+        
+        .success-time {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--bleu);
+        }
+        
+        /* History */
+        .history-section {
+            background: var(--blanc);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .history-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: var(--gris-clair);
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+        
+        .history-item:active {
+            transform: scale(0.98);
+        }
+        
+        .history-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        .history-icon.in {
+            background: rgba(22, 163, 74, 0.1);
+            color: var(--vert);
+        }
+        
+        .history-icon.out {
+            background: rgba(249, 115, 22, 0.1);
+            color: var(--orange);
+        }
+        
+        .history-info {
+            flex: 1;
+        }
+        
+        .history-name {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        
+        .history-time {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        /* Loading state */
+        .loading {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .loading.show {
+            display: flex;
+        }
+        
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--gris);
+            border-top-color: var(--bleu);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Responsive */
+        @media (max-height: 700px) {
+            .status-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 28px;
+            }
+            
+            .action-btn {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+    
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="ri-building-2-fill"></i>
+                </div>
+                <div class="logo-text">Globibat</div>
+            </div>
+            <div class="time-display">
+                <div class="time" id="timeDisplay">--:--</div>
+                <div class="date" id="dateDisplay">---</div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Status -->
+        <div class="status-card">
+            <div class="status-icon">
+                <i class="ri-fingerprint-line"></i>
+            </div>
+            <h2 class="status-title">Système de badge actif</h2>
+            <p class="status-subtitle"><span id="presentCount">0</span> employés présents aujourd'hui</p>
+        </div>
+        
+        <!-- Badge Input -->
+        <div class="badge-section">
+            <h3 class="section-title">
+                <i class="ri-user-3-line"></i>
+                Entrez votre matricule
+            </h3>
+            
+            <input type="text" 
+                   class="matricule-input" 
+                   id="matriculeInput"
+                   placeholder="EMP000"
+                   maxlength="10"
+                   autocomplete="off"
+                   autocorrect="off"
+                   autocapitalize="characters">
+            
+            <div class="action-buttons">
+                <button class="action-btn arrive" id="btnArrive" onclick="selectAction('arrive')">
+                    <i class="ri-login-box-line"></i>
+                    <span>ARRIVÉE</span>
+                </button>
+                <button class="action-btn depart" id="btnDepart" onclick="selectAction('depart')">
+                    <i class="ri-logout-box-line"></i>
+                    <span>DÉPART</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Recent History -->
+        <div class="history-section">
+            <h3 class="section-title">
+                <i class="ri-history-line"></i>
+                Activité récente
+            </h3>
+            <div class="history-list" id="historyList">
+                <!-- History items will be added here -->
+            </div>
+        </div>
+    </main>
+    
+    <!-- Success Overlay -->
+    <div class="success-overlay" id="successOverlay">
+        <div class="success-content">
+            <div class="success-icon">
+                <i class="ri-check-line"></i>
+            </div>
+            <h2 class="success-title" id="successTitle">Badge enregistré !</h2>
+            <p class="success-message" id="successMessage">---</p>
+            <div class="success-time" id="successTime">--:--</div>
+        </div>
+    </div>
+    
+    <!-- Loading -->
+    <div class="loading" id="loading">
+        <div class="loader"></div>
+    </div>
+    
+    <script>
+        let selectedAction = null;
+        let recentHistory = [];
+        
+        // Time update
+        function updateTime() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+            const dateStr = now.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+            
+            document.getElementById('timeDisplay').textContent = timeStr;
+            document.getElementById('dateDisplay').textContent = dateStr;
+        }
+        
+        updateTime();
+        setInterval(updateTime, 1000);
+        
+        // Action selection
+        function selectAction(type) {
+            selectedAction = type;
+            
+            // Update UI
+            document.querySelectorAll('.action-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            if (type === 'arrive') {
+                document.getElementById('btnArrive').classList.add('selected');
+            } else {
+                document.getElementById('btnDepart').classList.add('selected');
+            }
+            
+            // Focus input
+            document.getElementById('matriculeInput').focus();
+            
+            // Vibrate if available
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+        }
+        
+        // Handle badge submission
+        document.getElementById('matriculeInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                submitBadge();
+            }
+        });
+        
+        function submitBadge() {
+            const matricule = document.getElementById('matriculeInput').value.toUpperCase();
+            
+            if (!matricule) {
+                showError('Veuillez entrer votre matricule');
+                return;
+            }
+            
+            if (!selectedAction) {
+                showError('Veuillez sélectionner Arrivée ou Départ');
+                return;
+            }
+            
+            // Show loading
+            document.getElementById('loading').classList.add('show');
+            
+            // Get geolocation
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    position => sendBadge(matricule, position.coords),
+                    error => sendBadge(matricule, null)
+                );
+            } else {
+                sendBadge(matricule, null);
+            }
+        }
+        
+        function sendBadge(matricule, coords) {
+            const data = {
+                matricule: matricule,
+                type: selectedAction === 'arrive' ? 'arrivee_matin' : 'depart_soir'
+            };
+            
+            if (coords) {
+                data.latitude = coords.latitude;
+                data.longitude = coords.longitude;
+            }
+            
+            fetch('/api/badge/check', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                document.getElementById('loading').classList.remove('show');
+                
+                if (result.success) {
+                    showSuccess(result);
+                    addToHistory(result);
+                    resetForm();
+                    updatePresentCount();
+                } else {
+                    showError(result.message);
+                }
+            })
+            .catch(error => {
+                document.getElementById('loading').classList.remove('show');
+                showError('Erreur de connexion');
+            });
+        }
+        
+        function showSuccess(data) {
+            const overlay = document.getElementById('successOverlay');
+            const now = new Date();
+            
+            document.getElementById('successTitle').textContent = 
+                selectedAction === 'arrive' ? 'Bonne journée !' : 'À demain !';
+            document.getElementById('successMessage').textContent = data.message;
+            document.getElementById('successTime').textContent = 
+                now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+            
+            overlay.classList.add('show');
+            
+            // Vibrate success pattern
+            if (navigator.vibrate) {
+                navigator.vibrate([100, 50, 100]);
+            }
+            
+            setTimeout(() => {
+                overlay.classList.remove('show');
+            }, 3000);
+        }
+        
+        function showError(message) {
+            // Create toast notification
+            const toast = document.createElement('div');
+            toast.className = 'error-toast';
+            toast.innerHTML = `
+                <i class="ri-error-warning-line"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(toast);
+            
+            // Vibrate error
+            if (navigator.vibrate) {
+                navigator.vibrate([200, 100, 200]);
+            }
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+        
+        function addToHistory(data) {
+            const historyItem = {
+                name: data.employee.name,
+                time: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+                type: selectedAction
+            };
+            
+            recentHistory.unshift(historyItem);
+            recentHistory = recentHistory.slice(0, 5);
+            
+            updateHistoryDisplay();
+        }
+        
+        function updateHistoryDisplay() {
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = '';
+            
+            if (recentHistory.length === 0) {
+                historyList.innerHTML = '<p style="text-align: center; color: #999;">Aucune activité récente</p>';
+                return;
+            }
+            
+            recentHistory.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                div.innerHTML = `
+                    <div class="history-icon ${item.type === 'arrive' ? 'in' : 'out'}">
+                        <i class="ri-${item.type === 'arrive' ? 'login-box' : 'logout-box'}-line"></i>
+                    </div>
+                    <div class="history-info">
+                        <div class="history-name">${item.name}</div>
+                        <div class="history-time">${item.time} - ${item.type === 'arrive' ? 'Arrivée' : 'Départ'}</div>
+                    </div>
+                `;
+                historyList.appendChild(div);
+            });
+        }
+        
+        function resetForm() {
+            document.getElementById('matriculeInput').value = '';
+            selectedAction = null;
+            document.querySelectorAll('.action-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+        }
+        
+        function updatePresentCount() {
+            // Simulate count update
+            const countEl = document.getElementById('presentCount');
+            const currentCount = parseInt(countEl.textContent);
+            countEl.textContent = currentCount + 1;
+        }
+        
+        // Initialize
+        updateHistoryDisplay();
+        
+        // Add error toast styles
+        const style = document.createElement('style');
+        style.textContent = `
+            .error-toast {
+                position: fixed;
+                bottom: calc(var(--safe-area-bottom) + 20px);
+                left: 50%;
+                transform: translateX(-50%);
+                background: var(--rouge);
+                color: white;
+                padding: 16px 24px;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                font-weight: 600;
+                box-shadow: 0 4px 20px rgba(220, 38, 38, 0.3);
+                animation: slideUp 0.3s ease-out;
+                z-index: 1001;
+            }
+            
+            @keyframes slideUp {
+                from {
+                    transform: translateX(-50%) translateY(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(-50%) translateY(0);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // PWA install prompt
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+        });
+    </script>
+</body>
+</html>
+

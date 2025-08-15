@@ -1,0 +1,64 @@
+{% extends "base_elite.html" %}
+
+{% block title %}Leads - Globibat CRM Elite{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Leads</h1>
+        <p class="page-subtitle">Gestion des prospects</p>
+    </div>
+    <div class="header-actions">
+        <button class="btn btn-primary">
+            <i class="ri-add-line"></i>
+            <span>Nouveau lead</span>
+        </button>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Pipeline des leads</h2>
+    </div>
+    <div class="table-container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Entreprise</th>
+                    <th>Email</th>
+                    <th>Source</th>
+                    <th>Statut</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for lead in leads %}
+                <tr>
+                    <td>{{ lead.nom }}</td>
+                    <td>{{ lead.entreprise or '-' }}</td>
+                    <td>{{ lead.email }}</td>
+                    <td>
+                        <span class="badge badge-info">{{ lead.source }}</span>
+                    </td>
+                    <td>
+                        <span class="badge badge-{{ 'success' if lead.statut == 'converti' else 'warning' }}">
+                            {{ lead.statut }}
+                        </span>
+                    </td>
+                    <td>{{ lead.date_creation.strftime('%d/%m/%Y') if lead.date_creation else '-' }}</td>
+                    <td>
+                        <div class="flex gap-xs">
+                            <button class="btn btn-ghost"><i class="ri-phone-line"></i></button>
+                            <button class="btn btn-ghost"><i class="ri-mail-line"></i></button>
+                            <button class="btn btn-ghost"><i class="ri-edit-line"></i></button>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

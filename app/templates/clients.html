@@ -1,0 +1,113 @@
+{% extends "base_elite.html" %}
+
+{% block title %}Clients - Globibat CRM Elite{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Clients</h1>
+        <p class="page-subtitle">Gestion de votre portefeuille clients</p>
+    </div>
+    <div class="header-actions">
+        <button class="btn btn-secondary">
+            <i class="ri-download-2-line"></i>
+            <span>Exporter</span>
+        </button>
+        <button class="btn btn-primary" onclick="openModal('clientModal')">
+            <i class="ri-add-line"></i>
+            <span>Nouveau client</span>
+        </button>
+    </div>
+</div>
+
+<div class="card">
+    <div class="table-container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Entreprise</th>
+                    <th>Contact</th>
+                    <th>Email</th>
+                    <th>Téléphone</th>
+                    <th>Projets</th>
+                    <th>CA Total</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for client in clients %}
+                <tr>
+                    <td>
+                        <div class="flex items-center gap-sm">
+                            <div class="client-avatar">{{ client.nom[0] }}</div>
+                            <div>
+                                <div class="font-semibold">{{ client.nom }}</div>
+                                <div class="text-sm text-muted">{{ client.type_client }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>{{ client.contact_nom or '-' }}</td>
+                    <td>{{ client.email or '-' }}</td>
+                    <td>{{ client.telephone or '-' }}</td>
+                    <td>
+                        <span class="badge badge-info">{{ client.chantiers|length }} projets</span>
+                    </td>
+                    <td class="font-semibold">{{ "{:,.0f}".format(client.factures|sum(attribute='montant_total')|default(0)) }} €</td>
+                    <td>
+                        <div class="flex gap-xs">
+                            <button class="btn btn-ghost" onclick="editClient({{ client.id }})">
+                                <i class="ri-edit-line"></i>
+                            </button>
+                            <button class="btn btn-ghost" onclick="viewClient({{ client.id }})">
+                                <i class="ri-eye-line"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+.client-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--bleu-accent), var(--bleu-marine));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+.font-semibold {
+    font-weight: 600;
+}
+
+.text-sm {
+    font-size: var(--text-sm);
+}
+
+.text-muted {
+    color: var(--gris-medium);
+}
+</style>
+
+<script>
+function openModal(modalId) {
+    // Implémenter l'ouverture du modal
+    console.log('Ouvrir modal:', modalId);
+}
+
+function editClient(id) {
+    console.log('Éditer client:', id);
+}
+
+function viewClient(id) {
+    console.log('Voir client:', id);
+}
+</script>
+{% endblock %}

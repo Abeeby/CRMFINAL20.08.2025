@@ -1,0 +1,967 @@
+{% extends "base_elite.html" %}
+
+{% block title %}Dashboard - Globibat CRM Elite{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Tableau de bord</h1>
+        <p class="page-subtitle">Vue d'ensemble de votre activité • {{ aujourd_hui.strftime('%A %d %B %Y') }}</p>
+    </div>
+    <div class="header-actions">
+        <button class="btn btn-ghost">
+            <i class="ri-calendar-line"></i>
+            <span>Aujourd'hui</span>
+        </button>
+        <button class="btn btn-secondary">
+            <i class="ri-download-2-line"></i>
+            <span>Exporter</span>
+        </button>
+        <button class="btn btn-primary">
+            <i class="ri-add-line"></i>
+            <span>Nouvelle action</span>
+        </button>
+    </div>
+</div>
+
+<!-- KPI Grid -->
+<div class="kpi-grid stagger-animation">
+    <div class="kpi-card" data-value="{{ stats.nb_employes }}">
+        <div class="kpi-header">
+            <div class="kpi-icon blue">
+                <i class="ri-team-line"></i>
+            </div>
+            <div class="kpi-trend up">
+                <i class="ri-arrow-up-line"></i>
+                <span>+12%</span>
+            </div>
+        </div>
+        <div class="kpi-value" id="kpi1">0</div>
+        <div class="kpi-label">Employés actifs</div>
+        <svg class="kpi-chart" viewBox="0 0 100 40">
+            <path d="M0,35 L20,30 L40,32 L60,25 L80,20 L100,15" stroke="#1E40AF" stroke-width="2" fill="none" opacity="0.3"/>
+        </svg>
+    </div>
+    
+    <div class="kpi-card" data-value="{{ stats.chantiers_actifs }}">
+        <div class="kpi-header">
+            <div class="kpi-icon orange">
+                <i class="ri-building-2-line"></i>
+            </div>
+            <div class="kpi-trend up">
+                <i class="ri-arrow-up-line"></i>
+                <span>+3</span>
+            </div>
+        </div>
+        <div class="kpi-value" id="kpi2">0</div>
+        <div class="kpi-label">Chantiers en cours</div>
+        <svg class="kpi-chart" viewBox="0 0 100 40">
+            <path d="M0,30 L20,25 L40,28 L60,20 L80,15 L100,18" stroke="#F97316" stroke-width="2" fill="none" opacity="0.3"/>
+        </svg>
+    </div>
+    
+    <div class="kpi-card" data-value="{{ stats.factures_impayees }}">
+        <div class="kpi-header">
+            <div class="kpi-icon red">
+                <i class="ri-file-warning-line"></i>
+            </div>
+            <div class="kpi-trend down">
+                <i class="ri-arrow-down-line"></i>
+                <span>-2</span>
+            </div>
+        </div>
+        <div class="kpi-value" id="kpi3">0</div>
+        <div class="kpi-label">Factures en attente</div>
+        <svg class="kpi-chart" viewBox="0 0 100 40">
+            <path d="M0,20 L20,25 L40,22 L60,28 L80,30 L100,25" stroke="#DC2626" stroke-width="2" fill="none" opacity="0.3"/>
+        </svg>
+    </div>
+    
+    <div class="kpi-card" data-value="{{ stats.leads_nouveaux }}">
+        <div class="kpi-header">
+            <div class="kpi-icon green">
+                <i class="ri-user-add-line"></i>
+            </div>
+            <div class="kpi-trend up">
+                <i class="ri-arrow-up-line"></i>
+                <span>+24%</span>
+            </div>
+        </div>
+        <div class="kpi-value" id="kpi4">0</div>
+        <div class="kpi-label">Nouveaux leads</div>
+        <svg class="kpi-chart" viewBox="0 0 100 40">
+            <path d="M0,35 L20,28 L40,25 L60,20 L80,15 L100,10" stroke="#16A34A" stroke-width="2" fill="none" opacity="0.3"/>
+        </svg>
+    </div>
+</div>
+
+<!-- Main Grid -->
+<div class="dashboard-grid">
+    <!-- Pointages du jour -->
+    <div class="card card-glass">
+        <div class="card-header">
+            <div>
+                <h2 class="card-title">Pointages du jour</h2>
+                <p class="card-subtitle">{{ pointages_jour|length }} présents sur {{ stats.nb_employes }} employés</p>
+            </div>
+            <div class="card-actions">
+                <button class="btn btn-ghost">
+                    <i class="ri-filter-3-line"></i>
+                </button>
+                <button class="btn btn-ghost">
+                    <i class="ri-more-2-fill"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="attendance-stats">
+            <div class="attendance-stat">
+                <div class="stat-icon present">
+                    <i class="ri-user-smile-line"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-value">{{ pointages_jour|length }}</span>
+                    <span class="stat-label">Présents</span>
+                </div>
+            </div>
+            <div class="attendance-stat">
+                <div class="stat-icon late">
+                    <i class="ri-time-line"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-value">{{ pointages_jour|selectattr('0.retard_matin')|list|length }}</span>
+                    <span class="stat-label">Retards</span>
+                </div>
+            </div>
+            <div class="attendance-stat">
+                <div class="stat-icon absent">
+                    <i class="ri-user-unfollow-line"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-value">{{ stats.nb_employes - pointages_jour|length }}</span>
+                    <span class="stat-label">Absents</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="employee-grid">
+            {% for pointage, employe in pointages_jour %}
+            <div class="employee-badge" data-status="{{ 'late' if pointage.retard_matin else 'present' }}">
+                <div class="employee-avatar">
+                    <span>{{ employe.prenom[0] }}{{ employe.nom[0] }}</span>
+                    <div class="status-indicator"></div>
+                </div>
+                <div class="employee-info">
+                    <div class="employee-name">{{ employe.prenom }} {{ employe.nom }}</div>
+                    <div class="employee-time">
+                        <i class="ri-login-box-line"></i>
+                        {{ pointage.arrivee_matin.strftime('%H:%M') if pointage.arrivee_matin else '-' }}
+                    </div>
+                </div>
+                {% if pointage.retard_matin %}
+                <div class="badge badge-warning">Retard</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <!-- Chantiers actifs -->
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <h2 class="card-title">Chantiers actifs</h2>
+                <p class="card-subtitle">Progression en temps réel</p>
+            </div>
+            <a href="{{ url_for('chantiers') }}" class="btn btn-ghost">
+                Voir tout <i class="ri-arrow-right-line"></i>
+            </a>
+        </div>
+        
+        <div class="projects-list">
+            {% for chantier in chantiers_recents %}
+            <div class="project-card">
+                <div class="project-header">
+                    <div class="project-icon">
+                        <i class="ri-building-line"></i>
+                    </div>
+                    <div class="project-info">
+                        <h3>{{ chantier.nom }}</h3>
+                        <p>{{ chantier.client.nom if chantier.client else 'N/A' }}</p>
+                    </div>
+                    <div class="project-status">
+                        <span class="badge badge-info">En cours</span>
+                    </div>
+                </div>
+                
+                <div class="project-progress">
+                    <div class="progress-header">
+                        <span>Progression</span>
+                        <span class="progress-value">{{ "%.0f"|format((chantier.budget_consomme / chantier.budget_initial * 100) if chantier.budget_initial else 0) }}%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: {{ (chantier.budget_consomme / chantier.budget_initial * 100) if chantier.budget_initial else 0 }}%">
+                            <div class="progress-glow"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-footer">
+                    <div class="project-team">
+                        <div class="team-avatars">
+                            <div class="team-avatar">JD</div>
+                            <div class="team-avatar">PM</div>
+                            <div class="team-avatar">+3</div>
+                        </div>
+                    </div>
+                    <div class="project-deadline">
+                        <i class="ri-calendar-line"></i>
+                        {{ chantier.date_fin_prevue.strftime('%d %b') if chantier.date_fin_prevue else 'Non défini' }}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Charts Section -->
+<div class="charts-grid">
+    <!-- Revenue Chart -->
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <h2 class="card-title">Chiffre d'affaires</h2>
+                <p class="card-subtitle">Évolution sur 6 mois</p>
+            </div>
+            <div class="chart-legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #1E40AF;"></div>
+                    <span>CA réalisé</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #F97316;"></div>
+                    <span>Objectif</span>
+                </div>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="revenueChart"></canvas>
+        </div>
+    </div>
+    
+    <!-- Leads Sources -->
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <h2 class="card-title">Sources des leads</h2>
+                <p class="card-subtitle">Répartition ce mois</p>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="leadsChart"></canvas>
+        </div>
+        <div class="chart-stats">
+            <div class="chart-stat">
+                <div class="stat-dot" style="background: #1E40AF;"></div>
+                <div class="stat-info">
+                    <span class="stat-label">Site web</span>
+                    <span class="stat-value">45%</span>
+                </div>
+            </div>
+            <div class="chart-stat">
+                <div class="stat-dot" style="background: #F97316;"></div>
+                <div class="stat-info">
+                    <span class="stat-label">Téléphone</span>
+                    <span class="stat-value">30%</span>
+                </div>
+            </div>
+            <div class="chart-stat">
+                <div class="stat-dot" style="background: #16A34A;"></div>
+                <div class="stat-info">
+                    <span class="stat-label">Recommandation</span>
+                    <span class="stat-value">20%</span>
+                </div>
+            </div>
+            <div class="chart-stat">
+                <div class="stat-dot" style="background: #DC2626;"></div>
+                <div class="stat-info">
+                    <span class="stat-label">Salon</span>
+                    <span class="stat-value">5%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="card">
+    <div class="card-header">
+        <div>
+            <h2 class="card-title">Activité récente</h2>
+            <p class="card-subtitle">Dernières actions sur la plateforme</p>
+        </div>
+        <button class="btn btn-ghost">
+            <i class="ri-refresh-line"></i>
+        </button>
+    </div>
+    
+    <div class="activity-timeline">
+        <div class="timeline-item">
+            <div class="timeline-marker">
+                <div class="marker-dot"></div>
+            </div>
+            <div class="timeline-content">
+                <div class="timeline-header">
+                    <h4>Nouvelle facture créée</h4>
+                    <span class="timeline-time">Il y a 5 min</span>
+                </div>
+                <p>Facture FAC-2025-0043 pour Mairie de Toulouse - 54,000€</p>
+            </div>
+        </div>
+        
+        <div class="timeline-item">
+            <div class="timeline-marker">
+                <div class="marker-dot"></div>
+            </div>
+            <div class="timeline-content">
+                <div class="timeline-header">
+                    <h4>Chantier mis à jour</h4>
+                    <span class="timeline-time">Il y a 1h</span>
+                </div>
+                <p>Villa Martinez - Progression mise à jour à 45%</p>
+            </div>
+        </div>
+        
+        <div class="timeline-item">
+            <div class="timeline-marker">
+                <div class="marker-dot"></div>
+            </div>
+            <div class="timeline-content">
+                <div class="timeline-header">
+                    <h4>Nouvel employé ajouté</h4>
+                    <span class="timeline-time">Il y a 2h</span>
+                </div>
+                <p>Thomas Leroy rejoint l'équipe Construction</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Dashboard specific styles */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--grid-gap);
+    margin-bottom: var(--space-xl);
+}
+
+.charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--grid-gap);
+    margin-bottom: var(--space-xl);
+}
+
+/* Card enhancements */
+.card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: var(--space-lg);
+}
+
+.card-title {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.card-subtitle {
+    font-size: var(--text-sm);
+    color: var(--gris-medium);
+}
+
+.card-actions {
+    display: flex;
+    gap: var(--space-xs);
+}
+
+/* Attendance stats */
+.attendance-stats {
+    display: flex;
+    gap: var(--space-lg);
+    padding: var(--space-lg);
+    background: var(--gris-froid);
+    border-radius: 12px;
+    margin-bottom: var(--space-lg);
+}
+
+.attendance-stat {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.stat-icon.present {
+    background: rgba(22, 163, 74, 0.1);
+    color: var(--vert-validation);
+}
+
+.stat-icon.late {
+    background: rgba(249, 115, 22, 0.1);
+    color: var(--orange-construction);
+}
+
+.stat-icon.absent {
+    background: rgba(220, 38, 38, 0.1);
+    color: var(--rouge-alerte);
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-value {
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: var(--text-sm);
+    color: var(--gris-medium);
+}
+
+/* Employee grid */
+.employee-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--space-md);
+}
+
+.employee-badge {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-md);
+    background: var(--blanc-pur);
+    border: 1px solid var(--gris-neutre);
+    border-radius: 12px;
+    transition: all var(--duration-fast) var(--ease-out-quart);
+}
+
+.employee-badge:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.employee-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--bleu-accent), var(--bleu-marine));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: var(--text-sm);
+    position: relative;
+}
+
+.status-indicator {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--blanc-pur);
+    background: var(--vert-validation);
+}
+
+.employee-badge[data-status="late"] .status-indicator {
+    background: var(--orange-construction);
+}
+
+.employee-info {
+    flex: 1;
+}
+
+.employee-name {
+    font-weight: 600;
+    font-size: var(--text-sm);
+    margin-bottom: 2px;
+}
+
+.employee-time {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: var(--text-xs);
+    color: var(--gris-medium);
+}
+
+/* Projects */
+.projects-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.project-card {
+    padding: var(--space-lg);
+    background: var(--gris-froid);
+    border-radius: 12px;
+    transition: all var(--duration-fast) var(--ease-out-quart);
+}
+
+.project-card:hover {
+    transform: translateX(4px);
+    background: var(--gris-neutre);
+}
+
+.project-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
+}
+
+.project-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--blanc-pur);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: var(--bleu-accent);
+}
+
+.project-info {
+    flex: 1;
+}
+
+.project-info h3 {
+    font-size: var(--text-base);
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.project-info p {
+    font-size: var(--text-sm);
+    color: var(--gris-medium);
+}
+
+.project-progress {
+    margin-bottom: var(--space-md);
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--space-xs);
+    font-size: var(--text-sm);
+}
+
+.progress-value {
+    font-weight: 600;
+}
+
+.progress-bar {
+    height: 8px;
+    background: var(--gris-neutre);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--bleu-accent), var(--orange-construction));
+    border-radius: 4px;
+    position: relative;
+    transition: width var(--duration-slow) var(--ease-out-quart);
+}
+
+.progress-glow {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50px;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+    animation: progressGlow 2s linear infinite;
+}
+
+@keyframes progressGlow {
+    from { transform: translateX(-50px); }
+    to { transform: translateX(50px); }
+}
+
+.project-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.team-avatars {
+    display: flex;
+    margin-left: -8px;
+}
+
+.team-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--blanc-pur);
+    border: 2px solid var(--blanc-pur);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--text-xs);
+    font-weight: 600;
+    margin-left: -8px;
+    position: relative;
+    z-index: 1;
+}
+
+.team-avatar:hover {
+    z-index: 2;
+    transform: scale(1.1);
+}
+
+.project-deadline {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: var(--text-sm);
+    color: var(--gris-medium);
+}
+
+/* Chart stats */
+.chart-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-md);
+    margin-top: var(--space-lg);
+}
+
+.chart-stat {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.stat-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+/* Activity timeline */
+.activity-timeline {
+    position: relative;
+    padding-left: var(--space-xl);
+}
+
+.activity-timeline::before {
+    content: '';
+    position: absolute;
+    left: 12px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--gris-neutre);
+}
+
+.timeline-item {
+    position: relative;
+    padding-bottom: var(--space-lg);
+}
+
+.timeline-item:last-child {
+    padding-bottom: 0;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: -28px;
+    top: 4px;
+}
+
+.marker-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--blanc-pur);
+    border: 3px solid var(--bleu-accent);
+    position: relative;
+}
+
+.marker-dot::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    border-radius: 50%;
+    background: var(--bleu-accent);
+    animation: pulse 2s infinite;
+}
+
+.timeline-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-xs);
+}
+
+.timeline-header h4 {
+    font-size: var(--text-base);
+    font-weight: 600;
+}
+
+.timeline-time {
+    font-size: var(--text-sm);
+    color: var(--gris-medium);
+}
+
+.timeline-content p {
+    font-size: var(--text-sm);
+    color: var(--gris-medium);
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .kpi-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .attendance-stats {
+        flex-direction: column;
+        gap: var(--space-md);
+    }
+    
+    .employee-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .chart-stats {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Animate KPI values
+document.addEventListener('DOMContentLoaded', () => {
+    // Counter animation
+    const animateValue = (element, start, end, duration) => {
+        const range = end - start;
+        const increment = end > start ? 1 : -1;
+        const stepTime = Math.abs(Math.floor(duration / range));
+        let current = start;
+        
+        const timer = setInterval(() => {
+            current += increment;
+            element.textContent = current.toLocaleString();
+            
+            if (current === end) {
+                clearInterval(timer);
+            }
+        }, stepTime);
+    };
+    
+    // Animate KPI cards
+    const kpiCards = document.querySelectorAll('.kpi-card');
+    kpiCards.forEach((card, index) => {
+        const valueElement = card.querySelector('.kpi-value');
+        const targetValue = parseInt(card.dataset.value);
+        
+        setTimeout(() => {
+            animateValue(valueElement, 0, targetValue, 1000);
+        }, index * 100);
+    });
+    
+    // Revenue Chart
+    const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+    const revenueGradient = revenueCtx.createLinearGradient(0, 0, 0, 300);
+    revenueGradient.addColorStop(0, 'rgba(30, 64, 175, 0.3)');
+    revenueGradient.addColorStop(1, 'rgba(30, 64, 175, 0)');
+    
+    new Chart(revenueCtx, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
+            datasets: [{
+                label: 'CA réalisé',
+                data: [45000, 52000, 48000, 61000, 58000, 65000],
+                borderColor: '#1E40AF',
+                backgroundColor: revenueGradient,
+                tension: 0.4,
+                fill: true,
+                pointRadius: 0,
+                pointHoverRadius: 6,
+                pointBackgroundColor: '#1E40AF',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2
+            }, {
+                label: 'Objectif',
+                data: [50000, 50000, 55000, 55000, 60000, 60000],
+                borderColor: '#F97316',
+                borderDash: [5, 5],
+                fill: false,
+                pointRadius: 0,
+                tension: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    padding: 12,
+                    cornerRadius: 8,
+                    titleFont: {
+                        size: 14,
+                        weight: '600'
+                    },
+                    bodyFont: {
+                        size: 13
+                    },
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': ' + context.parsed.y.toLocaleString() + ' €';
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        font: {
+                            size: 12
+                        }
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    },
+                    ticks: {
+                        font: {
+                            size: 12
+                        },
+                        callback: function(value) {
+                            return value.toLocaleString() + ' €';
+                        }
+                    }
+                }
+            }
+        }
+    });
+    
+    // Leads Chart
+    const leadsCtx = document.getElementById('leadsChart').getContext('2d');
+    new Chart(leadsCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Site web', 'Téléphone', 'Recommandation', 'Salon'],
+            datasets: [{
+                data: [45, 30, 20, 5],
+                backgroundColor: ['#1E40AF', '#F97316', '#16A34A', '#DC2626'],
+                borderWidth: 0,
+                spacing: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '70%',
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    padding: 12,
+                    cornerRadius: 8,
+                    callbacks: {
+                        label: function(context) {
+                            return context.label + ': ' + context.parsed + '%';
+                        }
+                    }
+                }
+            }
+        }
+    });
+    
+    // Animate progress bars
+    const progressBars = document.querySelectorAll('.progress-fill');
+    progressBars.forEach(bar => {
+        const width = bar.style.width;
+        bar.style.width = '0%';
+        
+        setTimeout(() => {
+            bar.style.width = width;
+        }, 500);
+    });
+});
+
+// Real-time updates
+setInterval(() => {
+    fetch('/api/stats/dashboard')
+        .then(response => response.json())
+        .then(data => {
+            // Update stats in real-time
+            console.log('Dashboard updated:', data);
+        });
+}, 30000);
+</script>
+{% endblock %}
+

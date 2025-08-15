@@ -1,0 +1,188 @@
+{% extends "base_elite.html" %}
+
+{% block title %}Factures - Globibat CRM Elite{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Factures</h1>
+        <p class="page-subtitle">Gestion de la facturation</p>
+    </div>
+    <div class="header-actions">
+        <button class="btn btn-secondary">
+            <i class="ri-download-2-line"></i>
+            <span>Exporter</span>
+        </button>
+        <button class="btn btn-primary">
+            <i class="ri-add-line"></i>
+            <span>Nouvelle facture</span>
+        </button>
+    </div>
+</div>
+
+<div class="stats-grid mb-xl">
+    <div class="stat-card">
+        <div class="stat-icon blue">
+            <i class="ri-file-text-line"></i>
+        </div>
+        <div class="stat-content">
+            <div class="stat-value">{{ factures|length }}</div>
+            <div class="stat-label">Total factures</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon green">
+            <i class="ri-check-line"></i>
+        </div>
+        <div class="stat-content">
+            <div class="stat-value">{{ factures|selectattr('statut', 'equalto', 'payee')|list|length }}</div>
+            <div class="stat-label">Payées</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon orange">
+            <i class="ri-time-line"></i>
+        </div>
+        <div class="stat-content">
+            <div class="stat-value">{{ factures|selectattr('statut', 'equalto', 'en_attente')|list|length }}</div>
+            <div class="stat-label">En attente</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon primary">
+            <i class="ri-money-euro-circle-line"></i>
+        </div>
+        <div class="stat-content">
+            <div class="stat-value">{{ "{:,.0f}".format(factures|sum(attribute='montant_total')|default(0)) }} €</div>
+            <div class="stat-label">CA Total</div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="table-container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Numéro</th>
+                    <th>Client</th>
+                    <th>Date</th>
+                    <th>Montant HT</th>
+                    <th>TVA</th>
+                    <th>Total TTC</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for facture in factures %}
+                <tr>
+                    <td class="font-mono">{{ facture.numero }}</td>
+                    <td>{{ facture.client.nom if facture.client else '-' }}</td>
+                    <td>{{ facture.date_facture.strftime('%d/%m/%Y') if facture.date_facture else '-' }}</td>
+                    <td>{{ "{:,.2f}".format(facture.montant_ht) }} €</td>
+                    <td>{{ "{:,.2f}".format(facture.montant_tva) }} €</td>
+                    <td class="font-semibold">{{ "{:,.2f}".format(facture.montant_total) }} €</td>
+                    <td>
+                        <span class="badge badge-{{ 'success' if facture.statut == 'payee' else 'warning' if facture.statut == 'en_attente' else 'danger' }}">
+                            {{ facture.statut }}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="flex gap-xs">
+                            <button class="btn btn-ghost" title="Télécharger PDF">
+                                <i class="ri-download-line"></i>
+                            </button>
+                            <button class="btn btn-ghost" title="Envoyer par email">
+                                <i class="ri-mail-line"></i>
+                            </button>
+                            <button class="btn btn-ghost" title="Modifier">
+                                <i class="ri-edit-line"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--grid-gap);
+}
+
+.stat-card {
+    background: var(--blanc-pur);
+    border-radius: 16px;
+    padding: var(--space-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    box-shadow: var(--shadow-base);
+    transition: all var(--duration-fast) var(--ease-out-quart);
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.stat-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+}
+
+.stat-icon.blue {
+    background: rgba(30, 64, 175, 0.1);
+    color: var(--bleu-accent);
+}
+
+.stat-icon.green {
+    background: rgba(22, 163, 74, 0.1);
+    color: var(--vert-validation);
+}
+
+.stat-icon.orange {
+    background: rgba(249, 115, 22, 0.1);
+    color: var(--orange-construction);
+}
+
+.stat-icon.primary {
+    background: linear-gradient(135deg, rgba(30, 64, 175, 0.1), rgba(30, 64, 175, 0.05));
+    color: var(--bleu-accent);
+}
+
+.stat-content {
+    flex: 1;
+}
+
+.stat-value {
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+.stat-label {
+    font-size: var(--text-sm);
+    color: var(--gris-medium);
+}
+
+.font-mono {
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+}
+
+.mb-xl {
+    margin-bottom: var(--space-xl);
+}
+</style>
+{% endblock %}

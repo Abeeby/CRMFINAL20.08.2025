@@ -1,0 +1,224 @@
+{% extends "base_elite.html" %}
+
+{% block title %}Badges - Globibat CRM Elite{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Système de badges</h1>
+        <p class="page-subtitle">Gestion des pointages employés</p>
+    </div>
+    <div class="header-actions">
+        <button class="btn btn-secondary" onclick="window.open('/employee/badge', '_blank')">
+            <i class="ri-smartphone-line"></i>
+            <span>Interface mobile</span>
+        </button>
+    </div>
+</div>
+
+<div class="badge-grid">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Badge manuel</h2>
+        </div>
+        <div class="badge-form">
+            <input type="text" 
+                   class="matricule-input" 
+                   placeholder="Matricule employé"
+                   id="matriculeInput">
+            <div class="badge-actions">
+                <button class="btn btn-success" onclick="badge('entree')">
+                    <i class="ri-login-box-line"></i>
+                    <span>Entrée</span>
+                </button>
+                <button class="btn btn-danger" onclick="badge('sortie')">
+                    <i class="ri-logout-box-line"></i>
+                    <span>Sortie</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Statistiques du jour</h2>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-icon green">
+                    <i class="ri-user-smile-line"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-value">{{ stats.presents }}</div>
+                    <div class="stat-label">Présents</div>
+                </div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-icon orange">
+                    <i class="ri-time-line"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-value">{{ stats.retards }}</div>
+                    <div class="stat-label">Retards</div>
+                </div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-icon red">
+                    <i class="ri-user-unfollow-line"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-value">{{ stats.absents }}</div>
+                    <div class="stat-label">Absents</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Historique des badges</h2>
+    </div>
+    <div class="table-container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Employé</th>
+                    <th>Matricule</th>
+                    <th>Type</th>
+                    <th>Heure</th>
+                    <th>Localisation</th>
+                    <th>Statut</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for badge in badges_recent %}
+                <tr>
+                    <td>
+                        <div class="flex items-center gap-sm">
+                            <div class="employee-avatar">
+                                {{ badge.employe.prenom[0] }}{{ badge.employe.nom[0] }}
+                            </div>
+                            <span>{{ badge.employe.prenom }} {{ badge.employe.nom }}</span>
+                        </div>
+                    </td>
+                    <td class="font-mono">{{ badge.employe.matricule }}</td>
+                    <td>
+                        <span class="badge badge-{{ 'success' if 'arrivee' in badge.type else 'warning' }}">
+                            {{ badge.type }}
+                        </span>
+                    </td>
+                    <td>{{ badge.timestamp.strftime('%H:%M') }}</td>
+                    <td>
+                        {% if badge.latitude and badge.longitude %}
+                            <i class="ri-map-pin-line"></i> GPS capturé
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if badge.anomalie %}
+                            <span class="badge badge-danger">Anomalie</span>
+                        {% else %}
+                            <span class="badge badge-success">OK</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+.badge-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--grid-gap);
+    margin-bottom: var(--space-xl);
+}
+
+.badge-form {
+    padding: var(--space-lg);
+}
+
+.matricule-input {
+    width: 100%;
+    padding: var(--space-md);
+    font-size: var(--text-xl);
+    text-align: center;
+    border: 2px solid var(--gris-neutre);
+    border-radius: 12px;
+    margin-bottom: var(--space-lg);
+    text-transform: uppercase;
+}
+
+.badge-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-md);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, var(--vert-validation), #059669);
+    color: white;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, var(--rouge-alerte), #B91C1C);
+    color: white;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-md);
+    padding: var(--space-lg);
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.stat-icon.green {
+    background: rgba(22, 163, 74, 0.1);
+    color: var(--vert-validation);
+}
+
+.stat-icon.orange {
+    background: rgba(249, 115, 22, 0.1);
+    color: var(--orange-construction);
+}
+
+.stat-icon.red {
+    background: rgba(220, 38, 38, 0.1);
+    color: var(--rouge-alerte);
+}
+
+@media (max-width: 768px) {
+    .badge-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<script>
+function badge(type) {
+    const matricule = document.getElementById('matriculeInput').value;
+    if (!matricule) {
+        alert('Veuillez entrer un matricule');
+        return;
+    }
+    
+    // Appel API pour enregistrer le badge
+    console.log('Badge:', type, matricule);
+}
+</script>
+{% endblock %}

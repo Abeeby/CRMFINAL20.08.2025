@@ -1,0 +1,75 @@
+{% extends "base_elite.html" %}
+
+{% block title %}Carte - Globibat CRM Elite{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Carte interactive</h1>
+        <p class="page-subtitle">Localisation des chantiers et employés</p>
+    </div>
+</div>
+
+<div class="card" style="height: calc(100vh - 200px);">
+    <div id="map" style="width: 100%; height: 100%; border-radius: 16px;"></div>
+</div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+// Initialiser la carte
+const map = L.map('map').setView([48.8566, 2.3522], 10);
+
+// Ajouter les tuiles
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+}).addTo(map);
+
+// Marqueurs d'exemple
+const locations = [
+    { lat: 48.8566, lng: 2.3522, title: "Chantier Paris Centre", type: "chantier" },
+    { lat: 48.8734, lng: 2.2950, title: "Villa Martinez", type: "chantier" },
+    { lat: 48.8924, lng: 2.3444, title: "Jean Dupont", type: "employe" }
+];
+
+locations.forEach(loc => {
+    const icon = L.divIcon({
+        className: 'custom-marker',
+        html: `<div class="marker-${loc.type}"><i class="ri-${loc.type === 'chantier' ? 'building' : 'user'}-line"></i></div>`,
+        iconSize: [40, 40]
+    });
+    
+    L.marker([loc.lat, loc.lng], { icon })
+        .addTo(map)
+        .bindPopup(loc.title);
+});
+</script>
+
+<style>
+.custom-marker {
+    background: transparent;
+}
+
+.marker-chantier,
+.marker-employe {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.marker-chantier {
+    background: linear-gradient(135deg, var(--bleu-accent), var(--bleu-marine));
+}
+
+.marker-employe {
+    background: linear-gradient(135deg, var(--orange-construction), #DC2626);
+}
+</style>
+{% endblock %}

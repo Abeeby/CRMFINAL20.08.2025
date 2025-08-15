@@ -1,0 +1,199 @@
+{% extends "base_elite.html" %}
+
+{% block title %}Paramètres - Globibat CRM Elite{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Paramètres</h1>
+        <p class="page-subtitle">Configuration du système</p>
+    </div>
+</div>
+
+<div class="settings-grid">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Profil utilisateur</h2>
+        </div>
+        <div class="settings-content">
+            <div class="form-group">
+                <label>Nom d'utilisateur</label>
+                <input type="text" class="form-input" value="{{ current_user.username }}" readonly>
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" class="form-input" value="{{ current_user.email }}" readonly>
+            </div>
+            <button class="btn btn-primary">
+                <i class="ri-save-line"></i>
+                Enregistrer
+            </button>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Préférences</h2>
+        </div>
+        <div class="settings-content">
+            <div class="setting-item">
+                <div class="setting-info">
+                    <h4>Mode sombre</h4>
+                    <p>Activer le thème sombre</p>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="darkModeSwitch">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="setting-item">
+                <div class="setting-info">
+                    <h4>Notifications</h4>
+                    <p>Recevoir des notifications push</p>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Sécurité</h2>
+        </div>
+        <div class="settings-content">
+            <button class="btn btn-secondary">
+                <i class="ri-lock-password-line"></i>
+                Changer le mot de passe
+            </button>
+            <button class="btn btn-secondary">
+                <i class="ri-shield-check-line"></i>
+                Activer la 2FA
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+.settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: var(--grid-gap);
+}
+
+.settings-content {
+    padding: var(--space-lg);
+}
+
+.form-group {
+    margin-bottom: var(--space-lg);
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: var(--space-xs);
+    color: var(--gris-medium);
+    font-size: var(--text-sm);
+}
+
+.form-input {
+    width: 100%;
+    padding: var(--space-sm) var(--space-md);
+    border: 1px solid var(--gris-neutre);
+    border-radius: 8px;
+    font-size: var(--text-base);
+    transition: all var(--duration-fast) var(--ease-out-quart);
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--bleu-accent);
+    box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+}
+
+.setting-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-md) 0;
+    border-bottom: 1px solid var(--gris-neutre);
+}
+
+.setting-item:last-child {
+    border-bottom: none;
+}
+
+.setting-info h4 {
+    font-size: var(--text-base);
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.setting-info p {
+    font-size: var(--text-sm);
+    color: var(--gris-medium);
+}
+
+/* Switch toggle */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--gris-neutre);
+    transition: var(--duration-fast);
+    border-radius: 24px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: var(--duration-fast);
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--bleu-accent);
+}
+
+input:checked + .slider:before {
+    transform: translateX(24px);
+}
+</style>
+
+<script>
+// Dark mode switch
+document.getElementById('darkModeSwitch').addEventListener('change', (e) => {
+    const theme = e.target.checked ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+});
+
+// Set initial state
+const savedTheme = localStorage.getItem('theme') || 'light';
+document.getElementById('darkModeSwitch').checked = savedTheme === 'dark';
+</script>
+{% endblock %}

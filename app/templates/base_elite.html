@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Globibat CRM - Elite Edition{% endblock %}</title>
+    
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://api.fontshare.com/v2/css?f[]=clash-display@200,300,400,500,600,700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.0.0/fonts/remixicon.css" rel="stylesheet">
+    
+    <!-- Elite Design System -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/elite-design-system.css') }}">
+    
+    <!-- GSAP for animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/ScrollTrigger.min.js"></script>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Cursor follower -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+    
+    <!-- Background gradient animation -->
+    <div class="bg-gradient-animated"></div>
+    
+    <!-- App Container -->
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="{{ url_for('dashboard') }}" class="logo">
+                    <div class="logo-icon">
+                        <i class="ri-building-2-fill"></i>
+                    </div>
+                    <span class="logo-text">Globibat</span>
+                </a>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Principal</div>
+                    <div class="nav-item">
+                        <a href="{{ url_for('dashboard') }}" class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
+                            <i class="ri-dashboard-3-line nav-icon"></i>
+                            <span>Tableau de bord</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="{{ url_for('chantiers') }}" class="nav-link {% if request.endpoint == 'chantiers' %}active{% endif %}">
+                            <i class="ri-building-line nav-icon"></i>
+                            <span>Chantiers</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="{{ url_for('employes') }}" class="nav-link {% if request.endpoint == 'employes' %}active{% endif %}">
+                            <i class="ri-team-line nav-icon"></i>
+                            <span>Employés</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">Gestion</div>
+                    <div class="nav-item">
+                        <a href="{{ url_for('factures') }}" class="nav-link {% if request.endpoint == 'factures' %}active{% endif %}">
+                            <i class="ri-file-text-line nav-icon"></i>
+                            <span>Factures</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="{{ url_for('devis') }}" class="nav-link {% if request.endpoint == 'devis' %}active{% endif %}">
+                            <i class="ri-file-list-3-line nav-icon"></i>
+                            <span>Devis</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="{{ url_for('leads') }}" class="nav-link {% if request.endpoint == 'leads' %}active{% endif %}">
+                            <i class="ri-user-follow-line nav-icon"></i>
+                            <span>Leads</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">Outils</div>
+                    <div class="nav-item">
+                        <a href="{{ url_for('badges') }}" class="nav-link {% if request.endpoint == 'badges' %}active{% endif %}">
+                            <i class="ri-fingerprint-line nav-icon"></i>
+                            <span>Badges</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="{{ url_for('carte') }}" class="nav-link {% if request.endpoint == 'carte' %}active{% endif %}">
+                            <i class="ri-map-pin-2-line nav-icon"></i>
+                            <span>Carte</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="{{ url_for('parametres') }}" class="nav-link {% if request.endpoint == 'parametres' %}active{% endif %}">
+                            <i class="ri-settings-4-line nav-icon"></i>
+                            <span>Paramètres</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+            
+            <!-- Sidebar footer -->
+            <div class="sidebar-footer">
+                <div class="storage-indicator">
+                    <div class="storage-header">
+                        <i class="ri-hard-drive-2-line"></i>
+                        <span>Stockage</span>
+                    </div>
+                    <div class="storage-bar">
+                        <div class="storage-fill" style="width: 67%;"></div>
+                    </div>
+                    <div class="storage-info">
+                        <span>6.7 GB / 10 GB</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="ri-menu-line"></i>
+                </button>
+                
+                <div class="search-container">
+                    <i class="ri-search-line search-icon"></i>
+                    <input type="text" class="search-input" placeholder="Rechercher..." id="globalSearch">
+                    <div class="search-shortcut">⌘K</div>
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <button class="icon-button" id="notificationBtn">
+                    <i class="ri-notification-3-line"></i>
+                    <span class="notification-badge">3</span>
+                </button>
+                
+                <button class="icon-button" id="themeToggle">
+                    <i class="ri-sun-line" id="themeIcon"></i>
+                </button>
+                
+                <div class="user-menu" id="userMenu">
+                    <div class="user-avatar">
+                        <span>{{ current_user.username[0]|upper if current_user.username else 'A' }}</span>
+                    </div>
+                    <div class="user-info">
+                        <div class="user-name">{{ current_user.username|default('Admin') }}</div>
+                        <div class="user-role">Administrateur</div>
+                    </div>
+                    <i class="ri-arrow-down-s-line"></i>
+                </div>
+                
+                <!-- User dropdown -->
+                <div class="dropdown-menu" id="userDropdown">
+                    <a href="{{ url_for('parametres') }}" class="dropdown-item">
+                        <i class="ri-user-settings-line"></i>
+                        <span>Mon profil</span>
+                    </a>
+                    <a href="{{ url_for('parametres') }}" class="dropdown-item">
+                        <i class="ri-settings-3-line"></i>
+                        <span>Paramètres</span>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="{{ url_for('logout') }}" class="dropdown-item">
+                        <i class="ri-logout-box-line"></i>
+                        <span>Déconnexion</span>
+                    </a>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+    
+    <!-- Notification Panel -->
+    <div class="notification-panel" id="notificationPanel">
+        <div class="notification-header">
+            <h3>Notifications</h3>
+            <button class="icon-button ghost" id="closeNotifications">
+                <i class="ri-close-line"></i>
+            </button>
+        </div>
+        <div class="notification-tabs">
+            <button class="tab-button active">Toutes</button>
+            <button class="tab-button">Chantiers</button>
+            <button class="tab-button">Alertes</button>
+        </div>
+        <div class="notification-list">
+            <div class="notification-item unread">
+                <div class="notification-icon orange">
+                    <i class="ri-alert-line"></i>
+                </div>
+                <div class="notification-content">
+                    <h4>Retard détecté</h4>
+                    <p>Pierre Bernard est arrivé en retard ce matin (9h15)</p>
+                    <span class="notification-time">Il y a 5 min</span>
+                </div>
+            </div>
+            <div class="notification-item">
+                <div class="notification-icon green">
+                    <i class="ri-check-line"></i>
+                </div>
+                <div class="notification-content">
+                    <h4>Facture payée</h4>
+                    <p>La facture FAC-2025-0042 a été réglée</p>
+                    <span class="notification-time">Il y a 1h</span>
+                </div>
+            </div>
+            <div class="notification-item">
+                <div class="notification-icon blue">
+                    <i class="ri-building-line"></i>
+                </div>
+                <div class="notification-content">
+                    <h4>Nouveau chantier</h4>
+                    <p>Le chantier "Villa Martinez" démarre demain</p>
+                    <span class="notification-time">Il y a 2h</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Command Palette -->
+    <div class="command-palette" id="commandPalette">
+        <div class="command-palette-backdrop"></div>
+        <div class="command-palette-container">
+            <div class="command-palette-header">
+                <i class="ri-search-line"></i>
+                <input type="text" class="command-input" placeholder="Tapez pour rechercher..." id="commandInput">
+                <kbd>ESC</kbd>
+            </div>
+            <div class="command-results" id="commandResults">
+                <div class="command-section">
+                    <div class="command-section-title">Actions rapides</div>
+                    <div class="command-item">
+                        <i class="ri-user-add-line"></i>
+                        <span>Ajouter un employé</span>
+                        <kbd>⌘N</kbd>
+                    </div>
+                    <div class="command-item">
+                        <i class="ri-file-add-line"></i>
+                        <span>Créer une facture</span>
+                    </div>
+                    <div class="command-item">
+                        <i class="ri-building-line"></i>
+                        <span>Nouveau chantier</span>
+                    </div>
+                </div>
+                <div class="command-section">
+                    <div class="command-section-title">Navigation</div>
+                    <div class="command-item">
+                        <i class="ri-dashboard-3-line"></i>
+                        <span>Tableau de bord</span>
+                    </div>
+                    <div class="command-item">
+                        <i class="ri-team-line"></i>
+                        <span>Employés</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Socket.IO -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    
+    <!-- Elite JavaScript -->
+    <script>
+        // Initialize GSAP
+        gsap.registerPlugin(ScrollTrigger);
+        
+        // Custom cursor
+        const cursor = {
+            dot: document.querySelector('.cursor-dot'),
+            outline: document.querySelector('.cursor-outline'),
+            
+            init: function() {
+                this.dotSize = this.dot.offsetWidth;
+                this.outlineSize = this.outline.offsetWidth;
+                this.setupEventListeners();
+                this.animateDotOnHover();
+            },
+            
+            setupEventListeners: function() {
+                const self = this;
+                
+                document.addEventListener('mousemove', (e) => {
+                    const targetX = e.clientX;
+                    const targetY = e.clientY;
+                    
+                    gsap.to(self.dot, {
+                        x: targetX - self.dotSize / 2,
+                        y: targetY - self.dotSize / 2,
+                        duration: 0
+                    });
+                    
+                    gsap.to(self.outline, {
+                        x: targetX - self.outlineSize / 2,
+                        y: targetY - self.outlineSize / 2,
+                        duration: 0.15
+                    });
+                });
+            },
+            
+            animateDotOnHover: function() {
+                const hoverable = document.querySelectorAll('a, button, .clickable');
+                
+                hoverable.forEach(item => {
+                    item.addEventListener('mouseenter', () => {
+                        gsap.to(this.dot, { scale: 2, duration: 0.3 });
+                        gsap.to(this.outline, { scale: 1.5, duration: 0.3 });
+                    });
+                    
+                    item.addEventListener('mouseleave', () => {
+                        gsap.to(this.dot, { scale: 1, duration: 0.3 });
+                        gsap.to(this.outline, { scale: 1, duration: 0.3 });
+                    });
+                });
+            }
+        };
+        
+        // Theme toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            themeIcon.className = theme === 'light' ? 'ri-sun-line' : 'ri-moon-line';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            setTheme(newTheme);
+        });
+        
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        setTheme(savedTheme);
+        
+        // Menu toggle
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+        });
+        
+        // User menu
+        const userMenu = document.getElementById('userMenu');
+        const userDropdown = document.getElementById('userDropdown');
+        
+        userMenu.addEventListener('click', () => {
+            userDropdown.classList.toggle('show');
+        });
+        
+        // Notifications
+        const notificationBtn = document.getElementById('notificationBtn');
+        const notificationPanel = document.getElementById('notificationPanel');
+        const closeNotifications = document.getElementById('closeNotifications');
+        
+        notificationBtn.addEventListener('click', () => {
+            notificationPanel.classList.add('show');
+        });
+        
+        closeNotifications.addEventListener('click', () => {
+            notificationPanel.classList.remove('show');
+        });
+        
+        // Command palette
+        const commandPalette = document.getElementById('commandPalette');
+        const commandInput = document.getElementById('commandInput');
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Cmd/Ctrl + K
+            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                e.preventDefault();
+                commandPalette.classList.add('show');
+                commandInput.focus();
+            }
+            
+            // ESC
+            if (e.key === 'Escape') {
+                commandPalette.classList.remove('show');
+                notificationPanel.classList.remove('show');
+                userDropdown.classList.remove('show');
+            }
+        });
+        
+        // Close dropdowns on outside click
+        document.addEventListener('click', (e) => {
+            if (!userMenu.contains(e.target) && !userDropdown.contains(e.target)) {
+                userDropdown.classList.remove('show');
+            }
+        });
+        
+        // Animate elements on scroll
+        gsap.utils.toArray('.card').forEach(card => {
+            gsap.from(card, {
+                y: 30,
+                opacity: 0,
+                duration: 0.8,
+                scrollTrigger: {
+                    trigger: card,
+                    start: 'top 85%',
+                    once: true
+                }
+            });
+        });
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            cursor.init();
+            
+            // Animate page load
+            gsap.timeline()
+                .from('.sidebar', { x: -100, opacity: 0, duration: 0.6, ease: 'power3.out' })
+                .from('.header', { y: -50, opacity: 0, duration: 0.6, ease: 'power3.out' }, '-=0.3')
+                .from('.main-content > *', { y: 30, opacity: 0, duration: 0.6, stagger: 0.1, ease: 'power3.out' }, '-=0.3');
+        });
+        
+        // WebSocket connection
+        const socket = io();
+        
+        socket.on('connect', () => {
+            console.log('Connected to WebSocket');
+        });
+        
+        socket.on('new_notification', (data) => {
+            // Handle real-time notifications
+            showToast(data.title, data.message, data.type);
+        });
+        
+        // Toast notifications
+        function showToast(title, message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `
+                <div class="toast-icon">
+                    <i class="ri-${type === 'success' ? 'check' : type === 'error' ? 'close' : 'information'}-line"></i>
+                </div>
+                <div class="toast-content">
+                    <h4>${title}</h4>
+                    <p>${message}</p>
+                </div>
+            `;
+            
+            document.body.appendChild(toast);
+            
+            gsap.timeline()
+                .from(toast, { x: 300, opacity: 0, duration: 0.4, ease: 'power3.out' })
+                .to(toast, { opacity: 0, duration: 0.3, delay: 3, onComplete: () => toast.remove() });
+        }
+    </script>
+    
+    <style>
+        /* Custom cursor styles */
+        .cursor-dot,
+        .cursor-outline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+        }
+        
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: white;
+            border-radius: 50%;
+        }
+        
+        .cursor-outline {
+            width: 30px;
+            height: 30px;
+            border: 1px solid white;
+            border-radius: 50%;
+            opacity: 0.5;
+        }
+        
+        @media (max-width: 768px) {
+            .cursor-dot,
+            .cursor-outline {
+                display: none;
+            }
+        }
+        
+        /* Background gradient animation */
+        .bg-gradient-animated {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #f0f2f5, #e8eaed, #f0f2f5);
+            background-size: 400% 400%;
+            animation: gradientShift 20s ease infinite;
+            z-index: -1;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Sidebar footer */
+        .sidebar-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: var(--space-lg);
+            border-top: 1px solid var(--gris-neutre);
+            background: var(--blanc-pur);
+        }
+        
+        .storage-indicator {
+            padding: var(--space-md);
+            background: var(--gris-froid);
+            border-radius: 12px;
+        }
+        
+        .storage-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            font-size: var(--text-sm);
+            font-weight: 600;
+            margin-bottom: var(--space-sm);
+        }
+        
+        .storage-bar {
+            height: 6px;
+            background: var(--gris-neutre);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: var(--space-xs);
+        }
+        
+        .storage-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--bleu-accent), var(--orange-construction));
+            border-radius: 3px;
+            transition: width var(--duration-base) var(--ease-out-quart);
+        }
+        
+        .storage-info {
+            font-size: var(--text-xs);
+            color: var(--gris-medium);
+        }
+        
+        /* Search shortcut */
+        .search-shortcut {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 4px 8px;
+            background: var(--gris-neutre);
+            border-radius: 6px;
+            font-size: var(--text-xs);
+            font-weight: 600;
+            color: var(--gris-medium);
+        }
+        
+        /* Dropdown menu */
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            background: var(--blanc-pur);
+            border: 1px solid var(--gris-neutre);
+            border-radius: 12px;
+            box-shadow: var(--shadow-xl);
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all var(--duration-fast) var(--ease-out-quart);
+        }
+        
+        .dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: var(--space-sm) var(--space-md);
+            color: var(--noir-profond);
+            text-decoration: none;
+            transition: background var(--duration-fast) var(--ease-out-quart);
+        }
+        
+        .dropdown-item:hover {
+            background: var(--gris-froid);
+        }
+        
+        .dropdown-divider {
+            height: 1px;
+            background: var(--gris-neutre);
+            margin: var(--space-xs) 0;
+        }
+        
+        /* Notification panel */
+        .notification-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 400px;
+            background: var(--blanc-pur);
+            box-shadow: var(--shadow-2xl);
+            transform: translateX(100%);
+            transition: transform var(--duration-base) var(--ease-out-quart);
+            z-index: 300;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .notification-panel.show {
+            transform: translateX(0);
+        }
+        
+        .notification-header {
+            padding: var(--space-lg);
+            border-bottom: 1px solid var(--gris-neutre);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .notification-tabs {
+            display: flex;
+            gap: var(--space-xs);
+            padding: var(--space-md) var(--space-lg);
+            border-bottom: 1px solid var(--gris-neutre);
+        }
+        
+        .tab-button {
+            padding: var(--space-xs) var(--space-md);
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            font-size: var(--text-sm);
+            font-weight: 500;
+            color: var(--gris-medium);
+            cursor: pointer;
+            transition: all var(--duration-fast) var(--ease-out-quart);
+        }
+        
+        .tab-button.active {
+            background: var(--gris-froid);
+            color: var(--noir-profond);
+        }
+        
+        .notification-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--space-md);
+        }
+        
+        .notification-item {
+            display: flex;
+            gap: var(--space-md);
+            padding: var(--space-md);
+            border-radius: 12px;
+            margin-bottom: var(--space-sm);
+            transition: background var(--duration-fast) var(--ease-out-quart);
+            cursor: pointer;
+        }
+        
+        .notification-item:hover {
+            background: var(--gris-froid);
+        }
+        
+        .notification-item.unread {
+            background: rgba(30, 64, 175, 0.05);
+            border-left: 3px solid var(--bleu-accent);
+        }
+        
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .notification-icon.orange {
+            background: rgba(249, 115, 22, 0.1);
+            color: var(--orange-construction);
+        }
+        
+        .notification-icon.green {
+            background: rgba(22, 163, 74, 0.1);
+            color: var(--vert-validation);
+        }
+        
+        .notification-icon.blue {
+            background: rgba(30, 64, 175, 0.1);
+            color: var(--bleu-accent);
+        }
+        
+        .notification-content h4 {
+            font-size: var(--text-sm);
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .notification-content p {
+            font-size: var(--text-sm);
+            color: var(--gris-medium);
+            margin-bottom: 4px;
+        }
+        
+        .notification-time {
+            font-size: var(--text-xs);
+            color: var(--gris-medium);
+        }
+        
+        /* Command palette */
+        .command-palette {
+            position: fixed;
+            inset: 0;
+            z-index: 400;
+            display: none;
+        }
+        
+        .command-palette.show {
+            display: block;
+        }
+        
+        .command-palette-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+        
+        .command-palette-container {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 600px;
+            background: var(--blanc-pur);
+            border-radius: 16px;
+            box-shadow: var(--shadow-2xl);
+            overflow: hidden;
+            animation: slideDown var(--duration-base) var(--ease-out-quart);
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+        
+        .command-palette-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            padding: var(--space-lg);
+            border-bottom: 1px solid var(--gris-neutre);
+        }
+        
+        .command-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: var(--text-lg);
+            background: transparent;
+        }
+        
+        .command-results {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: var(--space-md);
+        }
+        
+        .command-section {
+            margin-bottom: var(--space-lg);
+        }
+        
+        .command-section-title {
+            font-size: var(--text-xs);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--gris-medium);
+            margin-bottom: var(--space-sm);
+        }
+        
+        .command-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            padding: var(--space-sm) var(--space-md);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background var(--duration-fast) var(--ease-out-quart);
+        }
+        
+        .command-item:hover {
+            background: var(--gris-froid);
+        }
+        
+        .command-item kbd {
+            margin-left: auto;
+            padding: 2px 6px;
+            background: var(--gris-neutre);
+            border-radius: 4px;
+            font-size: var(--text-xs);
+            font-family: monospace;
+        }
+        
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            bottom: var(--space-lg);
+            right: var(--space-lg);
+            background: var(--blanc-pur);
+            border-radius: 12px;
+            box-shadow: var(--shadow-xl);
+            padding: var(--space-md);
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-md);
+            min-width: 300px;
+            max-width: 400px;
+            z-index: 500;
+        }
+        
+        .toast-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .toast-success .toast-icon {
+            background: rgba(22, 163, 74, 0.1);
+            color: var(--vert-validation);
+        }
+        
+        .toast-error .toast-icon {
+            background: rgba(220, 38, 38, 0.1);
+            color: var(--rouge-alerte);
+        }
+        
+        .toast-info .toast-icon {
+            background: rgba(30, 64, 175, 0.1);
+            color: var(--bleu-accent);
+        }
+        
+        .toast-content h4 {
+            font-size: var(--text-sm);
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .toast-content p {
+            font-size: var(--text-sm);
+            color: var(--gris-medium);
+        }
+    </style>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
+

@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - Globibat CRM</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/modern-design-system.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Background animation */
+        .bg-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+        
+        .shape {
+            position: absolute;
+            background: linear-gradient(135deg, #005BBB 0%, #0047a3 100%);
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 20s infinite ease-in-out;
+        }
+        
+        .shape:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: -150px;
+            left: -150px;
+            animation-delay: 0s;
+        }
+        
+        .shape:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            top: 50%;
+            right: -100px;
+            animation-delay: 5s;
+        }
+        
+        .shape:nth-child(3) {
+            width: 400px;
+            height: 400px;
+            bottom: -200px;
+            left: 30%;
+            animation-delay: 10s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -30px) scale(1.1); }
+            50% { transform: translate(-30px, 20px) scale(0.9); }
+            75% { transform: translate(20px, 30px) scale(1.05); }
+        }
+        
+        /* Login container */
+        .login-wrapper {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 20px;
+            display: flex;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            min-height: 600px;
+        }
+        
+        .login-left {
+            flex: 1;
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .login-right {
+            flex: 1;
+            background: linear-gradient(135deg, #005BBB 0%, #003d7a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 40px;
+        }
+        
+        .login-right::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.3;
+        }
+        
+        /* Logo */
+        .logo-section {
+            margin-bottom: 40px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: #005BBB;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+        
+        .logo-text {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+        
+        .tagline {
+            color: #666;
+            font-size: 14px;
+            margin-left: 65px;
+        }
+        
+        /* Form */
+        .login-form h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 10px;
+        }
+        
+        .welcome-text {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background: #fafafa;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #005BBB;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(0, 91, 187, 0.1);
+        }
+        
+        .form-control:hover {
+            border-color: #ccc;
+        }
+        
+        .btn-login {
+            width: 100%;
+            padding: 14px 24px;
+            background: #005BBB;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-login:hover {
+            background: #004a99;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 91, 187, 0.3);
+        }
+        
+        .btn-login:active {
+            transform: translateY(0);
+        }
+        
+        /* Remember me */
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .checkbox-wrapper input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .checkbox-wrapper label {
+            color: #666;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .forgot-link {
+            color: #005BBB;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .forgot-link:hover {
+            text-decoration: underline;
+        }
+        
+        /* Right side content */
+        .login-right-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            color: white;
+        }
+        
+        .illustration {
+            width: 300px;
+            height: 300px;
+            margin: 0 auto 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 120px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .login-right h3 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        .login-right p {
+            font-size: 16px;
+            opacity: 0.9;
+            line-height: 1.6;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        
+        /* Features */
+        .features {
+            margin-top: 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            text-align: left;
+        }
+        
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        
+        .feature-text {
+            font-size: 14px;
+        }
+        
+        /* Alert */
+        .alert {
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+        
+        .alert-error {
+            background: #fee;
+            color: #d33;
+            border: 1px solid #fcc;
+        }
+        
+        .alert-success {
+            background: #efe;
+            color: #3a3;
+            border: 1px solid #cfc;
+        }
+        
+        .alert-info {
+            background: #e6f3ff;
+            color: #0066cc;
+            border: 1px solid #b3d9ff;
+        }
+        
+        /* Responsive */
+        @media (max-width: 968px) {
+            .login-wrapper {
+                flex-direction: column;
+                max-width: 500px;
+            }
+            
+            .login-right {
+                padding: 40px;
+                min-height: 300px;
+            }
+            
+            .illustration {
+                width: 200px;
+                height: 200px;
+                font-size: 80px;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .login-left {
+                padding: 40px 30px;
+            }
+            
+            .login-form h2 {
+                font-size: 24px;
+            }
+            
+            .logo-text {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+    
+    <div class="login-wrapper">
+        <div class="login-left">
+            <div class="logo-section">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="ri-building-2-fill"></i>
+                    </div>
+                    <div class="logo-text">Globibat</div>
+                </div>
+                <div class="tagline">Entreprise de construction générale</div>
+            </div>
+            
+            <form class="login-form" method="POST" action="{{ url_for('login') }}">
+                <h2>Connexion</h2>
+                <p class="welcome-text">Bienvenue ! Connectez-vous à votre espace</p>
+                
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">
+                                <i class="ri-{{ 'check' if category == 'success' else 'error-warning' if category == 'error' else 'information' }}-line"></i>
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                
+                <div class="form-group">
+                    <label class="form-label" for="email">Email professionnel</label>
+                    <input type="email" class="form-control" id="email" name="email" 
+                           placeholder="votre@email.com" required autofocus>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="password">Mot de passe</label>
+                    <input type="password" class="form-control" id="password" name="password" 
+                           placeholder="••••••••" required>
+                </div>
+                
+                <div class="form-options">
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="remember" name="remember">
+                        <label for="remember">Se souvenir de moi</label>
+                    </div>
+                    <a href="#" class="forgot-link">Mot de passe oublié ?</a>
+                </div>
+                
+                <button type="submit" class="btn-login">
+                    Se connecter
+                    <i class="ri-arrow-right-line"></i>
+                </button>
+            </form>
+        </div>
+        
+        <div class="login-right">
+            <div class="login-right-content">
+                <div class="illustration">
+                    <i class="ri-building-line"></i>
+                </div>
+                <h3>Gérez votre entreprise efficacement</h3>
+                <p>Solution CRM complète pour les entreprises de construction</p>
+                
+                <div class="features">
+                    <div class="feature">
+                        <div class="feature-icon">
+                            <i class="ri-team-line"></i>
+                        </div>
+                        <span class="feature-text">Gestion des équipes</span>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">
+                            <i class="ri-building-2-line"></i>
+                        </div>
+                        <span class="feature-text">Suivi des chantiers</span>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">
+                            <i class="ri-file-list-3-line"></i>
+                        </div>
+                        <span class="feature-text">Devis et factures</span>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">
+                            <i class="ri-map-pin-line"></i>
+                        </div>
+                        <span class="feature-text">Géolocalisation</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Auto-focus sur le champ email
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('email').focus();
+        });
+        
+        // Animation du bouton
+        const loginBtn = document.querySelector('.btn-login');
+        loginBtn.addEventListener('click', function(e) {
+            if (!this.closest('form').checkValidity()) {
+                return;
+            }
+            this.innerHTML = '<i class="ri-loader-4-line" style="animation: spin 1s linear infinite;"></i> Connexion...';
+        });
+        
+        // Animation CSS pour le loader
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes spin {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
+

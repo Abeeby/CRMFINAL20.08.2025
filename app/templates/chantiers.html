@@ -1,0 +1,159 @@
+{% extends "base_elite.html" %}
+
+{% block title %}Chantiers - Globibat CRM Elite{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Chantiers</h1>
+        <p class="page-subtitle">Suivi de vos projets en cours</p>
+    </div>
+    <div class="header-actions">
+        <button class="btn btn-primary">
+            <i class="ri-add-line"></i>
+            <span>Nouveau chantier</span>
+        </button>
+    </div>
+</div>
+
+<div class="projects-grid">
+    {% for chantier in chantiers %}
+    <div class="project-card-full">
+        <div class="project-header">
+            <div class="project-icon large">
+                <i class="ri-building-line"></i>
+            </div>
+            <div class="project-info">
+                <h3>{{ chantier.nom }}</h3>
+                <p>{{ chantier.client.nom if chantier.client else 'Client non défini' }}</p>
+                <div class="project-meta">
+                    <span><i class="ri-map-pin-line"></i> {{ chantier.adresse }}</span>
+                    <span><i class="ri-calendar-line"></i> {{ chantier.date_debut.strftime('%d/%m/%Y') if chantier.date_debut else '-' }}</span>
+                </div>
+            </div>
+            <div class="project-status">
+                <span class="badge badge-{{ 'success' if chantier.statut == 'termine' else 'info' }}">
+                    {{ chantier.statut }}
+                </span>
+            </div>
+        </div>
+        
+        <div class="project-stats">
+            <div class="stat-item">
+                <div class="stat-label">Budget</div>
+                <div class="stat-value">{{ "{:,.0f}".format(chantier.budget_initial) }} €</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Consommé</div>
+                <div class="stat-value text-orange">{{ "{:,.0f}".format(chantier.budget_consomme) }} €</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Progression</div>
+                <div class="stat-value">{{ "%.0f"|format((chantier.budget_consomme / chantier.budget_initial * 100) if chantier.budget_initial else 0) }}%</div>
+            </div>
+        </div>
+        
+        <div class="project-progress">
+            <div class="progress-bar large">
+                <div class="progress-fill" style="width: {{ (chantier.budget_consomme / chantier.budget_initial * 100) if chantier.budget_initial else 0 }}%">
+                    <div class="progress-glow"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="project-actions">
+            <button class="btn btn-secondary">
+                <i class="ri-eye-line"></i>
+                Détails
+            </button>
+            <button class="btn btn-ghost">
+                <i class="ri-edit-line"></i>
+                Modifier
+            </button>
+            <button class="btn btn-ghost">
+                <i class="ri-file-list-3-line"></i>
+                Documents
+            </button>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<style>
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: var(--grid-gap);
+}
+
+.project-card-full {
+    background: var(--blanc-pur);
+    border-radius: 20px;
+    padding: var(--space-xl);
+    box-shadow: var(--shadow-base);
+    transition: all var(--duration-base) var(--ease-out-quart);
+}
+
+.project-card-full:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+}
+
+.project-icon.large {
+    width: 64px;
+    height: 64px;
+    font-size: 32px;
+}
+
+.project-meta {
+    display: flex;
+    gap: var(--space-lg);
+    margin-top: var(--space-sm);
+    font-size: var(--text-sm);
+    color: var(--gris-medium);
+}
+
+.project-meta i {
+    margin-right: 4px;
+}
+
+.project-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-md);
+    margin: var(--space-lg) 0;
+    padding: var(--space-lg);
+    background: var(--gris-froid);
+    border-radius: 12px;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-label {
+    font-size: var(--text-sm);
+    color: var(--gris-medium);
+    margin-bottom: 4px;
+}
+
+.stat-value {
+    font-size: var(--text-xl);
+    font-weight: 700;
+}
+
+.text-orange {
+    color: var(--orange-construction);
+}
+
+.progress-bar.large {
+    height: 12px;
+}
+
+.project-actions {
+    display: flex;
+    gap: var(--space-sm);
+    margin-top: var(--space-lg);
+}
+</style>
+{% endblock %}

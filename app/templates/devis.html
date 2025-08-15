@@ -1,0 +1,61 @@
+{% extends "base_elite.html" %}
+
+{% block title %}Devis - Globibat CRM Elite{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Devis</h1>
+        <p class="page-subtitle">Gestion des propositions commerciales</p>
+    </div>
+    <div class="header-actions">
+        <button class="btn btn-primary">
+            <i class="ri-add-line"></i>
+            <span>Nouveau devis</span>
+        </button>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Liste des devis</h2>
+    </div>
+    <div class="table-container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Numéro</th>
+                    <th>Client</th>
+                    <th>Projet</th>
+                    <th>Date</th>
+                    <th>Montant</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for devis in devis_list %}
+                <tr>
+                    <td>{{ devis.numero }}</td>
+                    <td>{{ devis.client.nom if devis.client else '-' }}</td>
+                    <td>{{ devis.description[:50] }}...</td>
+                    <td>{{ devis.date_devis.strftime('%d/%m/%Y') if devis.date_devis else '-' }}</td>
+                    <td>{{ "{:,.2f}".format(devis.montant_total) }} €</td>
+                    <td>
+                        <span class="badge badge-{{ 'success' if devis.statut == 'accepte' else 'warning' if devis.statut == 'en_attente' else 'danger' }}">
+                            {{ devis.statut }}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="flex gap-xs">
+                            <button class="btn btn-ghost"><i class="ri-eye-line"></i></button>
+                            <button class="btn btn-ghost"><i class="ri-edit-line"></i></button>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

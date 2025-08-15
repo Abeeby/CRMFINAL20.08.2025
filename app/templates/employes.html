@@ -1,0 +1,461 @@
+{% extends "base_final.html" %}
+
+{% block title %}Employés - Globibat CRM{% endblock %}
+
+{% block page_header %}
+<div class="page-header">
+    <div>
+        <h1>Gestion des Employés</h1>
+        <p class="text-muted">{{ employes|length }} employés actifs</p>
+    </div>
+    <div class="header-actions">
+        <button class="btn btn-secondary" onclick="exportEmployes()">
+            <i class="ri-download-2-line"></i> Exporter
+        </button>
+        <button class="btn btn-primary" onclick="openEmployeModal()">
+            <i class="ri-user-add-line"></i> Nouvel Employé
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<!-- Filtres -->
+<div class="filters-bar">
+    <div class="search-box">
+        <i class="ri-search-line"></i>
+        <input type="text" id="searchEmploye" placeholder="Rechercher un employé..." onkeyup="filterEmployes()">
+    </div>
+    <select class="form-select" id="filterDepartement" onchange="filterEmployes()">
+        <option value="">Tous les départements</option>
+        {% for dept in departements %}
+        <option value="{{ dept }}">{{ dept }}</option>
+        {% endfor %}
+    </select>
+    <select class="form-select" id="filterStatut" onchange="filterEmployes()">
+        <option value="actif">Actifs uniquement</option>
+        <option value="tous">Tous les employés</option>
+    </select>
+</div>
+
+<!-- Liste des employés -->
+<div class="employees-grid">
+    {% for employe in employes %}
+    <div class="employee-card" data-departement="{{ employe.departement }}" data-actif="{{ employe.actif|lower }}">
+        <div class="employee-header">
+            <div class="employee-avatar">
+                {% if employe.photo %}
+                <img src="{{ employe.photo }}" alt="{{ employe.prenom }}">
+                {% else %}
+                <i class="ri-user-3-fill"></i>
+                {% endif %}
+            </div>
+            <div class="employee-status {{ 'active' if employe.actif else 'inactive' }}"></div>
+        </div>
+        
+        <div class="employee-info">
+            <h3>{{ employe.prenom }} {{ employe.nom }}</h3>
+            <p class="employee-matricule">{{ employe.matricule }}</p>
+            <p class="employee-position">{{ employe.position or 'Non défini' }}</p>
+            <p class="employee-department">
+                <i class="ri-briefcase-line"></i> {{ employe.departement or 'Non assigné' }}
+            </p>
+        </div>
+        
+        <div class="employee-contact">
+            {% if employe.email %}
+            <a href="mailto:{{ employe.email }}" class="contact-link" title="Email">
+                <i class="ri-mail-line"></i>
+            </a>
+            {% endif %}
+            {% if employe.telephone %}
+            <a href="tel:{{ employe.telephone }}" class="contact-link" title="Téléphone">
+                <i class="ri-phone-line"></i>
+            </a>
+            {% endif %}
+        </div>
+        
+        <div class="employee-actions">
+            <button class="btn btn-sm btn-secondary" onclick="viewEmploye({{ employe.id }})">
+                <i class="ri-eye-line"></i> Voir
+            </button>
+            <button class="btn btn-sm btn-primary" onclick="editEmploye({{ employe.id }})">
+                <i class="ri-edit-line"></i> Modifier
+            </button>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Modal Employé -->
+<div id="employeModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle">Nouvel Employé</h2>
+            <button class="close-btn" onclick="closeModal('employeModal')">&times;</button>
+        </div>
+        <form id="employeForm" onsubmit="saveEmploye(event)">
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Prénom *</label>
+                        <input type="text" class="form-control" name="prenom" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nom *</label>
+                        <input type="text" class="form-control" name="nom" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Département</label>
+                        <select class="form-control" name="departement">
+                            <option value="">Sélectionner...</option>
+                            <option value="Construction">Construction</option>
+                            <option value="Administration">Administration</option>
+                            <option value="Logistique">Logistique</option>
+                            <option value="Commercial">Commercial</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Position</label>
+                        <input type="text" class="form-control" name="position" placeholder="Ex: Chef de chantier">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" name="email">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Téléphone</label>
+                        <input type="tel" class="form-control" name="telephone">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Photo</label>
+                    <div class="file-upload">
+                        <input type="file" id="photoUpload" accept="image/*" onchange="previewPhoto(event)">
+                        <label for="photoUpload" class="file-label">
+                            <i class="ri-upload-cloud-line"></i>
+                            <span>Choisir une photo</span>
+                        </label>
+                        <div id="photoPreview" class="photo-preview"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('employeModal')">Annuler</button>
+                <button type="submit" class="btn btn-primary">Enregistrer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.filters-bar {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.filters-bar .search-box {
+    flex: 1;
+    min-width: 250px;
+}
+
+.employees-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+.employee-card {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 25px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.employee-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.employee-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.employee-avatar {
+    width: 80px;
+    height: 80px;
+    background: var(--primary-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    color: var(--primary);
+    overflow: hidden;
+}
+
+.employee-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.employee-status {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.employee-status.active {
+    background: var(--success);
+}
+
+.employee-status.inactive {
+    background: var(--danger);
+}
+
+.employee-info h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 5px 0;
+    color: var(--text-primary);
+}
+
+.employee-matricule {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin: 0 0 10px 0;
+    font-family: monospace;
+}
+
+.employee-position {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--primary);
+    margin: 0 0 5px 0;
+}
+
+.employee-department {
+    font-size: 14px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.employee-contact {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+.contact-link {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    transition: all 0.3s;
+}
+
+.contact-link:hover {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.employee-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.employee-actions .btn {
+    flex: 1;
+}
+
+/* File upload */
+.file-upload {
+    position: relative;
+}
+
+.file-upload input[type="file"] {
+    display: none;
+}
+
+.file-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    border: 2px dashed var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.file-label:hover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+}
+
+.photo-preview {
+    margin-top: 15px;
+    display: none;
+}
+
+.photo-preview img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+@media (max-width: 768px) {
+    .employees-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .filters-bar {
+        flex-direction: column;
+    }
+    
+    .filters-bar .search-box {
+        width: 100%;
+    }
+}
+</style>
+
+<script>
+let currentEmployeId = null;
+
+function openEmployeModal() {
+    currentEmployeId = null;
+    document.getElementById('modalTitle').textContent = 'Nouvel Employé';
+    document.getElementById('employeForm').reset();
+    document.getElementById('photoPreview').style.display = 'none';
+    document.getElementById('employeModal').style.display = 'block';
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+}
+
+function editEmploye(id) {
+    currentEmployeId = id;
+    document.getElementById('modalTitle').textContent = 'Modifier l\'employé';
+    // Charger les données de l'employé
+    fetch(`/api/employes`)
+        .then(response => response.json())
+        .then(employes => {
+            const employe = employes.find(e => e.id === id);
+            if (employe) {
+                const form = document.getElementById('employeForm');
+                form.prenom.value = employe.prenom;
+                form.nom.value = employe.nom;
+                form.departement.value = employe.departement || '';
+                form.position.value = employe.position || '';
+                form.email.value = employe.email || '';
+                form.telephone.value = employe.telephone || '';
+                document.getElementById('employeModal').style.display = 'block';
+            }
+        });
+}
+
+function viewEmploye(id) {
+    // Rediriger vers la page de détail
+    window.location.href = `/employes/${id}`;
+}
+
+function saveEmploye(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const data = Object.fromEntries(formData);
+    
+    const url = currentEmployeId ? `/api/employes/${currentEmployeId}` : '/api/employes';
+    const method = currentEmployeId ? 'PUT' : 'POST';
+    
+    fetch(url, {
+        method: method,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            closeModal('employeModal');
+            location.reload();
+        }
+    });
+}
+
+function previewPhoto(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById('photoPreview');
+            preview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+            preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function filterEmployes() {
+    const search = document.getElementById('searchEmploye').value.toLowerCase();
+    const dept = document.getElementById('filterDepartement').value;
+    const statut = document.getElementById('filterStatut').value;
+    
+    const cards = document.querySelectorAll('.employee-card');
+    
+    cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        const cardDept = card.getAttribute('data-departement');
+        const cardActif = card.getAttribute('data-actif');
+        
+        const matchesSearch = text.includes(search);
+        const matchesDept = !dept || cardDept === dept;
+        const matchesStatut = statut === 'tous' || (statut === 'actif' && cardActif === 'true');
+        
+        card.style.display = matchesSearch && matchesDept && matchesStatut ? '' : 'none';
+    });
+}
+
+function exportEmployes() {
+    // Implémenter l'export Excel
+    alert('Export des employés en cours...');
+}
+
+// Gestion des modals au clic extérieur
+window.onclick = function(event) {
+    if (event.target.classList.contains('modal')) {
+        event.target.style.display = 'none';
+    }
+}
+</script>
+{% endblock %}
+

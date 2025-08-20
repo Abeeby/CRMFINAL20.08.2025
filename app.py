@@ -199,7 +199,37 @@ class Lead(db.Model):
     date_dernier_contact = db.Column(db.Date)
     notes = db.Column(db.Text)
     potentiel_ca = db.Column(db.Float)
-    probabilite = db.Column(db.Integer, default=50)
+
+# Nouveaux modèles pour le suivi d'avancement et les absences
+class Avancement(db.Model):
+    __tablename__ = 'avancement'
+    id = db.Column(db.Integer, primary_key=True)
+    employe_id = db.Column(db.Integer, db.ForeignKey('employe.id'), nullable=False)
+    chantier_id = db.Column(db.Integer, db.ForeignKey('chantier.id'))
+    date = db.Column(db.Date, default=date.today, nullable=False)
+    tache = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.Text)
+    pourcentage = db.Column(db.Integer, default=0)  # 0-100%
+    heures_passees = db.Column(db.Float, default=0)
+    statut = db.Column(db.String(50), default='en_cours')  # en_cours, termine, bloque
+    problemes = db.Column(db.Text)
+    photos = db.Column(db.Text)  # JSON array of photo URLs
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+class Absence(db.Model):
+    __tablename__ = 'absence'
+    id = db.Column(db.Integer, primary_key=True)
+    employe_id = db.Column(db.Integer, db.ForeignKey('employe.id'), nullable=False)
+    type_absence = db.Column(db.String(50), nullable=False)  # conge, maladie, accident, formation
+    date_debut = db.Column(db.Date, nullable=False)
+    date_fin = db.Column(db.Date, nullable=False)
+    motif = db.Column(db.Text)
+    justificatif = db.Column(db.String(200))  # URL du document
+    statut = db.Column(db.String(50), default='en_attente')  # en_attente, approuve, refuse
+    approuve_par = db.Column(db.String(100))
+    date_approbation = db.Column(db.DateTime)
+    notes = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 # ===== VUES SECONDAIRES/DETAILS =====
 
@@ -356,6 +386,103 @@ def factures():
 def leads():
     leads = Lead.query.order_by(Lead.date_creation.desc()).all()
     return render_template('leads.html', leads=leads)
+
+@app.route('/avancements')
+@login_required
+def avancements():
+    """Page de suivi des avancements des employés"""
+    avancements = Avancement.query.order_by(Avancement.date.desc()).limit(50).all()
+    employes = Employe.query.filter_by(actif=True).all()
+    chantiers = Chantier.query.filter_by(statut='en_cours').all()
+    return render_template('avancements.html', 
+                         avancements=avancements,
+                         employes=employes,
+                         chantiers=chantiers)
+
+@app.route('/api/avancements', methods=['GET', 'POST'])
+@login_required
+def api_avancements():
+    if request.method == 'POST':
+        data = request.get_json()
+        avancement = Avancement(
+            employe_id=data['employe_id'],
+            chantier_id=data.get('chantier_id'),
+            tache=data['tache'],
+            description=data.get('description'),
+            pourcentage=data.get('pourcentage', 0),
+            heures_passees=data.get('heures_passees', 0),
+            statut=data.get('statut', 'en_cours'),
+            problemes=data.get('problemes')
+        )
+        db.session.add(avancement)
+        db.session.commit()
+        
+        # Notification WebSocket
+        socketio.emit('avancement_update', {
+            'employe': avancement.employe_id,
+            'tache': avancement.tache,
+            'pourcentage': avancement.pourcentage
+        }, broadcast=True)
+        
+        return jsonify({'success': True, 'id': avancement.id})
+    
+    # GET - Liste des avancements
+    avancements = Avancement.query.order_by(Avancement.date.desc()).all()
+    return jsonify([{
+        'id': a.id,
+        'employe_id': a.employe_id,
+        'tache': a.tache,
+        'pourcentage': a.pourcentage,
+        'statut': a.statut,
+        'date': a.date.isoformat()
+    } for a in avancements])
+
+@app.route('/absences')
+@login_required
+def absences():
+    """Page de gestion des absences"""
+    absences = Absence.query.order_by(Absence.date_debut.desc()).all()
+    employes = Employe.query.filter_by(actif=True).all()
+    return render_template('absences.html', absences=absences, employes=employes)
+
+@app.route('/api/absences', methods=['GET', 'POST', 'PUT'])
+@login_required
+def api_absences():
+    if request.method == 'POST':
+        data = request.get_json()
+        absence = Absence(
+            employe_id=data['employe_id'],
+            type_absence=data['type_absence'],
+            date_debut=datetime.strptime(data['date_debut'], '%Y-%m-%d').date(),
+            date_fin=datetime.strptime(data['date_fin'], '%Y-%m-%d').date(),
+            motif=data.get('motif'),
+            statut='en_attente'
+        )
+        db.session.add(absence)
+        db.session.commit()
+        return jsonify({'success': True, 'id': absence.id})
+    
+    elif request.method == 'PUT':
+        data = request.get_json()
+        absence = Absence.query.get(data['id'])
+        if absence:
+            absence.statut = data['statut']
+            absence.approuve_par = current_user.username if hasattr(current_user, 'username') else 'Admin'
+            absence.date_approbation = datetime.now()
+            db.session.commit()
+            return jsonify({'success': True})
+        return jsonify({'success': False, 'error': 'Absence non trouvée'}), 404
+    
+    # GET
+    absences = Absence.query.all()
+    return jsonify([{
+        'id': a.id,
+        'employe_id': a.employe_id,
+        'type': a.type_absence,
+        'debut': a.date_debut.isoformat(),
+        'fin': a.date_fin.isoformat(),
+        'statut': a.statut
+    } for a in absences])
 
 @app.route('/badges')
 @login_required
@@ -582,50 +709,50 @@ def badge_check():
         
         # Si pas de type spécifique, utiliser la logique séquentielle
         else:
-            if not pointage.arrivee_matin:
-                pointage.arrivee_matin = maintenant
-                if maintenant.time() > datetime.strptime('09:00', '%H:%M').time():
-                    pointage.retard_matin = True
-                action_type = "arrivee_matin"
-                message = f"Bonjour {employe.prenom}! Arrivée enregistrée à {maintenant.strftime('%H:%M')}"
-            elif not pointage.depart_midi:
-                pointage.depart_midi = maintenant
-                action_type = "depart_midi"
-                message = f"Bon appétit {employe.prenom}! Départ midi enregistré à {maintenant.strftime('%H:%M')}"
-            elif not pointage.arrivee_apres_midi:
-                pointage.arrivee_apres_midi = maintenant
-                if maintenant.time() > datetime.strptime('14:00', '%H:%M').time():
-                    pointage.retard_apres_midi = True
-                action_type = "arrivee_apres_midi"
-                message = f"Bon retour {employe.prenom}! Retour enregistré à {maintenant.strftime('%H:%M')}"
-            elif not pointage.depart_soir:
-                pointage.depart_soir = maintenant
-                action_type = "depart_soir"
-                
-                # Calculer les heures
-                heures_matin = 0
-                heures_apres_midi = 0
-                
-                if pointage.arrivee_matin and pointage.depart_midi:
-                    delta_matin = pointage.depart_midi - pointage.arrivee_matin
-                    heures_matin = delta_matin.total_seconds() / 3600
-                
-                if pointage.arrivee_apres_midi and pointage.depart_soir:
-                    delta_apres_midi = pointage.depart_soir - pointage.arrivee_apres_midi
-                    heures_apres_midi = delta_apres_midi.total_seconds() / 3600
-                
-                total_heures = round(heures_matin + heures_apres_midi, 2)
-                pointage.heures_travaillees = total_heures
-                
-                if total_heures > 8:
-                    pointage.heures_supplementaires = round(total_heures - 8, 2)
-                
-                message = f"Bonne soirée {employe.prenom}! Départ enregistré à {maintenant.strftime('%H:%M')}. Total: {total_heures}h"
-            else:
-                return jsonify({
-                    'success': False,
-                    'message': 'Tous les pointages du jour sont déjà enregistrés'
-                }), 400
+        if not pointage.arrivee_matin:
+            pointage.arrivee_matin = maintenant
+            if maintenant.time() > datetime.strptime('09:00', '%H:%M').time():
+                pointage.retard_matin = True
+            action_type = "arrivee_matin"
+            message = f"Bonjour {employe.prenom}! Arrivée enregistrée à {maintenant.strftime('%H:%M')}"
+        elif not pointage.depart_midi:
+            pointage.depart_midi = maintenant
+            action_type = "depart_midi"
+            message = f"Bon appétit {employe.prenom}! Départ midi enregistré à {maintenant.strftime('%H:%M')}"
+        elif not pointage.arrivee_apres_midi:
+            pointage.arrivee_apres_midi = maintenant
+            if maintenant.time() > datetime.strptime('14:00', '%H:%M').time():
+                pointage.retard_apres_midi = True
+            action_type = "arrivee_apres_midi"
+            message = f"Bon retour {employe.prenom}! Retour enregistré à {maintenant.strftime('%H:%M')}"
+        elif not pointage.depart_soir:
+            pointage.depart_soir = maintenant
+            action_type = "depart_soir"
+            
+            # Calculer les heures
+            heures_matin = 0
+            heures_apres_midi = 0
+            
+            if pointage.arrivee_matin and pointage.depart_midi:
+                delta_matin = pointage.depart_midi - pointage.arrivee_matin
+                heures_matin = delta_matin.total_seconds() / 3600
+            
+            if pointage.arrivee_apres_midi and pointage.depart_soir:
+                delta_apres_midi = pointage.depart_soir - pointage.arrivee_apres_midi
+                heures_apres_midi = delta_apres_midi.total_seconds() / 3600
+            
+            total_heures = round(heures_matin + heures_apres_midi, 2)
+            pointage.heures_travaillees = total_heures
+            
+            if total_heures > 8:
+                pointage.heures_supplementaires = round(total_heures - 8, 2)
+            
+            message = f"Bonne soirée {employe.prenom}! Départ enregistré à {maintenant.strftime('%H:%M')}. Total: {total_heures}h"
+        else:
+            return jsonify({
+                'success': False,
+                'message': 'Tous les pointages du jour sont déjà enregistrés'
+            }), 400
         
         db.session.commit()
         
@@ -992,8 +1119,20 @@ def api_badge_post():
         employe_id = data.get('employe_id', 1)  # Default pour les tests
         type_pointage = data.get('type', 'arrivee_matin')  # Default pour les tests
         
-        if not employe_id or not type_pointage:
-            return jsonify({'success': False, 'error': 'Données manquantes'}), 400
+        # Vérifier que l'employé existe
+        employe = Employe.query.get(employe_id)
+        if not employe:
+            # Créer un employé de test si nécessaire
+            employe = Employe(
+                id=employe_id,
+                matricule=f'TEST{employe_id:03d}',
+                nom='Test',
+                prenom=f'Employé {employe_id}',
+                email=f'test{employe_id}@globibat.com',
+                actif=True
+            )
+            db.session.add(employe)
+            db.session.commit()
         
         # Trouver ou créer le pointage du jour
         today = date.today()
@@ -1011,13 +1150,13 @@ def api_badge_post():
         
         # Enregistrer l'heure selon le type (utiliser datetime au lieu de time pour SQLite)
         current_datetime = datetime.now()
-        if type_pointage == 'arrivee_matin':
+        if type_pointage == 'arrivee_matin' or type_pointage == 'matin':
             pointage.arrivee_matin = current_datetime
-        elif type_pointage == 'depart_midi':
+        elif type_pointage == 'depart_midi' or type_pointage == 'midi':
             pointage.depart_midi = current_datetime
-        elif type_pointage == 'arrivee_apres_midi':
+        elif type_pointage == 'arrivee_apres_midi' or type_pointage == 'reprise':
             pointage.arrivee_apres_midi = current_datetime
-        elif type_pointage == 'depart_soir':
+        elif type_pointage == 'depart_soir' or type_pointage == 'soir':
             pointage.depart_soir = current_datetime
         
         db.session.commit()
@@ -1032,6 +1171,7 @@ def api_badge_post():
         return jsonify({'success': True, 'message': 'Badge enregistré'})
         
     except Exception as e:
+        db.session.rollback()
         return jsonify({'success': False, 'error': str(e)}), 500
 
 @app.route('/api/stats/dashboard')
@@ -1347,12 +1487,29 @@ def init_db():
         
         # Ajouter des leads
         leads = [
-            Lead(nom='M. Dubois', entreprise='Dubois Immobilier', telephone='0656789012',
-                email='contact@dubois-immo.fr', source='site_web', potentiel_ca=150000, probabilite=70),
-            Lead(nom='Mme Petit', telephone='0623456789', email='petit.marie@email.com',
-                source='telephone', statut='contacte', potentiel_ca=85000, probabilite=50),
-            Lead(nom='SCI Les Jardins', entreprise='SCI Les Jardins', email='contact@jardins.fr',
-                source='salon', potentiel_ca=320000, probabilite=30),
+            Lead(
+                nom='M. Dubois',
+                entreprise='Dubois Immobilier',
+                telephone='0656789012',
+                email='contact@dubois-immo.fr',
+                source='site_web',
+                potentiel_ca=150000,
+            ),
+            Lead(
+                nom='Mme Petit',
+                telephone='0623456789',
+                email='petit.marie@email.com',
+                source='telephone',
+                statut='contacte',
+                potentiel_ca=85000,
+            ),
+            Lead(
+                nom='SCI Les Jardins',
+                entreprise='SCI Les Jardins',
+                email='contact@jardins.fr',
+                source='salon',
+                potentiel_ca=320000,
+            ),
         ]
         for lead in leads:
             db.session.add(lead)
@@ -1479,7 +1636,7 @@ def sync_config_route():
 
 if __name__ == '__main__':
     print("\n" + "="*50)
-    print("🏗️  GLOBIBAT CRM - VERSION FINALE")
+    print("GLOBIBAT CRM - VERSION FINALE")
     print("="*50)
     
     init_db()
@@ -1488,18 +1645,18 @@ if __name__ == '__main__':
     try:
         from sync_manager import init_sync_manager
         sync_mgr = init_sync_manager(app)
-        print("✅ Gestionnaire de synchronisation initialisé")
+        print("[OK] Gestionnaire de synchronisation initialise")
     except Exception as e:
-        print(f"⚠️ Synchronisation VPS non configurée: {e}")
+        print(f"[WARNING] Synchronisation VPS non configuree: {e}")
         print("   Pour activer la sync, copiez env.example en .env")
-        print("   et configurez vos paramètres VPS")
+        print("   et configurez vos parametres VPS")
     
-    print("\n📍 URLs d'accès:")
+    print("\n[INFO] URLs d'acces:")
     print("   CRM Principal: http://localhost:5005/login")
-    print("   Badge Employés: http://localhost:5005/employee/badge")
-    print("\n🔐 Connexion:")
-    print("   Email: info@globibat.com")
-    print("   Mot de passe: Miser1597532684$")
+    print("   Badge Employes: http://localhost:5005/employee/badge")
+    print("\n[LOGIN] Connexion:")
+    print("   Email: admin@globibat.com")
+    print("   Mot de passe: GlobiBat2025!")
     print("="*50 + "\n")
     
     socketio.run(app, debug=True, host='0.0.0.0', port=5005)

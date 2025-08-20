@@ -1,0 +1,32 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "globibat_website.py",
+      "use": "@vercel/python",
+      "config": {
+        "maxLambdaSize": "15mb",
+        "runtime": "python3.9"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/static/(.*)",
+      "dest": "/globibat/static/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "globibat_website.py"
+    }
+  ],
+  "env": {
+    "FLASK_ENV": "production"
+  },
+  "functions": {
+    "globibat_website.py": {
+      "memory": 512,
+      "maxDuration": 10
+    }
+  }
+}

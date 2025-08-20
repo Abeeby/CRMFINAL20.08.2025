@@ -1,0 +1,430 @@
+{% extends "base_elite.html" %}
+
+{% block title %}Suivi des Avancements - Globibat CRM{% endblock %}
+
+{% block page_header %}
+<div class="page-header">
+    <div>
+        <h1>Suivi des Avancements</h1>
+        <p class="text-muted">Suivez le progrès de vos équipes en temps réel</p>
+    </div>
+    <div class="header-actions">
+        <button class="btn btn-primary" onclick="openAvancementModal()">
+            <i class="ri-add-line"></i> Nouvel Avancement
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<style>
+.avancement-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    border: 1px solid #e0e0e0;
+    transition: all 0.3s ease;
+}
+
+.avancement-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.avancement-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.avancement-employe {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.avancement-employe img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.progress-bar {
+    background: #f0f0f0;
+    height: 30px;
+    border-radius: 15px;
+    overflow: hidden;
+    margin: 10px 0;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4CAF50, #8BC34A);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    transition: width 0.5s ease;
+}
+
+.statut-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.statut-en_cours {
+    background: #FFF3E0;
+    color: #F57C00;
+}
+
+.statut-termine {
+    background: #E8F5E9;
+    color: #2E7D32;
+}
+
+.statut-bloque {
+    background: #FFEBEE;
+    color: #C62828;
+}
+
+.filters-section {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.filter-group label {
+    font-size: 12px;
+    color: #666;
+    font-weight: 600;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+}
+
+.stat-value {
+    font-size: 32px;
+    font-weight: bold;
+    color: #333;
+}
+
+.stat-label {
+    color: #666;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.probleme-alert {
+    background: #FFF3E0;
+    border-left: 4px solid #FF9800;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 4px;
+}
+</style>
+
+<!-- Statistiques -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-value" id="totalTaches">0</div>
+        <div class="stat-label">Tâches du jour</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value" id="tachesTerminees">0</div>
+        <div class="stat-label">Tâches terminées</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value" id="heuresTotal">0h</div>
+        <div class="stat-label">Heures travaillées</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value" id="problemes">0</div>
+        <div class="stat-label">Problèmes signalés</div>
+    </div>
+</div>
+
+<!-- Filtres -->
+<div class="filters-section">
+    <div class="filter-group">
+        <label>Employé</label>
+        <select class="form-select" id="filterEmploye" onchange="filterAvancements()">
+            <option value="">Tous les employés</option>
+            {% for employe in employes %}
+            <option value="{{ employe.id }}">{{ employe.prenom }} {{ employe.nom }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="filter-group">
+        <label>Chantier</label>
+        <select class="form-select" id="filterChantier" onchange="filterAvancements()">
+            <option value="">Tous les chantiers</option>
+            {% for chantier in chantiers %}
+            <option value="{{ chantier.id }}">{{ chantier.nom }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="filter-group">
+        <label>Statut</label>
+        <select class="form-select" id="filterStatut" onchange="filterAvancements()">
+            <option value="">Tous les statuts</option>
+            <option value="en_cours">En cours</option>
+            <option value="termine">Terminé</option>
+            <option value="bloque">Bloqué</option>
+        </select>
+    </div>
+    <div class="filter-group">
+        <label>Date</label>
+        <input type="date" class="form-control" id="filterDate" onchange="filterAvancements()" value="{{ date.today() }}">
+    </div>
+</div>
+
+<!-- Liste des avancements -->
+<div id="avancementsList">
+    {% for avancement in avancements %}
+    <div class="avancement-card" data-employe="{{ avancement.employe_id }}" data-chantier="{{ avancement.chantier_id }}" data-statut="{{ avancement.statut }}">
+        <div class="avancement-header">
+            <div class="avancement-employe">
+                <i class="ri-user-3-fill" style="font-size: 24px; color: #666;"></i>
+                <div>
+                    <strong>{{ avancement.employe.prenom if avancement.employe else 'Employé' }} {{ avancement.employe.nom if avancement.employe else '' }}</strong>
+                    <div style="font-size: 12px; color: #999;">{{ avancement.date.strftime('%d/%m/%Y') }}</div>
+                </div>
+            </div>
+            <span class="statut-badge statut-{{ avancement.statut }}">
+                {{ avancement.statut.replace('_', ' ').title() }}
+            </span>
+        </div>
+        
+        <h3 style="margin: 10px 0;">{{ avancement.tache }}</h3>
+        
+        {% if avancement.description %}
+        <p style="color: #666; margin: 10px 0;">{{ avancement.description }}</p>
+        {% endif %}
+        
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: {{ avancement.pourcentage }}%;">
+                {{ avancement.pourcentage }}%
+            </div>
+        </div>
+        
+        <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+            <span style="color: #666;">
+                <i class="ri-time-line"></i> {{ avancement.heures_passees }}h
+            </span>
+            {% if avancement.chantier %}
+            <span style="color: #666;">
+                <i class="ri-building-line"></i> {{ avancement.chantier.nom }}
+            </span>
+            {% endif %}
+        </div>
+        
+        {% if avancement.problemes %}
+        <div class="probleme-alert">
+            <i class="ri-alert-line"></i> {{ avancement.problemes }}
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Modal Nouvel Avancement -->
+<div id="avancementModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Nouvel Avancement</h2>
+            <button class="close-btn" onclick="closeAvancementModal()">&times;</button>
+        </div>
+        <form id="avancementForm" onsubmit="submitAvancement(event)">
+            <div class="form-group">
+                <label>Employé *</label>
+                <select class="form-control" name="employe_id" required>
+                    <option value="">Sélectionner un employé</option>
+                    {% for employe in employes %}
+                    <option value="{{ employe.id }}">{{ employe.prenom }} {{ employe.nom }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Chantier</label>
+                <select class="form-control" name="chantier_id">
+                    <option value="">Sélectionner un chantier</option>
+                    {% for chantier in chantiers %}
+                    <option value="{{ chantier.id }}">{{ chantier.nom }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Tâche *</label>
+                <input type="text" class="form-control" name="tache" required placeholder="Ex: Installation électrique RDC">
+            </div>
+            
+            <div class="form-group">
+                <label>Description</label>
+                <textarea class="form-control" name="description" rows="3" placeholder="Détails de la tâche..."></textarea>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Avancement (%)</label>
+                    <input type="number" class="form-control" name="pourcentage" min="0" max="100" value="0">
+                </div>
+                <div class="form-group">
+                    <label>Heures passées</label>
+                    <input type="number" class="form-control" name="heures_passees" min="0" step="0.5" value="0">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Statut</label>
+                <select class="form-control" name="statut">
+                    <option value="en_cours">En cours</option>
+                    <option value="termine">Terminé</option>
+                    <option value="bloque">Bloqué</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Problèmes rencontrés</label>
+                <textarea class="form-control" name="problemes" rows="2" placeholder="Signaler un problème..."></textarea>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeAvancementModal()">Annuler</button>
+                <button type="submit" class="btn btn-primary">Enregistrer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Calculer les statistiques
+function updateStats() {
+    const cards = document.querySelectorAll('.avancement-card:not([style*="display: none"])');
+    let total = cards.length;
+    let terminees = 0;
+    let heures = 0;
+    let problemesCount = 0;
+    
+    cards.forEach(card => {
+        if (card.dataset.statut === 'termine') terminees++;
+        // Extraire les heures du texte
+        const heuresText = card.querySelector('.ri-time-line')?.parentElement?.textContent;
+        if (heuresText) {
+            const h = parseFloat(heuresText.match(/[\d.]+/)?.[0] || 0);
+            heures += h;
+        }
+        if (card.querySelector('.probleme-alert')) problemesCount++;
+    });
+    
+    document.getElementById('totalTaches').textContent = total;
+    document.getElementById('tachesTerminees').textContent = terminees;
+    document.getElementById('heuresTotal').textContent = heures.toFixed(1) + 'h';
+    document.getElementById('problemes').textContent = problemesCount;
+}
+
+// Filtrer les avancements
+function filterAvancements() {
+    const employe = document.getElementById('filterEmploye').value;
+    const chantier = document.getElementById('filterChantier').value;
+    const statut = document.getElementById('filterStatut').value;
+    const date = document.getElementById('filterDate').value;
+    
+    document.querySelectorAll('.avancement-card').forEach(card => {
+        let show = true;
+        
+        if (employe && card.dataset.employe !== employe) show = false;
+        if (chantier && card.dataset.chantier !== chantier) show = false;
+        if (statut && card.dataset.statut !== statut) show = false;
+        
+        card.style.display = show ? 'block' : 'none';
+    });
+    
+    updateStats();
+}
+
+// Modal functions
+function openAvancementModal() {
+    document.getElementById('avancementModal').style.display = 'block';
+}
+
+function closeAvancementModal() {
+    document.getElementById('avancementModal').style.display = 'none';
+    document.getElementById('avancementForm').reset();
+}
+
+// Soumettre l'avancement
+async function submitAvancement(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const data = Object.fromEntries(formData);
+    
+    try {
+        const response = await fetch('/api/avancements', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+        
+        if (response.ok) {
+            showNotification('Avancement enregistré avec succès', 'success');
+            closeAvancementModal();
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            showNotification('Erreur lors de l\'enregistrement', 'error');
+        }
+    } catch (error) {
+        showNotification('Erreur de connexion', 'error');
+    }
+}
+
+// Notification
+function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        background: ${type === 'success' ? '#4CAF50' : '#f44336'};
+        color: white;
+        border-radius: 8px;
+        z-index: 10000;
+        animation: slideIn 0.3s ease;
+    `;
+    document.body.appendChild(notification);
+    setTimeout(() => notification.remove(), 3000);
+}
+
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+    updateStats();
+});
+</script>
+{% endblock %}

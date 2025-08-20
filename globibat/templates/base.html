@@ -88,6 +88,7 @@
     {% block extra_head %}{% endblock %}
 </head>
 <body>
+    <a class="skip-link" href="#main" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">Aller au contenu</a>
     <!-- Preloader -->
     <div class="preloader" id="preloader">
         <div class="preloader-inner">
@@ -191,7 +192,7 @@
     </header>
     
     <!-- Main Content -->
-    <main>
+    <main id="main">
         {% block content %}{% endblock %}
     </main>
     

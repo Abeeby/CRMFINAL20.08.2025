@@ -1,0 +1,461 @@
+{% extends "base_elite.html" %}
+
+{% block title %}Gestion des Absences - Globibat CRM{% endblock %}
+
+{% block page_header %}
+<div class="page-header">
+    <div>
+        <h1>Gestion des Absences</h1>
+        <p class="text-muted">Congés, accidents, maladies et formations</p>
+    </div>
+    <div class="header-actions">
+        <button class="btn btn-primary" onclick="openAbsenceModal()">
+            <i class="ri-calendar-event-line"></i> Déclarer une Absence
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<style>
+.absence-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-left: 4px solid #ddd;
+    transition: all 0.3s ease;
+}
+
+.absence-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.absence-conge { border-left-color: #4CAF50; }
+.absence-maladie { border-left-color: #FF9800; }
+.absence-accident { border-left-color: #f44336; }
+.absence-formation { border-left-color: #2196F3; }
+
+.absence-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.absence-employe {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.absence-dates {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin: 15px 0;
+    padding: 10px;
+    background: #f5f5f5;
+    border-radius: 8px;
+}
+
+.statut-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.statut-en_attente {
+    background: #FFF3E0;
+    color: #F57C00;
+}
+
+.statut-approuve {
+    background: #E8F5E9;
+    color: #2E7D32;
+}
+
+.statut-refuse {
+    background: #FFEBEE;
+    color: #C62828;
+}
+
+.type-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-left: 10px;
+}
+
+.type-conge { background: #E8F5E9; color: #2E7D32; }
+.type-maladie { background: #FFF3E0; color: #F57C00; }
+.type-accident { background: #FFEBEE; color: #C62828; }
+.type-formation { background: #E3F2FD; color: #1976D2; }
+
+.calendar-view {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    margin-top: 20px;
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 5px;
+    font-size: 12px;
+    position: relative;
+}
+
+.calendar-day.has-absence {
+    background: #FFF3E0;
+}
+
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-box {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    border: 1px solid #e0e0e0;
+}
+
+.stat-number {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    color: #666;
+    font-size: 14px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+</style>
+
+<!-- Statistiques -->
+<div class="stats-row">
+    <div class="stat-box">
+        <div class="stat-number" style="color: #4CAF50;">{{ absences|selectattr('type_absence', 'equalto', 'conge')|list|length }}</div>
+        <div class="stat-label">Congés</div>
+    </div>
+    <div class="stat-box">
+        <div class="stat-number" style="color: #FF9800;">{{ absences|selectattr('type_absence', 'equalto', 'maladie')|list|length }}</div>
+        <div class="stat-label">Maladies</div>
+    </div>
+    <div class="stat-box">
+        <div class="stat-number" style="color: #f44336;">{{ absences|selectattr('type_absence', 'equalto', 'accident')|list|length }}</div>
+        <div class="stat-label">Accidents</div>
+    </div>
+    <div class="stat-box">
+        <div class="stat-number" style="color: #2196F3;">{{ absences|selectattr('type_absence', 'equalto', 'formation')|list|length }}</div>
+        <div class="stat-label">Formations</div>
+    </div>
+    <div class="stat-box">
+        <div class="stat-number" style="color: #F57C00;">{{ absences|selectattr('statut', 'equalto', 'en_attente')|list|length }}</div>
+        <div class="stat-label">En attente</div>
+    </div>
+</div>
+
+<!-- Filtres -->
+<div class="filters-bar">
+    <select class="form-select" id="filterType" onchange="filterAbsences()">
+        <option value="">Tous les types</option>
+        <option value="conge">Congés</option>
+        <option value="maladie">Maladies</option>
+        <option value="accident">Accidents</option>
+        <option value="formation">Formations</option>
+    </select>
+    <select class="form-select" id="filterStatut" onchange="filterAbsences()">
+        <option value="">Tous les statuts</option>
+        <option value="en_attente">En attente</option>
+        <option value="approuve">Approuvé</option>
+        <option value="refuse">Refusé</option>
+    </select>
+    <select class="form-select" id="filterEmploye" onchange="filterAbsences()">
+        <option value="">Tous les employés</option>
+        {% for employe in employes %}
+        <option value="{{ employe.id }}">{{ employe.prenom }} {{ employe.nom }}</option>
+        {% endfor %}
+    </select>
+</div>
+
+<!-- Liste des absences -->
+<div id="absencesList">
+    {% for absence in absences %}
+    <div class="absence-card absence-{{ absence.type_absence }}" 
+         data-type="{{ absence.type_absence }}" 
+         data-statut="{{ absence.statut }}"
+         data-employe="{{ absence.employe_id }}">
+        
+        <div class="absence-header">
+            <div class="absence-employe">
+                <i class="ri-user-3-fill" style="font-size: 24px; color: #666;"></i>
+                <div>
+                    <strong>{{ absence.employe.prenom if absence.employe else 'Employé' }} {{ absence.employe.nom if absence.employe else '' }}</strong>
+                    <span class="type-badge type-{{ absence.type_absence }}">
+                        {{ absence.type_absence.title() }}
+                    </span>
+                </div>
+            </div>
+            <span class="statut-badge statut-{{ absence.statut }}">
+                {{ absence.statut.replace('_', ' ').title() }}
+            </span>
+        </div>
+        
+        <div class="absence-dates">
+            <div>
+                <i class="ri-calendar-line"></i>
+                <strong>Du:</strong> {{ absence.date_debut.strftime('%d/%m/%Y') }}
+            </div>
+            <div>
+                <i class="ri-calendar-check-line"></i>
+                <strong>Au:</strong> {{ absence.date_fin.strftime('%d/%m/%Y') }}
+            </div>
+            <div>
+                <i class="ri-time-line"></i>
+                <strong>Durée:</strong> {{ (absence.date_fin - absence.date_debut).days + 1 }} jours
+            </div>
+        </div>
+        
+        {% if absence.motif %}
+        <div style="margin: 10px 0; color: #666;">
+            <strong>Motif:</strong> {{ absence.motif }}
+        </div>
+        {% endif %}
+        
+        {% if absence.statut == 'en_attente' and current_user.is_authenticated %}
+        <div class="action-buttons">
+            <button class="btn btn-success btn-sm" onclick="approuverAbsence({{ absence.id }})">
+                <i class="ri-check-line"></i> Approuver
+            </button>
+            <button class="btn btn-danger btn-sm" onclick="refuserAbsence({{ absence.id }})">
+                <i class="ri-close-line"></i> Refuser
+            </button>
+        </div>
+        {% endif %}
+        
+        {% if absence.approuve_par %}
+        <div style="margin-top: 10px; font-size: 12px; color: #999;">
+            {{ 'Approuvé' if absence.statut == 'approuve' else 'Refusé' }} par {{ absence.approuve_par }} 
+            le {{ absence.date_approbation.strftime('%d/%m/%Y') if absence.date_approbation else '' }}
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Modal Nouvelle Absence -->
+<div id="absenceModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Déclarer une Absence</h2>
+            <button class="close-btn" onclick="closeAbsenceModal()">&times;</button>
+        </div>
+        <form id="absenceForm" onsubmit="submitAbsence(event)">
+            <div class="form-group">
+                <label>Employé *</label>
+                <select class="form-control" name="employe_id" required>
+                    <option value="">Sélectionner un employé</option>
+                    {% for employe in employes %}
+                    <option value="{{ employe.id }}">{{ employe.prenom }} {{ employe.nom }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Type d'absence *</label>
+                <select class="form-control" name="type_absence" required onchange="updateMotifPlaceholder(this)">
+                    <option value="">Sélectionner un type</option>
+                    <option value="conge">Congé payé</option>
+                    <option value="maladie">Maladie</option>
+                    <option value="accident">Accident de travail</option>
+                    <option value="formation">Formation</option>
+                </select>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Date de début *</label>
+                    <input type="date" class="form-control" name="date_debut" required>
+                </div>
+                <div class="form-group">
+                    <label>Date de fin *</label>
+                    <input type="date" class="form-control" name="date_fin" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Motif / Description</label>
+                <textarea class="form-control" name="motif" rows="3" 
+                          placeholder="Précisez le motif de l'absence..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Justificatif</label>
+                <input type="file" class="form-control" name="justificatif" accept=".pdf,.jpg,.png">
+                <small class="text-muted">PDF, JPG ou PNG (max 5MB)</small>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeAbsenceModal()">Annuler</button>
+                <button type="submit" class="btn btn-primary">Enregistrer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Filtrer les absences
+function filterAbsences() {
+    const type = document.getElementById('filterType').value;
+    const statut = document.getElementById('filterStatut').value;
+    const employe = document.getElementById('filterEmploye').value;
+    
+    document.querySelectorAll('.absence-card').forEach(card => {
+        let show = true;
+        
+        if (type && card.dataset.type !== type) show = false;
+        if (statut && card.dataset.statut !== statut) show = false;
+        if (employe && card.dataset.employe !== employe) show = false;
+        
+        card.style.display = show ? 'block' : 'none';
+    });
+}
+
+// Modal functions
+function openAbsenceModal() {
+    document.getElementById('absenceModal').style.display = 'block';
+}
+
+function closeAbsenceModal() {
+    document.getElementById('absenceModal').style.display = 'none';
+    document.getElementById('absenceForm').reset();
+}
+
+// Update placeholder based on type
+function updateMotifPlaceholder(select) {
+    const textarea = document.querySelector('textarea[name="motif"]');
+    const placeholders = {
+        'conge': 'Ex: Vacances familiales, voyage...',
+        'maladie': 'Ex: Grippe, consultation médicale...',
+        'accident': 'Ex: Chute sur chantier, blessure...',
+        'formation': 'Ex: Formation sécurité, permis CACES...'
+    };
+    textarea.placeholder = placeholders[select.value] || 'Précisez le motif de l\'absence...';
+}
+
+// Soumettre l'absence
+async function submitAbsence(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const data = Object.fromEntries(formData);
+    
+    // Validation des dates
+    if (new Date(data.date_fin) < new Date(data.date_debut)) {
+        showNotification('La date de fin doit être après la date de début', 'error');
+        return;
+    }
+    
+    try {
+        const response = await fetch('/api/absences', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+        
+        if (response.ok) {
+            showNotification('Absence déclarée avec succès', 'success');
+            closeAbsenceModal();
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            showNotification('Erreur lors de la déclaration', 'error');
+        }
+    } catch (error) {
+        showNotification('Erreur de connexion', 'error');
+    }
+}
+
+// Approuver une absence
+async function approuverAbsence(id) {
+    if (!confirm('Approuver cette absence ?')) return;
+    
+    try {
+        const response = await fetch('/api/absences', {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({id: id, statut: 'approuve'})
+        });
+        
+        if (response.ok) {
+            showNotification('Absence approuvée', 'success');
+            setTimeout(() => location.reload(), 1000);
+        }
+    } catch (error) {
+        showNotification('Erreur', 'error');
+    }
+}
+
+// Refuser une absence
+async function refuserAbsence(id) {
+    const motif = prompt('Motif du refus :');
+    if (!motif) return;
+    
+    try {
+        const response = await fetch('/api/absences', {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({id: id, statut: 'refuse', notes: motif})
+        });
+        
+        if (response.ok) {
+            showNotification('Absence refusée', 'success');
+            setTimeout(() => location.reload(), 1000);
+        }
+    } catch (error) {
+        showNotification('Erreur', 'error');
+    }
+}
+
+// Notification
+function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        background: ${type === 'success' ? '#4CAF50' : '#f44336'};
+        color: white;
+        border-radius: 8px;
+        z-index: 10000;
+        animation: slideIn 0.3s ease;
+    `;
+    document.body.appendChild(notification);
+    setTimeout(() => notification.remove(), 3000);
+}
+</script>
+{% endblock %}

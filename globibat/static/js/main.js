@@ -13,12 +13,15 @@ let cursorFollower;
 
 // Initialisation
 document.addEventListener('DOMContentLoaded', function() {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     initPreloader();
     initSmoothScroll();
     initCustomCursor();
     initHeader();
-    initAnimations();
-    initHeroAnimations();
+    if (!reduceMotion) {
+        initAnimations();
+        initHeroAnimations();
+    }
     initCounters();
     initBeforeAfterSlider();
     initTimelineProgress();

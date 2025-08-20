@@ -100,6 +100,18 @@
                         </a>
                     </div>
                     <div class="nav-item">
+                        <a href="{{ url_for('avancements') }}" class="nav-link {% if request.endpoint == 'avancements' %}active{% endif %}">
+                            <i class="ri-progress-3-line nav-icon"></i>
+                            <span>Avancements</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="{{ url_for('absences') }}" class="nav-link {% if request.endpoint == 'absences' %}active{% endif %}">
+                            <i class="ri-calendar-event-line nav-icon"></i>
+                            <span>Absences</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
                         <a href="{{ url_for('carte') }}" class="nav-link {% if request.endpoint == 'carte' %}active{% endif %}">
                             <i class="ri-map-pin-2-line nav-icon"></i>
                             <span>Carte</span>

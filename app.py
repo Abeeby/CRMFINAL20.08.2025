@@ -77,6 +77,22 @@ class Admin(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+class EmployeUser(UserMixin, db.Model):
+    __tablename__ = 'employe_user'
+    id = db.Column(db.Integer, primary_key=True)
+    employe_id = db.Column(db.Integer, db.ForeignKey('employe.id'), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(200), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    employe = db.relationship('Employe')
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
 class Employe(db.Model):
     __tablename__ = 'employe'
     id = db.Column(db.Integer, primary_key=True)
@@ -244,8 +260,12 @@ def employe_detail(employe_id: int):
 # User loader
 @login_manager.user_loader
 def load_user(user_id):
+    # Tente d'abord Admin, sinon EmployeUser
     try:
-        return db.session.get(Admin, int(user_id))
+        user = db.session.get(Admin, int(user_id))
+        if user:
+            return user
+        return db.session.get(EmployeUser, int(user_id))
     except Exception:
         return None
 
@@ -286,6 +306,39 @@ def login():
             flash('Email ou mot de passe incorrect', 'error')
     
     return render_template('login.html')
+
+@app.route('/login', methods=['POST'])
+def login_post():
+    email = request.form.get('email')
+    password = request.form.get('password')
+    next_page = request.args.get('next')
+
+    admin = Admin.query.filter_by(email=email).first()
+    if admin and admin.check_password(password):
+        login_user(admin, remember=True)
+        return redirect(next_page) if next_page else redirect(url_for('dashboard'))
+
+    emp_user = EmployeUser.query.filter_by(email=email).first()
+    if emp_user and emp_user.check_password(password):
+        login_user(emp_user, remember=True)
+        return redirect(url_for('mon_espace'))
+
+    flash('Email ou mot de passe incorrect', 'error')
+    return redirect(url_for('login'))
+
+@app.route('/mon-espace')
+@login_required
+def mon_espace():
+    if isinstance(current_user, Admin):
+        return redirect(url_for('dashboard'))
+    emp = current_user.employe if hasattr(current_user, 'employe') else None
+    if not emp:
+        flash('Employé introuvable', 'error')
+        return redirect(url_for('login'))
+    pointages = Pointage.query.filter_by(employe_id=emp.id).order_by(Pointage.date_pointage.desc()).limit(30).all()
+    absences = Absence.query.filter_by(employe_id=emp.id).order_by(Absence.date_debut.desc()).all()
+    avancements = Avancement.query.filter_by(employe_id=emp.id).order_by(Avancement.date.desc()).limit(20).all()
+    return render_template('mon_espace.html', employe=emp, pointages=pointages, absences=absences, avancements=avancements)
 
 @app.route('/logout')
 @login_required
@@ -1103,8 +1156,7 @@ def api_create_lead():
         email=data.get('email'),
         source=data.get('source', 'site_web'),
         notes=data.get('notes'),
-        potentiel_ca=float(data.get('potentiel_ca', 0)),
-        probabilite=int(data.get('probabilite', 50))
+        potentiel_ca=float(data.get('potentiel_ca', 0))
     )
     db.session.add(lead)
     db.session.commit()
@@ -1513,6 +1565,17 @@ def init_db():
         ]
         for lead in leads:
             db.session.add(lead)
+
+        # Créer un compte employé de démonstration
+        if not EmployeUser.query.first():
+            first_emp = Employe.query.first()
+            if first_emp:
+                emp_user = EmployeUser(
+                    employe_id=first_emp.id,
+                    email='employe@globibat.com'
+                )
+                emp_user.set_password('Globibat123!')
+                db.session.add(emp_user)
         
         # Ajouter des devis
         devis = [

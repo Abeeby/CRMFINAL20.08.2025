@@ -479,6 +479,8 @@ a {
     gap: 0.5rem;
     font-weight: 600;
     color: var(--color-dark);
+    white-space: nowrap;
+    letter-spacing: 0.3px;
 }
 
 .nav-phone i {

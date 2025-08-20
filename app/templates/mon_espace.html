@@ -1,0 +1,81 @@
+{% extends "base_elite.html" %}
+
+{% block title %}Mon espace - Globibat CRM{% endblock %}
+
+{% block page_header %}
+<div class="page-header">
+    <div>
+        <h1>Mon espace</h1>
+        <p class="text-muted">Vos informations, vos heures et vos demandes</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="grid-2">
+    <div class="card">
+        <h2>Profil</h2>
+        <p><strong>{{ employe.prenom }} {{ employe.nom }}</strong></p>
+        <p>{{ employe.position or 'Poste' }} — {{ employe.departement or 'Département' }}</p>
+        <p>Email: {{ employe.email or '-' }}</p>
+        <p>Téléphone: {{ employe.telephone or '-' }}</p>
+    </div>
+
+    <div class="card">
+        <h2>Absences</h2>
+        {% if absences %}
+        <ul>
+            {% for a in absences %}
+            <li>{{ a.type_absence.title() }} • {{ a.date_debut.strftime('%d/%m/%Y') }} → {{ a.date_fin.strftime('%d/%m/%Y') }} • {{ a.statut }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>Aucune absence pour le moment.</p>
+        {% endif %}
+        <a href="{{ url_for('absences') }}" class="btn btn-secondary">Gérer mes absences</a>
+    </div>
+
+    <div class="card" style="grid-column: span 2;">
+        <h2>Mes pointages (30 derniers)</h2>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Arrivée</th>
+                        <th>Départ midi</th>
+                        <th>Reprise</th>
+                        <th>Départ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in pointages %}
+                    <tr>
+                        <td>{{ p.date_pointage.strftime('%d/%m/%Y') }}</td>
+                        <td>{{ p.arrivee_matin.strftime('%H:%M') if p.arrivee_matin else '-' }}</td>
+                        <td>{{ p.depart_midi.strftime('%H:%M') if p.depart_midi else '-' }}</td>
+                        <td>{{ p.arrivee_apres_midi.strftime('%H:%M') if p.arrivee_apres_midi else '-' }}</td>
+                        <td>{{ p.depart_soir.strftime('%H:%M') if p.depart_soir else '-' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="card" style="grid-column: span 2;">
+        <h2>Mes avancements</h2>
+        {% if avancements %}
+        <ul>
+            {% for a in avancements %}
+            <li>{{ a.date.strftime('%d/%m/%Y') }} — {{ a.tache }} ({{ a.pourcentage }}%)</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>Aucun avancement saisi.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+

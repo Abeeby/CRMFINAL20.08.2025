@@ -1,0 +1,565 @@
+{% extends "base.html" %}
+
+{% block title %}Globibat - Construction & Rénovation à Nyon | Suisse Romande{% endblock %}
+
+{% block content %}
+<!-- Hero Section avec animations premium -->
+<section class="hero" id="hero">
+    <div class="hero-bg">
+        <div class="hero-bg-overlay"></div>
+        <video autoplay muted loop playsinline class="hero-video">
+            <source src="{{ url_for('static', filename='videos/construction-hero.mp4') }}" type="video/mp4">
+        </video>
+        <div class="hero-texture"></div>
+    </div>
+    
+    <div class="container">
+        <div class="hero-content">
+            <!-- Badges de confiance -->
+            <div class="hero-badges" data-animation="fade-up">
+                <span class="badge-item">
+                    <i class="ri-shield-check-line"></i> Normes SIA
+                </span>
+                <span class="badge-item">
+                    <i class="ri-verified-badge-line"></i> Chantier sécurisé
+                </span>
+                <span class="badge-item">
+                    <i class="ri-award-line"></i> Équipe certifiée
+                </span>
+                <span class="badge-item">
+                    <i class="ri-file-shield-2-line"></i> Assurance RC pro
+                </span>
+            </div>
+            
+            <!-- Titre principal avec split text animation -->
+            <h1 class="hero-title" data-animation="split-text">
+                <span class="line">Bâtissons durablement</span>
+                <span class="line">à Nyon et en Suisse romande</span>
+            </h1>
+            
+            <!-- Sous-titre -->
+            <p class="hero-subtitle" data-animation="fade-up" data-delay="0.3">
+                Rénovation, transformation et construction soignées<br>
+                Délais tenus • Finitions irréprochables • Chantier sécurisé
+            </p>
+            
+            <!-- CTAs -->
+            <div class="hero-cta" data-animation="fade-up" data-delay="0.5">
+                <a href="/contact" class="btn btn-primary btn-large" data-cursor="hover">
+                    <i class="ri-file-text-line"></i>
+                    Demander un devis
+                </a>
+                <a href="tel:+41215050062" class="btn btn-outline-white btn-large" data-cursor="hover">
+                    <i class="ri-phone-line"></i>
+                    +41 21 505 00 62
+                </a>
+            </div>
+            
+            <!-- Scroll indicator -->
+            <div class="hero-scroll" data-animation="fade-up" data-delay="1">
+                <span>Défiler pour découvrir</span>
+                <div class="scroll-icon">
+                    <div class="scroll-wheel"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Section Preuves & Chiffres avec compteurs animés -->
+<section class="proof-section" id="proof">
+    <div class="container">
+        <div class="proof-grid">
+            <div class="proof-item" data-animation="counter">
+                <div class="proof-icon">
+                    <i class="ri-calendar-check-line"></i>
+                </div>
+                <div class="proof-content">
+                    <span class="proof-number" data-count="20">0</span>
+                    <span class="proof-suffix">+</span>
+                    <span class="proof-label">Années d'expérience</span>
+                </div>
+            </div>
+            
+            <div class="proof-item" data-animation="counter">
+                <div class="proof-icon">
+                    <i class="ri-building-2-line"></i>
+                </div>
+                <div class="proof-content">
+                    <span class="proof-number" data-count="500">0</span>
+                    <span class="proof-suffix">+</span>
+                    <span class="proof-label">Projets livrés</span>
+                </div>
+            </div>
+            
+            <div class="proof-item" data-animation="counter">
+                <div class="proof-icon">
+                    <i class="ri-star-smile-line"></i>
+                </div>
+                <div class="proof-content">
+                    <span class="proof-number" data-count="98">0</span>
+                    <span class="proof-suffix">%</span>
+                    <span class="proof-label">Clients satisfaits</span>
+                </div>
+            </div>
+            
+            <div class="proof-item" data-animation="counter">
+                <div class="proof-icon">
+                    <i class="ri-timer-flash-line"></i>
+                </div>
+                <div class="proof-content">
+                    <span class="proof-number" data-count="24">0</span>
+                    <span class="proof-suffix">h</span>
+                    <span class="proof-label">Intervention rapide</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Section Services avec grille animée -->
+<section class="services-section" id="services">
+    <div class="container">
+        <div class="section-header" data-animation="fade-up">
+            <span class="section-label">Nos expertises</span>
+            <h2 class="section-title">Nos services</h2>
+            <p class="section-description">
+                De la conception à la réalisation, nous accompagnons tous vos projets de construction et rénovation
+            </p>
+        </div>
+        
+        <div class="services-grid">
+            {% for key, service in services.items() %}
+            <div class="service-card" data-animation="stagger" data-cursor="hover">
+                <a href="/services/{{ service.slug }}" class="service-card-link">
+                    <div class="service-icon">
+                        <i class="{{ service.icon }}"></i>
+                    </div>
+                    <h3 class="service-title">{{ service.title }}</h3>
+                    <p class="service-description">
+                        {{ service.description[:100] }}...
+                    </p>
+                    <div class="service-zones">
+                        {% for zone in service.zones[:2] %}
+                        <span class="zone-tag">{{ zone }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="service-arrow">
+                        <i class="ri-arrow-right-line"></i>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="services-cta" data-animation="fade-up">
+            <a href="/services" class="btn btn-outline" data-cursor="hover">
+                Voir tous nos services <i class="ri-arrow-right-line"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Section Réalisations avec avant/après -->
+<section class="projects-section" id="projects">
+    <div class="container">
+        <div class="section-header" data-animation="fade-up">
+            <span class="section-label">Portfolio</span>
+            <h2 class="section-title">Nos réalisations</h2>
+            <p class="section-description">
+                Découvrez nos projets récents et transformations réussies
+            </p>
+        </div>
+        
+        <!-- Projet avec avant/après -->
+        <div class="before-after-showcase" data-animation="fade-up">
+            <div class="before-after-container">
+                <div class="before-after-slider" id="beforeAfterSlider">
+                    <div class="before-image">
+                        <img src="{{ url_for('static', filename='images/projects/before.jpg') }}" alt="Avant travaux">
+                        <span class="ba-label">Avant</span>
+                    </div>
+                    <div class="after-image">
+                        <img src="{{ url_for('static', filename='images/projects/after.jpg') }}" alt="Après travaux">
+                        <span class="ba-label">Après</span>
+                    </div>
+                    <div class="ba-handle" id="baHandle">
+                        <span class="ba-handle-bar"></span>
+                        <span class="ba-handle-icon">
+                            <i class="ri-arrow-left-right-line"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="before-after-info">
+                    <h3>Rénovation complète - Villa à Nyon</h3>
+                    <div class="project-meta">
+                        <span><i class="ri-map-pin-line"></i> Nyon</span>
+                        <span><i class="ri-ruler-line"></i> 280 m²</span>
+                        <span><i class="ri-calendar-line"></i> 3 mois</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Grille de projets -->
+        <div class="projects-grid">
+            {% for project in projects %}
+            <div class="project-card" data-animation="stagger" data-cursor="hover">
+                <a href="/realisations/{{ project.slug }}" class="project-card-link">
+                    <div class="project-image">
+                        <img src="{{ url_for('static', filename='images/projects/' + project.images[0]) }}" 
+                             alt="{{ project.title }}" loading="lazy">
+                        <div class="project-overlay">
+                            <span class="project-category">{{ project.type }}</span>
+                            {% if project.before_after %}
+                            <span class="project-badge">Avant/Après</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">{{ project.title }}</h3>
+                        <div class="project-info">
+                            <span><i class="ri-map-pin-2-line"></i> {{ project.location }}</span>
+                            <span><i class="ri-ruler-2-line"></i> {{ project.surface }}</span>
+                        </div>
+                        <p class="project-description">{{ project.description }}</p>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="projects-cta" data-animation="fade-up">
+            <a href="/realisations" class="btn btn-primary" data-cursor="hover">
+                Voir toutes nos réalisations <i class="ri-arrow-right-line"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Section Processus avec timeline épinglée -->
+<section class="process-section" id="process">
+    <div class="container">
+        <div class="section-header" data-animation="fade-up">
+            <span class="section-label">Notre méthode</span>
+            <h2 class="section-title">Notre processus</h2>
+        </div>
+        
+        <div class="process-timeline" id="processTimeline">
+            <div class="timeline-progress">
+                <div class="timeline-progress-bar" id="timelineProgress"></div>
+            </div>
+            
+            <div class="timeline-steps">
+                <div class="timeline-step" data-step="1">
+                    <div class="step-marker">
+                        <span class="step-number">01</span>
+                    </div>
+                    <div class="step-content">
+                        <h3 class="step-title">Prise de contact</h3>
+                        <p class="step-description">
+                            Écoute de vos besoins et première analyse de votre projet
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="timeline-step" data-step="2">
+                    <div class="step-marker">
+                        <span class="step-number">02</span>
+                    </div>
+                    <div class="step-content">
+                        <h3 class="step-title">Visite & métrés</h3>
+                        <p class="step-description">
+                            Inspection sur site et prise de mesures précises
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="timeline-step" data-step="3">
+                    <div class="step-marker">
+                        <span class="step-number">03</span>
+                    </div>
+                    <div class="step-content">
+                        <h3 class="step-title">Devis détaillé</h3>
+                        <p class="step-description">
+                            Proposition chiffrée transparente et sans surprise
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="timeline-step" data-step="4">
+                    <div class="step-marker">
+                        <span class="step-number">04</span>
+                    </div>
+                    <div class="step-content">
+                        <h3 class="step-title">Planification</h3>
+                        <p class="step-description">
+                            Organisation du chantier et coordination des équipes
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="timeline-step" data-step="5">
+                    <div class="step-marker">
+                        <span class="step-number">05</span>
+                    </div>
+                    <div class="step-content">
+                        <h3 class="step-title">Exécution</h3>
+                        <p class="step-description">
+                            Réalisation des travaux dans le respect des délais
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="timeline-step" data-step="6">
+                    <div class="step-marker">
+                        <span class="step-number">06</span>
+                    </div>
+                    <div class="step-content">
+                        <h3 class="step-title">Réception & garanties</h3>
+                        <p class="step-description">
+                            Livraison du projet et suivi après-vente
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Section Témoignages avec carrousel -->
+<section class="testimonials-section" id="testimonials">
+    <div class="container">
+        <div class="section-header" data-animation="fade-up">
+            <span class="section-label">Témoignages</span>
+            <h2 class="section-title">Ils nous font confiance</h2>
+        </div>
+        
+        <div class="testimonials-carousel swiper" id="testimonialsCarousel">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <div class="testimonial-card">
+                        <div class="testimonial-rating">
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                        </div>
+                        <p class="testimonial-text">
+                            "Chantier impeccable, délais respectés, communication fluide. L'équipe Globibat a transformé notre villa avec un professionnalisme exemplaire."
+                        </p>
+                        <div class="testimonial-author">
+                            <strong>M. Dubois</strong>
+                            <span>Villa à Nyon</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="swiper-slide">
+                    <div class="testimonial-card">
+                        <div class="testimonial-rating">
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                        </div>
+                        <p class="testimonial-text">
+                            "Intervention rapide pour notre problème électrique. Service professionnel et tarifs transparents. Je recommande vivement."
+                        </p>
+                        <div class="testimonial-author">
+                            <strong>Mme Martin</strong>
+                            <span>Appartement à Genève</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="swiper-slide">
+                    <div class="testimonial-card">
+                        <div class="testimonial-rating">
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                        </div>
+                        <p class="testimonial-text">
+                            "Un travail d'orfèvre pour notre escalier métallique. Précision, créativité et respect du budget. Parfait!"
+                        </p>
+                        <div class="testimonial-author">
+                            <strong>Architecte Moreau</strong>
+                            <span>Projet à Rolle</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+    </div>
+</section>
+
+<!-- Section FAQ avec accordéons -->
+<section class="faq-section" id="faq">
+    <div class="container">
+        <div class="section-header" data-animation="fade-up">
+            <span class="section-label">FAQ</span>
+            <h2 class="section-title">Questions fréquentes</h2>
+        </div>
+        
+        <div class="faq-grid">
+            <div class="faq-column">
+                <div class="faq-item" data-animation="fade-up">
+                    <button class="faq-question" data-cursor="hover">
+                        <span>Quels sont vos délais moyens d'intervention ?</span>
+                        <i class="ri-add-line"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Pour les urgences (électricité, serrurerie), nous intervenons dans l'heure. Pour les projets planifiés, comptez 2-3 semaines selon la saison.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item" data-animation="fade-up">
+                    <button class="faq-question" data-cursor="hover">
+                        <span>Proposez-vous des garanties sur vos travaux ?</span>
+                        <i class="ri-add-line"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Oui, tous nos travaux sont garantis. La durée varie selon le type d'intervention : 2 ans minimum pour les rénovations, jusqu'à 10 ans pour le gros œuvre.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item" data-animation="fade-up">
+                    <button class="faq-question" data-cursor="hover">
+                        <span>Comment estimer le budget de mon projet ?</span>
+                        <i class="ri-add-line"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Nous proposons des devis gratuits et détaillés sous 48h. Une visite sur site nous permet d'établir un chiffrage précis et transparent.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="faq-column">
+                <div class="faq-item" data-animation="fade-up">
+                    <button class="faq-question" data-cursor="hover">
+                        <span>Êtes-vous assurés ?</span>
+                        <i class="ri-add-line"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Absolument. Nous disposons d'une assurance RC professionnelle complète et toutes nos équipes sont couvertes pour les accidents.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item" data-animation="fade-up">
+                    <button class="faq-question" data-cursor="hover">
+                        <span>Gérez-vous les autorisations de construire ?</span>
+                        <i class="ri-add-line"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Oui, nous nous occupons de toutes les démarches administratives : demandes d'autorisation, coordination avec les services communaux, etc.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item" data-animation="fade-up">
+                    <button class="faq-question" data-cursor="hover">
+                        <span>Intervenez-vous en urgence le week-end ?</span>
+                        <i class="ri-add-line"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Oui, notre service d'urgence est disponible 7j/7 pour les dépannages électriques et serrurerie. Un supplément tarifaire s'applique les dimanches et jours fériés.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Section CTA finale -->
+<section class="cta-section" id="cta">
+    <div class="container">
+        <div class="cta-content" data-animation="fade-up">
+            <h2 class="cta-title">Parlons de votre projet à Nyon</h2>
+            <p class="cta-description">
+                Obtenez votre devis gratuit sous 48h et concrétisez vos projets avec Globibat
+            </p>
+            <div class="cta-buttons">
+                <a href="/contact" class="btn btn-primary btn-large" data-cursor="hover">
+                    <i class="ri-file-text-line"></i>
+                    Demander un devis gratuit
+                </a>
+                <a href="tel:+41215050062" class="btn btn-outline-white btn-large" data-cursor="hover">
+                    <i class="ri-phone-line"></i>
+                    Appeler maintenant
+                </a>
+            </div>
+            
+            <div class="cta-features">
+                <div class="cta-feature">
+                    <i class="ri-check-line"></i>
+                    <span>Devis sous 48h</span>
+                </div>
+                <div class="cta-feature">
+                    <i class="ri-check-line"></i>
+                    <span>Sans engagement</span>
+                </div>
+                <div class="cta-feature">
+                    <i class="ri-check-line"></i>
+                    <span>Prix transparents</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Section Partenaires avec carrousel -->
+<section class="partners-section" id="partners">
+    <div class="container">
+        <div class="section-header" data-animation="fade-up">
+            <span class="section-label">Ils nous font confiance</span>
+            <h2 class="section-title">Nos partenaires & certifications</h2>
+        </div>
+        
+        <div class="partners-carousel swiper" id="partnersCarousel">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <div class="partner-logo">
+                        <img src="{{ url_for('static', filename='images/partners/sia.png') }}" alt="SIA">
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="partner-logo">
+                        <img src="{{ url_for('static', filename='images/partners/suissetec.png') }}" alt="Suissetec">
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="partner-logo">
+                        <img src="{{ url_for('static', filename='images/partners/eco-bau.png') }}" alt="Eco-Bau">
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="partner-logo">
+                        <img src="{{ url_for('static', filename='images/partners/minergie.png') }}" alt="Minergie">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// Initialisation des animations spécifiques à la page d'accueil
+document.addEventListener('DOMContentLoaded', function() {
+    // Before/After Slider
+    initBeforeAfterSlider();
+    
+    // Timeline Progress
+    initTimelineProgress();
+    
+    // FAQ Accordions
+    initFAQAccordions();
+});
+</script>
+{% endblock %}

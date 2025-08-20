@@ -18,7 +18,7 @@
             <i class="ri-download-2-line"></i>
             <span>Exporter</span>
         </button>
-        <button class="btn btn-primary">
+        <button class="btn btn-primary" onclick="openActionModal()">
             <i class="ri-add-line"></i>
             <span>Nouvelle action</span>
         </button>
@@ -962,6 +962,93 @@ setInterval(() => {
             console.log('Dashboard updated:', data);
         });
 }, 30000);
+
+// Modal Nouvelle Action
+function openActionModal() {
+    const modal = document.getElementById('actionModal');
+    if (modal) {
+        modal.style.display = 'block';
+    } else {
+        // Créer un menu d'actions rapides
+        showQuickActions();
+    }
+}
+
+function showQuickActions() {
+    const actions = [
+        { icon: 'ri-user-add-line', label: 'Nouvel employé', url: '/employes' },
+        { icon: 'ri-building-line', label: 'Nouveau chantier', url: '/chantiers' },
+        { icon: 'ri-file-text-line', label: 'Nouvelle facture', url: '/factures' },
+        { icon: 'ri-file-list-3-line', label: 'Nouveau devis', url: '/devis' },
+        { icon: 'ri-user-follow-line', label: 'Nouveau lead', url: '/leads' },
+        { icon: 'ri-team-line', label: 'Nouveau client', url: '/clients' }
+    ];
+    
+    // Créer un menu contextuel
+    const menu = document.createElement('div');
+    menu.className = 'quick-actions-menu';
+    menu.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        padding: 20px;
+        z-index: 1000;
+        min-width: 300px;
+    `;
+    
+    menu.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3 style="margin: 0; font-size: 18px; font-weight: 600;">Nouvelle action</h3>
+            <button onclick="this.closest('.quick-actions-menu').remove(); document.querySelector('.modal-backdrop')?.remove();" 
+                    style="border: none; background: none; font-size: 24px; cursor: pointer;">&times;</button>
+        </div>
+        <div style="display: grid; gap: 10px;">
+            ${actions.map(action => `
+                <a href="${action.url}" style="
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    padding: 12px 16px;
+                    border: 1px solid #e8eaed;
+                    border-radius: 8px;
+                    text-decoration: none;
+                    color: #0A0A0B;
+                    transition: all 0.2s;
+                    cursor: pointer;
+                " onmouseover="this.style.background='#f7f8fa'; this.style.transform='translateX(4px)'" 
+                   onmouseout="this.style.background='white'; this.style.transform='translateX(0)'">
+                    <i class="${action.icon}" style="font-size: 20px; color: #1E40AF;"></i>
+                    <span style="font-weight: 500;">${action.label}</span>
+                    <i class="ri-arrow-right-line" style="margin-left: auto; color: #9CA3AF;"></i>
+                </a>
+            `).join('')}
+        </div>
+    `;
+    
+    // Ajouter un fond sombre
+    const backdrop = document.createElement('div');
+    backdrop.className = 'modal-backdrop';
+    backdrop.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 999;
+    `;
+    backdrop.onclick = () => {
+        menu.remove();
+        backdrop.remove();
+    };
+    
+    document.body.appendChild(backdrop);
+    document.body.appendChild(menu);
+}
 </script>
 {% endblock %}
 

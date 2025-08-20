@@ -1,0 +1,736 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Service Hero -->
+<section class="service-hero">
+    <div class="service-hero-bg" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 64, 175, 0.8)), url('{{ url_for('static', filename='images/services/' + service.slug + '.jpg') }}') center/cover;">
+        <div class="container">
+            <div class="service-hero-content">
+                <nav class="breadcrumb" data-aos="fade-up">
+                    <a href="/">Accueil</a>
+                    <span>/</span>
+                    <a href="/services">Services</a>
+                    <span>/</span>
+                    <span>{{ service.title }}</span>
+                </nav>
+                <h1 class="service-hero-title" data-aos="fade-up" data-aos-delay="100">{{ service.title }}</h1>
+                <p class="service-hero-description" data-aos="fade-up" data-aos-delay="200">
+                    {{ service.description }}
+                </p>
+                <div class="service-hero-buttons" data-aos="fade-up" data-aos-delay="300">
+                    <a href="/devis" class="btn btn-primary btn-large">
+                        <i class="ri-file-text-line"></i>
+                        Demander un devis gratuit
+                    </a>
+                    <a href="tel:+41221234567" class="btn btn-outline-white btn-large">
+                        <i class="ri-phone-line"></i>
+                        Appeler un expert
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Service Content -->
+<section class="service-content section-padding">
+    <div class="container">
+        <div class="service-grid">
+            <!-- Main Content -->
+            <div class="service-main">
+                {% if service.slug == 'isolation-thermique' %}
+                <!-- Contenu SEO Isolation Thermique -->
+                <article class="service-article">
+                    <h2>Isolation Thermique à Genève : Pourquoi Agir en 2026 ?</h2>
+                    <p>
+                        L'isolation thermique est devenue un enjeu majeur pour les propriétaires en Suisse romande. 
+                        Avec les nouvelles normes énergétiques 2026 et la hausse des coûts de l'énergie, 
+                        investir dans une isolation performante n'est plus une option, mais une nécessité.
+                    </p>
+                    
+                    <h3>Les nouvelles normes énergétiques 2026 en Suisse</h3>
+                    <p>
+                        Le canton de Genève renforce considérablement ses exigences en matière d'efficacité énergétique. 
+                        À partir de 2026, tous les bâtiments devront respecter des standards stricts :
+                    </p>
+                    <ul class="service-list">
+                        <li><strong>Coefficient U maximum</strong> : 0.15 W/m²K pour les toitures</li>
+                        <li><strong>Façades</strong> : Performance thermique minimale de 0.20 W/m²K</li>
+                        <li><strong>Fenêtres</strong> : Triple vitrage obligatoire (Ug ≤ 0.7 W/m²K)</li>
+                        <li><strong>Ponts thermiques</strong> : Élimination complète requise</li>
+                    </ul>
+                    
+                    <h3>Prix et aides financières pour l'isolation en 2024-2026</h3>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Type d'isolation</th>
+                                    <th>Prix moyen/m²</th>
+                                    <th>Subvention cantonale</th>
+                                    <th>Économies annuelles</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Isolation façade ITE</td>
+                                    <td>180-250 CHF</td>
+                                    <td>Jusqu'à 40%</td>
+                                    <td>30-40%</td>
+                                </tr>
+                                <tr>
+                                    <td>Isolation toiture</td>
+                                    <td>150-200 CHF</td>
+                                    <td>Jusqu'à 35%</td>
+                                    <td>25-35%</td>
+                                </tr>
+                                <tr>
+                                    <td>Isolation sols</td>
+                                    <td>80-120 CHF</td>
+                                    <td>Jusqu'à 30%</td>
+                                    <td>15-20%</td>
+                                </tr>
+                                <tr>
+                                    <td>Remplacement fenêtres</td>
+                                    <td>600-900 CHF/unité</td>
+                                    <td>Jusqu'à 25%</td>
+                                    <td>20-30%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="info-box">
+                        <h4><i class="ri-information-line"></i> Bon à savoir</h4>
+                        <p>
+                            Les travaux d'isolation sont <strong>100% déductibles fiscalement</strong> pour les propriétaires 
+                            occupants. Combiné aux subventions, le retour sur investissement est généralement 
+                            atteint en <strong>5 à 7 ans</strong>.
+                        </p>
+                    </div>
+                    
+                    <h3>Notre méthode d'isolation Globibat</h3>
+                    <div class="process-cards">
+                        <div class="process-card">
+                            <span class="process-number">1</span>
+                            <h4>Audit énergétique complet</h4>
+                            <p>Thermographie infrarouge et analyse des déperditions thermiques</p>
+                        </div>
+                        <div class="process-card">
+                            <span class="process-number">2</span>
+                            <h4>Conception sur mesure</h4>
+                            <p>Solution adaptée à votre bâtiment et votre budget</p>
+                        </div>
+                        <div class="process-card">
+                            <span class="process-number">3</span>
+                            <h4>Matériaux certifiés</h4>
+                            <p>Isolation écologique haute performance (laine de roche, fibre de bois)</p>
+                        </div>
+                        <div class="process-card">
+                            <span class="process-number">4</span>
+                            <h4>Pose professionnelle</h4>
+                            <p>Équipes certifiées Minergie avec garantie décennale</p>
+                        </div>
+                    </div>
+                    
+                    <h3>Exemple de projet réel : Villa à Cologny</h3>
+                    <div class="case-study">
+                        <img src="{{ url_for('static', filename='images/projects/isolation-villa.jpg') }}" alt="Isolation villa Cologny" loading="lazy">
+                        <div class="case-study-content">
+                            <blockquote>
+                                "Nous avons réduit notre consommation de chauffage de 45% dès le premier hiver. 
+                                L'investissement sera rentabilisé en 6 ans grâce aux économies et aux aides."
+                            </blockquote>
+                            <cite>— M. et Mme Dubois, Cologny</cite>
+                            <ul>
+                                <li><strong>Surface</strong> : 250m² de façade + 180m² de toiture</li>
+                                <li><strong>Investissement</strong> : 78'000 CHF</li>
+                                <li><strong>Subventions obtenues</strong> : 28'000 CHF</li>
+                                <li><strong>Économies annuelles</strong> : 8'500 CHF</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                {% elif service.slug == 'renovation-interieure' %}
+                <!-- Contenu SEO Rénovation Intérieure -->
+                <article class="service-article">
+                    <h2>Rénovation Intérieure Haut de Gamme à Genève et Lausanne</h2>
+                    <p>
+                        La rénovation intérieure transforme votre espace de vie en alliant esthétique moderne, 
+                        confort optimal et valorisation patrimoniale. Globibat, expert en rénovation premium 
+                        depuis 30 ans, réalise vos projets les plus ambitieux.
+                    </p>
+                    
+                    <h3>Types de rénovations intérieures</h3>
+                    <div class="service-types">
+                        <div class="type-card">
+                            <i class="ri-home-heart-line"></i>
+                            <h4>Rénovation complète</h4>
+                            <p>Transformation totale de votre intérieur : redistribution des espaces, 
+                            modernisation complète, mise aux normes.</p>
+                            <span class="price">Dès 1'500 CHF/m²</span>
+                        </div>
+                        <div class="type-card">
+                            <i class="ri-tools-line"></i>
+                            <h4>Cuisine & Salle de bain</h4>
+                            <p>Création d'espaces fonctionnels et élégants avec matériaux premium 
+                            et équipements haut de gamme.</p>
+                            <span class="price">15'000 - 60'000 CHF</span>
+                        </div>
+                        <div class="type-card">
+                            <i class="ri-paint-brush-line"></i>
+                            <h4>Revêtements & Finitions</h4>
+                            <p>Parquets massifs, carrelages design, peintures décoratives, 
+                            staff et moulures.</p>
+                            <span class="price">80 - 250 CHF/m²</span>
+                        </div>
+                    </div>
+                    
+                {% elif service.slug == 'construction-neuve' %}
+                <!-- Contenu SEO Construction Neuve -->
+                <article class="service-article">
+                    <h2>Construction de Maison Neuve Clé en Main en Suisse Romande</h2>
+                    <p>
+                        Construire sa maison est le projet d'une vie. Globibat vous accompagne de la conception 
+                        à la remise des clés, en garantissant qualité, délais et budget maîtrisé.
+                    </p>
+                    
+                    <h3>Prix construction maison Genève 2024-2025</h3>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Type de construction</th>
+                                    <th>Prix/m² habitable</th>
+                                    <th>Maison 150m²</th>
+                                    <th>Délai moyen</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Villa standard</td>
+                                    <td>3'500 - 4'500 CHF</td>
+                                    <td>525'000 - 675'000 CHF</td>
+                                    <td>12-14 mois</td>
+                                </tr>
+                                <tr>
+                                    <td>Villa Minergie</td>
+                                    <td>4'000 - 5'500 CHF</td>
+                                    <td>600'000 - 825'000 CHF</td>
+                                    <td>14-16 mois</td>
+                                </tr>
+                                <tr>
+                                    <td>Villa architecte</td>
+                                    <td>5'000 - 7'000 CHF</td>
+                                    <td>750'000 - 1'050'000 CHF</td>
+                                    <td>16-20 mois</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                {% else %}
+                <!-- Contenu générique -->
+                <article class="service-article">
+                    <h2>{{ service.title }} - Excellence et Expertise</h2>
+                    <p>{{ service.description }}</p>
+                {% endif %}
+                
+                    <h3>Pourquoi choisir Globibat ?</h3>
+                    <div class="advantages">
+                        <div class="advantage-item">
+                            <i class="ri-shield-check-line"></i>
+                            <h4>Garantie décennale</h4>
+                            <p>Tous nos travaux sont couverts par une garantie complète de 10 ans</p>
+                        </div>
+                        <div class="advantage-item">
+                            <i class="ri-team-line"></i>
+                            <h4>Équipes qualifiées</h4>
+                            <p>50 experts certifiés, formés aux dernières techniques</p>
+                        </div>
+                        <div class="advantage-item">
+                            <i class="ri-time-line"></i>
+                            <h4>Délais respectés</h4>
+                            <p>98% de nos chantiers livrés dans les délais convenus</p>
+                        </div>
+                        <div class="advantage-item">
+                            <i class="ri-price-tag-3-line"></i>
+                            <h4>Prix transparents</h4>
+                            <p>Devis détaillé gratuit et sans surprise</p>
+                        </div>
+                    </div>
+                    
+                    <div class="cta-box">
+                        <h3>Prêt à démarrer votre projet ?</h3>
+                        <p>Obtenez votre devis personnalisé gratuit sous 48h</p>
+                        <div class="cta-buttons">
+                            <a href="/devis" class="btn btn-primary btn-large">
+                                <i class="ri-file-text-line"></i>
+                                Demander un devis
+                            </a>
+                            <a href="/contact" class="btn btn-outline btn-large">
+                                <i class="ri-customer-service-line"></i>
+                                Nous contacter
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            </div>
+            
+            <!-- Sidebar -->
+            <aside class="service-sidebar">
+                <!-- Quick Contact -->
+                <div class="sidebar-widget">
+                    <h3>Contact rapide</h3>
+                    <form class="quick-contact-form" action="/api/contact" method="POST">
+                        <input type="text" name="name" placeholder="Votre nom" required>
+                        <input type="email" name="email" placeholder="Votre email" required>
+                        <input type="tel" name="phone" placeholder="Téléphone">
+                        <textarea name="message" placeholder="Votre projet" rows="4" required></textarea>
+                        <button type="submit" class="btn btn-primary btn-block">
+                            Envoyer <i class="ri-send-plane-line"></i>
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Price Range -->
+                <div class="sidebar-widget">
+                    <h3>Gamme de prix</h3>
+                    <div class="price-range">
+                        <span class="price-label">À partir de</span>
+                        <span class="price-value">{{ service.price_range }}</span>
+                    </div>
+                </div>
+                
+                <!-- Features -->
+                <div class="sidebar-widget">
+                    <h3>Prestations incluses</h3>
+                    <ul class="feature-list">
+                        {% for feature in service.features %}
+                        <li><i class="ri-check-line"></i> {{ feature }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                
+                <!-- Download Brochure -->
+                <div class="sidebar-widget">
+                    <h3>Documentation</h3>
+                    <a href="#" class="btn btn-outline btn-block">
+                        <i class="ri-download-line"></i>
+                        Télécharger la brochure PDF
+                    </a>
+                </div>
+                
+                <!-- Certifications -->
+                <div class="sidebar-widget">
+                    <h3>Nos certifications</h3>
+                    <div class="certifications">
+                        <img src="{{ url_for('static', filename='images/certifications/minergie.png') }}" alt="Minergie">
+                        <img src="{{ url_for('static', filename='images/certifications/sia.png') }}" alt="SIA">
+                        <img src="{{ url_for('static', filename='images/certifications/eco-bau.png') }}" alt="Eco-Bau">
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+</section>
+
+<!-- Related Projects -->
+{% if related_projects %}
+<section class="related-projects section-padding bg-light">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-subtitle">Réalisations</span>
+            <h2 class="section-title">Projets {{ service.title }} récents</h2>
+        </div>
+        
+        <div class="projects-grid">
+            {% for project in related_projects %}
+            <div class="project-card" data-aos="fade-up">
+                <div class="project-image">
+                    <img src="{{ url_for('static', filename='images/projects/' + project.image) }}" 
+                         alt="{{ project.title }}" loading="lazy">
+                    <div class="project-overlay">
+                        <a href="/projets/{{ project.id }}" class="project-link">
+                            <i class="ri-eye-line"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="project-content">
+                    <h3>{{ project.title }}</h3>
+                    <p>{{ project.location }} • {{ project.year }}</p>
+                    <div class="project-meta">
+                        <span>{{ project.budget }}</span>
+                        <span>{{ project.surface }}</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- FAQ Section -->
+<section class="faq-section section-padding">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-subtitle">FAQ</span>
+            <h2 class="section-title">Questions fréquentes</h2>
+        </div>
+        
+        <div class="faq-accordion">
+            <div class="faq-item">
+                <button class="faq-question">
+                    Quels sont les délais pour obtenir un devis ?
+                    <i class="ri-arrow-down-s-line"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>Nous nous engageons à vous fournir un devis détaillé sous 48h après la visite sur site. 
+                    Pour les projets complexes, un délai supplémentaire peut être nécessaire.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <button class="faq-question">
+                    Proposez-vous des facilités de paiement ?
+                    <i class="ri-arrow-down-s-line"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>Oui, nous proposons des échelonnements de paiement adaptés à votre projet. 
+                    Nous travaillons également avec des partenaires financiers pour des solutions de crédit travaux.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <button class="faq-question">
+                    Quelle garantie offrez-vous sur vos travaux ?
+                    <i class="ri-arrow-down-s-line"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>Tous nos travaux sont couverts par une garantie décennale complète. 
+                    Les équipements installés bénéficient de la garantie constructeur (2 à 5 ans selon les produits).</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+/* Service Detail Styles */
+.service-hero {
+    position: relative;
+    padding-top: 100px;
+}
+
+.service-hero-bg {
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+    padding: 80px 0;
+}
+
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.breadcrumb a {
+    color: rgba(255,255,255,0.8);
+}
+
+.breadcrumb span {
+    color: rgba(255,255,255,0.5);
+}
+
+.service-hero-title {
+    color: white;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    margin-bottom: 20px;
+}
+
+.service-hero-description {
+    color: rgba(255,255,255,0.9);
+    font-size: 1.25rem;
+    max-width: 700px;
+    margin-bottom: 30px;
+}
+
+.service-grid {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 40px;
+}
+
+.service-article h2 {
+    color: var(--dark);
+    margin: 40px 0 20px;
+}
+
+.service-article h3 {
+    color: var(--gray-900);
+    margin: 30px 0 15px;
+}
+
+.service-list {
+    background: var(--gray-100);
+    border-radius: 10px;
+    padding: 20px 20px 20px 40px;
+    margin: 20px 0;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.data-table th {
+    background: var(--primary);
+    color: white;
+    padding: 12px;
+    text-align: left;
+}
+
+.data-table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.data-table tr:hover {
+    background: var(--gray-100);
+}
+
+.info-box {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    padding: 25px;
+    border-radius: 10px;
+    margin: 30px 0;
+}
+
+.info-box h4 {
+    color: white;
+    margin-bottom: 10px;
+}
+
+.process-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin: 30px 0;
+}
+
+.process-card {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+.process-number {
+    position: absolute;
+    top: -15px;
+    left: 20px;
+    background: var(--primary);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.case-study {
+    background: var(--gray-100);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 30px 0;
+}
+
+.case-study img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+}
+
+.case-study-content {
+    padding: 30px;
+}
+
+.case-study blockquote {
+    font-size: 1.125rem;
+    font-style: italic;
+    color: var(--gray-700);
+    margin: 20px 0;
+    padding-left: 20px;
+    border-left: 4px solid var(--primary);
+}
+
+.advantages {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin: 30px 0;
+}
+
+.advantage-item {
+    text-align: center;
+}
+
+.advantage-item i {
+    font-size: 3rem;
+    color: var(--primary);
+    margin-bottom: 15px;
+}
+
+.cta-box {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    padding: 40px;
+    border-radius: 15px;
+    text-align: center;
+    margin: 40px 0;
+}
+
+.cta-box h3 {
+    color: white;
+    margin-bottom: 10px;
+}
+
+.cta-box p {
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 25px;
+}
+
+.sidebar-widget {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+}
+
+.sidebar-widget h3 {
+    font-size: 1.25rem;
+    margin-bottom: 20px;
+}
+
+.quick-contact-form input,
+.quick-contact-form textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid var(--gray-300);
+    border-radius: 5px;
+}
+
+.price-range {
+    text-align: center;
+    padding: 20px;
+    background: var(--gray-100);
+    border-radius: 10px;
+}
+
+.price-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary);
+    margin-top: 10px;
+}
+
+.feature-list {
+    list-style: none;
+}
+
+.feature-list li {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.feature-list i {
+    color: var(--primary);
+    margin-right: 10px;
+}
+
+.certifications {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.certifications img {
+    width: 100%;
+    height: auto;
+    filter: grayscale(100%);
+    transition: filter 0.3s;
+}
+
+.certifications img:hover {
+    filter: grayscale(0%);
+}
+
+.faq-item {
+    border-bottom: 1px solid var(--gray-200);
+    margin-bottom: 20px;
+}
+
+.faq-question {
+    width: 100%;
+    text-align: left;
+    padding: 20px 0;
+    background: none;
+    border: none;
+    font-size: 1.125rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s;
+}
+
+.faq-item.active .faq-answer {
+    max-height: 300px;
+    padding-bottom: 20px;
+}
+
+.faq-item.active .faq-question i {
+    transform: rotate(180deg);
+}
+
+@media (max-width: 1024px) {
+    .service-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .service-sidebar {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+    }
+}
+</style>
+
+<script>
+// FAQ Accordion
+document.querySelectorAll('.faq-question').forEach(button => {
+    button.addEventListener('click', () => {
+        const item = button.parentElement;
+        item.classList.toggle('active');
+    });
+});
+</script>
+{% endblock %}

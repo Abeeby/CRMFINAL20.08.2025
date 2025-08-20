@@ -9,7 +9,7 @@
         <p class="page-subtitle">Gestion des propositions commerciales</p>
     </div>
     <div class="header-actions">
-        <button class="btn btn-primary">
+        <button class="btn btn-primary" onclick="openDevisModal()">
             <i class="ri-add-line"></i>
             <span>Nouveau devis</span>
         </button>
@@ -40,7 +40,7 @@
                     <td>{{ devis.client.nom if devis.client else '-' }}</td>
                     <td>{{ devis.description[:50] }}...</td>
                     <td>{{ devis.date_devis.strftime('%d/%m/%Y') if devis.date_devis else '-' }}</td>
-                    <td>{{ "{:,.2f}".format(devis.montant_total) }} €</td>
+                    <td>{{ "{:,.2f}".format(devis.montant_ttc) }} €</td>
                     <td>
                         <span class="badge badge-{{ 'success' if devis.statut == 'accepte' else 'warning' if devis.statut == 'en_attente' else 'danger' }}">
                             {{ devis.statut }}
@@ -48,8 +48,8 @@
                     </td>
                     <td>
                         <div class="flex gap-xs">
-                            <button class="btn btn-ghost"><i class="ri-eye-line"></i></button>
-                            <button class="btn btn-ghost"><i class="ri-edit-line"></i></button>
+                            <a class="btn btn-ghost" title="Télécharger PDF" href="/api/devis/{{ devis.id }}/pdf"><i class="ri-download-line"></i></a>
+                            <button class="btn btn-ghost" title="Modifier" onclick="editDevis({{ devis.id }})"><i class="ri-edit-line"></i></button>
                         </div>
                     </td>
                 </tr>
@@ -58,4 +58,137 @@
         </table>
     </div>
 </div>
+
+<!-- Modal Devis -->
+<div id="devisModal" class="modal" style="display:none">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="devisModalTitle">Nouveau devis</h2>
+      <button class="close-btn" onclick="closeDevisModal()">&times;</button>
+    </div>
+    <form id="devisForm" onsubmit="saveDevis(event)">
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Client *</label>
+            <select name="client_id" class="form-control" required>
+              <option value="">-- Sélectionner --</option>
+              {% for client in clients %}
+              <option value="{{ client.id }}">{{ client.nom }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Date du devis</label>
+            <input name="date_devis" type="date" class="form-control" value="">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description *</label>
+          <textarea name="description" class="form-control" rows="3" required></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Montant HT (€)</label>
+            <input name="montant_ht" type="number" step="0.01" class="form-control" onchange="calculateTTC()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">TVA (%)</label>
+            <input name="tva" type="number" step="0.01" class="form-control" value="20" onchange="calculateTTC()">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Montant TTC (€)</label>
+            <input name="montant_ttc" type="number" step="0.01" class="form-control" readonly>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Validité (jours)</label>
+            <input name="validite_jours" type="number" class="form-control" value="30">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeDevisModal()">Annuler</button>
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+.modal {position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000;}
+.modal-content {background: #fff; border-radius: 12px; max-width: 880px; margin: 5vh auto; overflow: hidden;}
+.modal-header, .modal-footer {padding: 20px; border-bottom: 1px solid #e8eaed;}
+.modal-footer {border-bottom: 0; border-top: 1px solid #e8eaed;}
+.modal-body {padding: 20px; max-height: 60vh; overflow-y: auto;}
+.close-btn {border: none; background: transparent; font-size: 24px; cursor: pointer;}
+.form-row {display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;}
+.form-group {display: flex; flex-direction: column;}
+.form-label {font-size: 14px; font-weight: 600; margin-bottom: 8px;}
+.form-control {padding: 10px 12px; border: 1px solid #e8eaed; border-radius: 8px; font-size: 14px;}
+.form-control:focus {outline: none; border-color: #1E40AF; box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);}
+@media (max-width: 768px) {.form-row {grid-template-columns: 1fr;}}
+</style>
+
+<script>
+let currentDevis = null;
+
+function openDevisModal() {
+    currentDevis = null;
+    document.getElementById('devisModalTitle').textContent = 'Nouveau devis';
+    document.getElementById('devisForm').reset();
+    document.getElementById('devisModal').style.display = 'block';
+}
+
+function closeDevisModal() {
+    document.getElementById('devisModal').style.display = 'none';
+}
+
+function editDevis(id) {
+    currentDevis = id;
+    document.getElementById('devisModalTitle').textContent = 'Modifier le devis';
+    // Pré-remplir le formulaire (simplifié pour l'exemple)
+    document.getElementById('devisModal').style.display = 'block';
+}
+
+function calculateTTC() {
+    const form = document.getElementById('devisForm');
+    const ht = parseFloat(form.montant_ht.value) || 0;
+    const tva = parseFloat(form.tva.value) || 0;
+    const ttc = ht * (1 + tva / 100);
+    form.montant_ttc.value = ttc.toFixed(2);
+}
+
+function saveDevis(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const data = Object.fromEntries(formData);
+    
+    const url = currentDevis ? `/api/devis/${currentDevis}` : '/api/devis';
+    const method = currentDevis ? 'PUT' : 'POST';
+    
+    fetch(url, {
+        method: method,
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            closeDevisModal();
+            location.reload();
+        } else {
+            alert(result.message || 'Erreur lors de l\'enregistrement');
+        }
+    });
+}
+
+// Fermer modal en cliquant dehors
+window.addEventListener('click', (e) => {
+    if (e.target.classList.contains('modal')) {
+        e.target.style.display = 'none';
+    }
+});
+</script>
 {% endblock %}

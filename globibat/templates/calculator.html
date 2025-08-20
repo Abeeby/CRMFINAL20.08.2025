@@ -1,0 +1,729 @@
+{% extends "base.html" %}
+
+{% block title %}Calculateur de Volume Déménagement - Globibat{% endblock %}
+
+{% block content %}
+<!-- Calculator Hero -->
+<section class="calc-hero">
+    <div class="container">
+        <div class="calc-hero-content">
+            <h1 data-animation="fade-up">Calculateur de volume</h1>
+            <p data-animation="fade-up" data-delay="0.1">
+                Estimez le volume de votre déménagement en quelques clics
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Calculator -->
+<section class="calculator-section section-padding">
+    <div class="container">
+        <div class="calculator-grid">
+            <!-- Main Calculator -->
+            <div class="calculator-main">
+                <div class="calculator-card" data-animation="fade-up">
+                    <h2>Sélectionnez vos meubles et objets</h2>
+                    <p>Indiquez les quantités pour chaque type d'objet</p>
+                    
+                    <form id="volumeCalculator">
+                        <!-- Salon -->
+                        <div class="calc-category">
+                            <h3><i class="ri-home-3-line"></i> Salon</h3>
+                            <div class="items-grid">
+                                <div class="calc-item">
+                                    <label>Canapé 3 places</label>
+                                    <div class="item-controls">
+                                        <button type="button" class="btn-minus" data-item="canape3">−</button>
+                                        <input type="number" id="canape3" value="0" min="0" max="10" readonly>
+                                        <button type="button" class="btn-plus" data-item="canape3">+</button>
+                                    </div>
+                                    <span class="item-volume">1.8 m³</span>
+                                </div>
+                                
+                                <div class="calc-item">
+                                    <label>Canapé 2 places</label>
+                                    <div class="item-controls">
+                                        <button type="button" class="btn-minus" data-item="canape2">−</button>
+                                        <input type="number" id="canape2" value="0" min="0" max="10" readonly>
+                                        <button type="button" class="btn-plus" data-item="canape2">+</button>
+                                    </div>
+                                    <span class="item-volume">1.2 m³</span>
+                                </div>
+                                
+                                <div class="calc-item">
+                                    <label>Fauteuil</label>
+                                    <div class="item-controls">
+                                        <button type="button" class="btn-minus" data-item="fauteuil">−</button>
+                                        <input type="number" id="fauteuil" value="0" min="0" max="10" readonly>
+                                        <button type="button" class="btn-plus" data-item="fauteuil">+</button>
+                                    </div>
+                                    <span class="item-volume">0.6 m³</span>
+                                </div>
+                                
+                                <div class="calc-item">
+                                    <label>Table basse</label>
+                                    <div class="item-controls">
+                                        <button type="button" class="btn-minus" data-item="table_basse">−</button>
+                                        <input type="number" id="table_basse" value="0" min="0" max="10" readonly>
+                                        <button type="button" class="btn-plus" data-item="table_basse">+</button>
+                                    </div>
+                                    <span class="item-volume">0.3 m³</span>
+                                </div>
+                                
+                                <div class="calc-item">
+                                    <label>Meuble TV</label>
+                                    <div class="item-controls">
+                                        <button type="button" class="btn-minus" data-item="meuble_tv">−</button>
+                                        <input type="number" id="meuble_tv" value="0" min="0" max="10" readonly>
+                                        <button type="button" class="btn-plus" data-item="meuble_tv">+</button>
+                                    </div>
+                                    <span class="item-volume">0.5 m³</span>
+                                </div>
+                                
+                                <div class="calc-item">
+                                    <label>Bibliothèque</label>
+                                    <div class="item-controls">
+                                        <button type="button" class="btn-minus" data-item="bibliotheque">−</button>
+                                        <input type="number" id="bibliotheque" value="0" min="0" max="10" readonly>
+                                        <button type="button" class="btn-plus" data-item="bibliotheque">+</button>
+                                    </div>
+                                    <span class="item-volume">0.8 m³</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Chambre -->
+                        <div class="calc-category">
+                            <h3><i class="ri-hotel-bed-line"></i> Chambre</h3>
+                            <div class="items-grid">
+                                <div class="calc-item">
+                                    <label>Lit double</label>
+                                    <div class="item-controls">
+                                        <button type="button" class="btn-minus" data-item="lit_double">−</button>
+                                        <input type="number" id="lit_double" value="0" min="0" max="10" readonly>
+                                        <button type="button" class="btn-plus" data-item="lit_double">+</button>
+                                    </div>
+                                    <span class="item-volume">1.5 m³</span>
+                                </div>
+                                
+                                <div class="calc-item">
+                                    <label>Lit simple</label>
+                                    <div class="item-controls">
+                                        <button type="button" class="btn-minus" data-item="lit_simple">−</button>
+                                        <input type="number" id="lit_simple" value="0" min="0" max="10" readonly>
+                                        <button type="button" class="btn-plus" data-item="lit_simple">+</button>
+                                    </div>
+                                    <span class="item-volume">0.8 m³</span>
+                                </div>
+                                
+                                <div class="calc-item">
+                                    <label>Armoire</label>
+                                    <div class="item-controls">
+                                        <button type="button" class="btn-minus" data-item="armoire">−</button>
+                                        <input type="number" id="armoire" value="0" min="0" max="10" readonly>
+                                        <button type="button" class="btn-plus" data-item="armoire">+</button>
+                                    </div>
+                                    <span class="item-volume">1.5 m³</span>
+                                </div>
+                                
+                                <div class="calc-item">
+                                    <label>Commode</label>
+                                    <div class="item-controls">
+                                        <button type="button" class="btn-minus" data-item="commode">−</button>
+                                        <input type="number" id="commode" value="0" min="0" max="10" readonly>
+                                        <button type="button" class="btn-plus" data-item="commode">+</button>
+                                    </div>
+                                    <span class="item-volume">0.7 m³</span>
+                                </div>
+                                
+                                <div class="calc-item">
+                                    <label>Table de chevet</label>
+                                    <div class="item-controls">
+                                        <button type="button" class="btn-minus" data-item="chevet">−</button>
+                                        <input type="number" id="chevet" value="0" min="0" max="10" readonly>
+                                        <button type="button" class="btn-plus" data-item="chevet">+</button>
+                                    </div>
+                                    <span class="item-volume">0.2 m³</span>
+                                </div>
+                                
+                                <div class="calc-item">
+                                    <label>Matelas</label>
+                                    <div class="item-controls">
+                                        <button type="button" class="btn-minus" data-item="matelas">−</button>
+                                        <input type="number" id="matelas" value="0" min="0" max="10" readonly>
+                                        <button type="button" class="btn-plus" data-item="matelas">+</button>
+                                    </div>
+                                    <span class="item-volume">0.5 m³</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Cuisine & Salle à manger -->
+                        <div class="calc-category">
+                            <h3><i class="ri-restaurant-line"></i> Cuisine & Salle à manger</h3>
+                            <div class="items-grid">
+                                <div class="calc-item">
+                                    <label>Table à manger</label>
+                                    <div class="item-controls">
+                                        <button type="button" class="btn-minus" data-item="table_manger">−</button>
+                                        <input type="number" id="table_manger" value="0" min="0" max="10" readonly>
+                                        <button type="button" class="btn-plus" data-item="table_manger">+</button>
+                                    </div>
+                                    <span class="item-volume">0.8 m³</span>
+                                </div>
+                                
+                                <div class="calc-item">
+                                    <label>Chaise</label>
+                                    <div class="item-controls">
+                                        <button type="button" class="btn-minus" data-item="chaise">−</button>
+                                        <input type="number" id="chaise" value="0" min="0" max="20" readonly>
+                                        <button type="button" class="btn-plus" data-item="chaise">+</button>
+                                    </div>
+                                    <span class="item-volume">0.15 m³</span>
+                                </div>
+                                
+                                <div class="calc-item">
+                                    <label>Buffet</label>
+                                    <div class="item-controls">
+                                        <button type="button" class="btn-minus" data-item="buffet">−</button>
+                                        <input type="number" id="buffet" value="0" min="0" max="10" readonly>
+                                        <button type="button" class="btn-plus" data-item="buffet">+</button>
+                                    </div>
+                                    <span class="item-volume">1.0 m³</span>
+                                </div>
+                                
+                                <div class="calc-item">
+                                    <label>Réfrigérateur</label>
+                                    <div class="item-controls">
+                                        <button type="button" class="btn-minus" data-item="frigo">−</button>
+                                        <input type="number" id="frigo" value="0" min="0" max="5" readonly>
+                                        <button type="button" class="btn-plus" data-item="frigo">+</button>
+                                    </div>
+                                    <span class="item-volume">0.8 m³</span>
+                                </div>
+                                
+                                <div class="calc-item">
+                                    <label>Lave-vaisselle</label>
+                                    <div class="item-controls">
+                                        <button type="button" class="btn-minus" data-item="lave_vaisselle">−</button>
+                                        <input type="number" id="lave_vaisselle" value="0" min="0" max="5" readonly>
+                                        <button type="button" class="btn-plus" data-item="lave_vaisselle">+</button>
+                                    </div>
+                                    <span class="item-volume">0.5 m³</span>
+                                </div>
+                                
+                                <div class="calc-item">
+                                    <label>Four/Cuisinière</label>
+                                    <div class="item-controls">
+                                        <button type="button" class="btn-minus" data-item="four">−</button>
+                                        <input type="number" id="four" value="0" min="0" max="5" readonly>
+                                        <button type="button" class="btn-plus" data-item="four">+</button>
+                                    </div>
+                                    <span class="item-volume">0.5 m³</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Divers -->
+                        <div class="calc-category">
+                            <h3><i class="ri-archive-line"></i> Divers</h3>
+                            <div class="items-grid">
+                                <div class="calc-item">
+                                    <label>Carton standard</label>
+                                    <div class="item-controls">
+                                        <button type="button" class="btn-minus" data-item="carton">−</button>
+                                        <input type="number" id="carton" value="0" min="0" max="100" readonly>
+                                        <button type="button" class="btn-plus" data-item="carton">+</button>
+                                    </div>
+                                    <span class="item-volume">0.08 m³</span>
+                                </div>
+                                
+                                <div class="calc-item">
+                                    <label>Machine à laver</label>
+                                    <div class="item-controls">
+                                        <button type="button" class="btn-minus" data-item="machine_laver">−</button>
+                                        <input type="number" id="machine_laver" value="0" min="0" max="5" readonly>
+                                        <button type="button" class="btn-plus" data-item="machine_laver">+</button>
+                                    </div>
+                                    <span class="item-volume">0.5 m³</span>
+                                </div>
+                                
+                                <div class="calc-item">
+                                    <label>Aspirateur</label>
+                                    <div class="item-controls">
+                                        <button type="button" class="btn-minus" data-item="aspirateur">−</button>
+                                        <input type="number" id="aspirateur" value="0" min="0" max="5" readonly>
+                                        <button type="button" class="btn-plus" data-item="aspirateur">+</button>
+                                    </div>
+                                    <span class="item-volume">0.1 m³</span>
+                                </div>
+                                
+                                <div class="calc-item">
+                                    <label>Vélo</label>
+                                    <div class="item-controls">
+                                        <button type="button" class="btn-minus" data-item="velo">−</button>
+                                        <input type="number" id="velo" value="0" min="0" max="10" readonly>
+                                        <button type="button" class="btn-plus" data-item="velo">+</button>
+                                    </div>
+                                    <span class="item-volume">0.3 m³</span>
+                                </div>
+                                
+                                <div class="calc-item">
+                                    <label>Plante (grande)</label>
+                                    <div class="item-controls">
+                                        <button type="button" class="btn-minus" data-item="plante">−</button>
+                                        <input type="number" id="plante" value="0" min="0" max="20" readonly>
+                                        <button type="button" class="btn-plus" data-item="plante">+</button>
+                                    </div>
+                                    <span class="item-volume">0.2 m³</span>
+                                </div>
+                                
+                                <div class="calc-item">
+                                    <label>Tableau/Miroir</label>
+                                    <div class="item-controls">
+                                        <button type="button" class="btn-minus" data-item="tableau">−</button>
+                                        <input type="number" id="tableau" value="0" min="0" max="20" readonly>
+                                        <button type="button" class="btn-plus" data-item="tableau">+</button>
+                                    </div>
+                                    <span class="item-volume">0.05 m³</span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Sidebar Results -->
+            <div class="calculator-sidebar">
+                <div class="result-card sticky" data-animation="fade-left">
+                    <h3>Résultat</h3>
+                    
+                    <div class="result-volume">
+                        <span class="volume-label">Volume total estimé</span>
+                        <span class="volume-value" id="totalVolume">0</span>
+                        <span class="volume-unit">m³</span>
+                    </div>
+                    
+                    <div class="result-details">
+                        <div class="detail-item">
+                            <i class="ri-truck-line"></i>
+                            <span>Type de camion recommandé:</span>
+                            <strong id="truckType">Petite camionnette</strong>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <i class="ri-user-3-line"></i>
+                            <span>Nombre de déménageurs:</span>
+                            <strong id="moversCount">2 personnes</strong>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <i class="ri-time-line"></i>
+                            <span>Durée estimée:</span>
+                            <strong id="duration">2-3 heures</strong>
+                        </div>
+                    </div>
+                    
+                    <div class="result-actions">
+                        <button type="button" class="btn btn-outline btn-block" onclick="resetCalculator()">
+                            <i class="ri-refresh-line"></i> Réinitialiser
+                        </button>
+                        <a href="/contact" class="btn btn-primary btn-block">
+                            <i class="ri-file-text-line"></i> Demander un devis
+                        </a>
+                        <a href="tel:+41215050062" class="btn btn-copper btn-block">
+                            <i class="ri-phone-line"></i> +41 21 505 00 62
+                        </a>
+                    </div>
+                    
+                    <div class="result-info">
+                        <p><i class="ri-information-line"></i> Cette estimation est donnée à titre indicatif. Un devis précis nécessite une visite sur place.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+/* Calculator Hero */
+.calc-hero {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+    padding: 150px 0 80px;
+    text-align: center;
+    color: var(--color-dark);
+}
+
+.calc-hero h1 {
+    font-size: var(--text-4xl);
+    margin-bottom: var(--space-md);
+}
+
+.calc-hero p {
+    font-size: var(--text-xl);
+    opacity: 0.9;
+}
+
+/* Calculator Grid */
+.calculator-grid {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: var(--space-3xl);
+}
+
+/* Calculator Card */
+.calculator-card {
+    background: var(--color-white);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    box-shadow: var(--shadow-lg);
+}
+
+.calculator-card h2 {
+    margin-bottom: var(--space-sm);
+}
+
+.calculator-card > p {
+    color: var(--color-gray-600);
+    margin-bottom: var(--space-xl);
+}
+
+/* Categories */
+.calc-category {
+    margin-bottom: var(--space-3xl);
+    padding-bottom: var(--space-3xl);
+    border-bottom: 1px solid var(--color-gray-200);
+}
+
+.calc-category:last-child {
+    border-bottom: none;
+}
+
+.calc-category h3 {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+    color: var(--color-primary);
+}
+
+.calc-category h3 i {
+    font-size: 1.5rem;
+}
+
+/* Items Grid */
+.items-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+}
+
+.calc-item {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    background: var(--color-sand);
+    border-radius: var(--radius-md);
+}
+
+.calc-item label {
+    font-weight: 500;
+}
+
+.item-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.btn-minus,
+.btn-plus {
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--color-gray-300);
+    background: var(--color-white);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-minus:hover,
+.btn-plus:hover {
+    background: var(--color-primary);
+    color: var(--color-dark);
+    border-color: var(--color-primary);
+}
+
+.calc-item input {
+    width: 50px;
+    text-align: center;
+    border: 1px solid var(--color-gray-300);
+    border-radius: var(--radius-sm);
+    padding: 0.25rem;
+    font-weight: 600;
+}
+
+.item-volume {
+    font-size: var(--text-sm);
+    color: var(--color-gray-600);
+}
+
+/* Result Card */
+.result-card {
+    background: var(--color-white);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    box-shadow: var(--shadow-lg);
+}
+
+.result-card.sticky {
+    position: sticky;
+    top: 100px;
+}
+
+.result-card h3 {
+    margin-bottom: var(--space-lg);
+}
+
+.result-volume {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+    color: var(--color-dark);
+    padding: var(--space-xl);
+    border-radius: var(--radius-md);
+    text-align: center;
+    margin-bottom: var(--space-lg);
+}
+
+.volume-label {
+    display: block;
+    font-size: var(--text-sm);
+    margin-bottom: var(--space-sm);
+}
+
+.volume-value {
+    font-size: var(--text-5xl);
+    font-weight: 800;
+}
+
+.volume-unit {
+    font-size: var(--text-xl);
+    margin-left: var(--space-xs);
+}
+
+.result-details {
+    margin-bottom: var(--space-lg);
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm) 0;
+    border-bottom: 1px solid var(--color-gray-100);
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+}
+
+.detail-item i {
+    color: var(--color-primary);
+    font-size: 1.25rem;
+}
+
+.detail-item span {
+    flex: 1;
+    color: var(--color-gray-600);
+    font-size: var(--text-sm);
+}
+
+.detail-item strong {
+    color: var(--color-dark);
+}
+
+.result-actions {
+    margin-bottom: var(--space-lg);
+}
+
+.result-actions .btn {
+    margin-bottom: var(--space-sm);
+}
+
+.btn-copper {
+    background: var(--color-primary);
+    color: var(--color-dark);
+    border-color: var(--color-primary);
+}
+
+.result-info {
+    padding: var(--space-md);
+    background: var(--color-sand);
+    border-radius: var(--radius-md);
+}
+
+.result-info p {
+    font-size: var(--text-sm);
+    color: var(--color-gray-600);
+    margin: 0;
+}
+
+.result-info i {
+    color: var(--color-primary);
+    margin-right: var(--space-xs);
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .calculator-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .result-card.sticky {
+        position: static;
+    }
+}
+
+@media (max-width: 768px) {
+    .items-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .calc-item {
+        grid-template-columns: 1fr;
+        gap: var(--space-sm);
+    }
+    
+    .item-controls {
+        justify-content: center;
+    }
+    
+    .item-volume {
+        text-align: center;
+    }
+}
+</style>
+
+<script>
+// Volume data
+const volumes = {
+    canape3: 1.8,
+    canape2: 1.2,
+    fauteuil: 0.6,
+    table_basse: 0.3,
+    meuble_tv: 0.5,
+    bibliotheque: 0.8,
+    lit_double: 1.5,
+    lit_simple: 0.8,
+    armoire: 1.5,
+    commode: 0.7,
+    chevet: 0.2,
+    matelas: 0.5,
+    table_manger: 0.8,
+    chaise: 0.15,
+    buffet: 1.0,
+    frigo: 0.8,
+    lave_vaisselle: 0.5,
+    four: 0.5,
+    carton: 0.08,
+    machine_laver: 0.5,
+    aspirateur: 0.1,
+    velo: 0.3,
+    plante: 0.2,
+    tableau: 0.05
+};
+
+// Calculate total volume
+function calculateVolume() {
+    let total = 0;
+    
+    for (let item in volumes) {
+        const quantity = parseInt(document.getElementById(item).value) || 0;
+        total += quantity * volumes[item];
+    }
+    
+    // Update display
+    document.getElementById('totalVolume').textContent = total.toFixed(1);
+    
+    // Update recommendations
+    updateRecommendations(total);
+}
+
+// Update recommendations based on volume
+function updateRecommendations(volume) {
+    let truck, movers, duration;
+    
+    if (volume <= 10) {
+        truck = "Petite camionnette";
+        movers = "2 personnes";
+        duration = "2-3 heures";
+    } else if (volume <= 20) {
+        truck = "Camionnette moyenne";
+        movers = "2-3 personnes";
+        duration = "3-5 heures";
+    } else if (volume <= 35) {
+        truck = "Grand camion";
+        movers = "3-4 personnes";
+        duration = "4-6 heures";
+    } else {
+        truck = "Camion poids lourd";
+        movers = "4-5 personnes";
+        duration = "6-8 heures";
+    }
+    
+    document.getElementById('truckType').textContent = truck;
+    document.getElementById('moversCount').textContent = movers;
+    document.getElementById('duration').textContent = duration;
+}
+
+// Reset calculator
+function resetCalculator() {
+    document.getElementById('volumeCalculator').reset();
+    for (let item in volumes) {
+        document.getElementById(item).value = 0;
+    }
+    calculateVolume();
+}
+
+// Event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    // Plus buttons
+    document.querySelectorAll('.btn-plus').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const item = this.dataset.item;
+            const input = document.getElementById(item);
+            const max = parseInt(input.max);
+            const current = parseInt(input.value) || 0;
+            
+            if (current < max) {
+                input.value = current + 1;
+                calculateVolume();
+            }
+        });
+    });
+    
+    // Minus buttons
+    document.querySelectorAll('.btn-minus').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const item = this.dataset.item;
+            const input = document.getElementById(item);
+            const current = parseInt(input.value) || 0;
+            
+            if (current > 0) {
+                input.value = current - 1;
+                calculateVolume();
+            }
+        });
+    });
+    
+    // Initial calculation
+    calculateVolume();
+});
+</script>
+{% endblock %}
+

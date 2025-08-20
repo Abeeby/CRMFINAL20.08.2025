@@ -9,12 +9,64 @@
         <p class="page-subtitle">Gestion des prospects</p>
     </div>
     <div class="header-actions">
-        <button class="btn btn-primary">
+        <button class="btn btn-primary" onclick="openLeadModal()">
             <i class="ri-add-line"></i>
             <span>Nouveau lead</span>
         </button>
     </div>
 </div>
+
+<!-- Modal Nouveau Lead -->
+<div id="leadModal" class="modal" style="display:none">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Nouveau lead</h2>
+      <button class="close-btn" onclick="closeLeadModal()">&times;</button>
+    </div>
+    <form id="leadForm" onsubmit="saveLead(event)">
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Nom *</label><input name="nom" class="form-control" required></div>
+          <div class="form-group"><label class="form-label">Entreprise</label><input name="entreprise" class="form-control"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Email</label><input name="email" type="email" class="form-control"></div>
+          <div class="form-group"><label class="form-label">Téléphone</label><input name="telephone" class="form-control"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Source</label><input name="source" class="form-control" placeholder="site_web / téléphone / salon ..."></div>
+          <div class="form-group"><label class="form-label">Potentiel CA (€)</label><input name="potentiel_ca" type="number" step="0.01" class="form-control"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Probabilité (%)</label><input name="probabilite" type="number" min="0" max="100" class="form-control" value="50"></div>
+          <div class="form-group"><label class="form-label">Notes</label><input name="notes" class="form-control"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeLeadModal()">Annuler</button>
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.35)}
+.modal-content{background:#fff;border-radius:12px;max-width:880px;margin:5vh auto;padding:0;overflow:hidden}
+.modal-header,.modal-footer{padding:16px 20px;border-bottom:1px solid var(--border-color)}
+.modal-footer{border-bottom:0;border-top:1px solid var(--border-color)}
+.modal-body{padding:20px}
+.close-btn{border:none;background:transparent;font-size:24px;cursor:pointer}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:768px){.form-row{grid-template-columns:1fr}}
+</style>
+
+<script>
+function openLeadModal(){ document.getElementById('leadModal').style.display='block'; }
+function closeLeadModal(){ document.getElementById('leadModal').style.display='none'; }
+function saveLead(e){ e.preventDefault(); const data=Object.fromEntries(new FormData(e.target)); fetch('/api/leads',{method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)}).then(r=>r.json()).then(res=>{ if(res.success){ closeLeadModal(); location.reload(); } else { alert(res.message||'Erreur'); }}); }
+window.addEventListener('click', (e)=>{ const m=document.getElementById('leadModal'); if(e.target===m) closeLeadModal(); });
+</script>
 
 <div class="card">
     <div class="card-header">

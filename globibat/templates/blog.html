@@ -1,0 +1,379 @@
+{% extends "base.html" %}
+
+{% block title %}Blog & Actualités - Globibat{% endblock %}
+
+{% block content %}
+<!-- Blog Hero -->
+<section class="blog-hero">
+    <div class="container">
+        <div class="blog-hero-content">
+            <h1 data-animation="fade-up">Blog & Actualités</h1>
+            <p data-animation="fade-up" data-delay="0.1">
+                Conseils, tendances et actualités du bâtiment en Suisse romande
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Blog Content -->
+<section class="blog-section section-padding">
+    <div class="container">
+        <!-- Featured Article -->
+        <div class="featured-article" data-animation="fade-up">
+            <div class="featured-image">
+                <img src="/static/images/blog/renovation-2024.jpg" alt="Tendances rénovation 2024">
+                <span class="article-category">Rénovation</span>
+            </div>
+            <div class="featured-content">
+                <span class="article-date">15 Août 2025</span>
+                <h2>Les tendances de la rénovation en 2025 en Suisse</h2>
+                <p>Découvrez les dernières tendances en matière de rénovation : matériaux durables, domotique, et efficacité énergétique. Comment transformer votre habitat tout en respectant les normes Minergie.</p>
+                <a href="#" class="article-link">Lire l'article <i class="ri-arrow-right-line"></i></a>
+            </div>
+        </div>
+
+        <!-- Articles Grid -->
+        <div class="articles-grid">
+            <article class="blog-card" data-animation="stagger">
+                <div class="blog-card-image">
+                    <img src="/static/images/blog/electricite-securite.jpg" alt="Sécurité électrique">
+                    <span class="article-category">Électricité</span>
+                </div>
+                <div class="blog-card-content">
+                    <span class="article-date">10 Août 2025</span>
+                    <h3>Mise aux normes OIBT : ce qu'il faut savoir</h3>
+                    <p>Les nouvelles réglementations électriques en Suisse et comment assurer la conformité de votre installation.</p>
+                    <a href="#" class="article-link">Lire plus <i class="ri-arrow-right-line"></i></a>
+                </div>
+            </article>
+
+            <article class="blog-card" data-animation="stagger">
+                <div class="blog-card-image">
+                    <img src="/static/images/blog/construction-ecologique.jpg" alt="Construction écologique">
+                    <span class="article-category">Construction</span>
+                </div>
+                <div class="blog-card-content">
+                    <span class="article-date">5 Août 2025</span>
+                    <h3>Construction écologique : les matériaux du futur</h3>
+                    <p>Béton bas carbone, isolation biosourcée, toitures végétalisées : les solutions pour une construction durable.</p>
+                    <a href="#" class="article-link">Lire plus <i class="ri-arrow-right-line"></i></a>
+                </div>
+            </article>
+
+            <article class="blog-card" data-animation="stagger">
+                <div class="blog-card-image">
+                    <img src="/static/images/blog/serrurerie-connectee.jpg" alt="Serrurerie connectée">
+                    <span class="article-category">Serrurerie</span>
+                </div>
+                <div class="blog-card-content">
+                    <span class="article-date">1 Août 2025</span>
+                    <h3>Serrures connectées : sécurité et confort</h3>
+                    <p>Les avantages des serrures intelligentes pour votre domicile ou entreprise. Guide complet et recommandations.</p>
+                    <a href="#" class="article-link">Lire plus <i class="ri-arrow-right-line"></i></a>
+                </div>
+            </article>
+
+            <article class="blog-card" data-animation="stagger">
+                <div class="blog-card-image">
+                    <img src="/static/images/blog/demenagement-conseils.jpg" alt="Conseils déménagement">
+                    <span class="article-category">Déménagement</span>
+                </div>
+                <div class="blog-card-content">
+                    <span class="article-date">28 Juillet 2025</span>
+                    <h3>10 conseils pour un déménagement sans stress</h3>
+                    <p>Check-list complète et astuces de professionnels pour organiser votre déménagement en toute sérénité.</p>
+                    <a href="#" class="article-link">Lire plus <i class="ri-arrow-right-line"></i></a>
+                </div>
+            </article>
+
+            <article class="blog-card" data-animation="stagger">
+                <div class="blog-card-image">
+                    <img src="/static/images/blog/metallerie-design.jpg" alt="Métallerie design">
+                    <span class="article-category">Métallerie</span>
+                </div>
+                <div class="blog-card-content">
+                    <span class="article-date">20 Juillet 2025</span>
+                    <h3>Métallerie d'art : sublimer vos espaces</h3>
+                    <p>Escaliers design, garde-corps sur mesure, verrières : comment la métallerie transforme votre intérieur.</p>
+                    <a href="#" class="article-link">Lire plus <i class="ri-arrow-right-line"></i></a>
+                </div>
+            </article>
+
+            <article class="blog-card" data-animation="stagger">
+                <div class="blog-card-image">
+                    <img src="/static/images/blog/nettoyage-chantier.jpg" alt="Nettoyage de chantier">
+                    <span class="article-category">Nettoyage</span>
+                </div>
+                <div class="blog-card-content">
+                    <span class="article-date">15 Juillet 2025</span>
+                    <h3>L'importance du nettoyage de fin de chantier</h3>
+                    <p>Protocoles professionnels et normes de propreté pour la réception de vos travaux.</p>
+                    <a href="#" class="article-link">Lire plus <i class="ri-arrow-right-line"></i></a>
+                </div>
+            </article>
+        </div>
+
+        <!-- Newsletter CTA -->
+        <div class="newsletter-cta" data-animation="fade-up">
+            <div class="newsletter-content">
+                <h2>Restez informé des dernières actualités</h2>
+                <p>Recevez nos conseils et actualités directement dans votre boîte mail</p>
+                <form class="newsletter-form" id="newsletterForm">
+                    <input type="email" placeholder="Votre email" required>
+                    <button type="submit" class="btn btn-primary">
+                        S'inscrire <i class="ri-send-plane-line"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+/* Blog Hero */
+.blog-hero {
+    background: linear-gradient(135deg, var(--color-dark), var(--color-secondary));
+    padding: 150px 0 80px;
+    text-align: center;
+    color: var(--color-white);
+}
+
+.blog-hero h1 {
+    font-size: var(--text-4xl);
+    margin-bottom: var(--space-md);
+}
+
+.blog-hero p {
+    font-size: var(--text-xl);
+    opacity: 0.9;
+}
+
+/* Featured Article */
+.featured-article {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3xl);
+    background: var(--color-white);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    margin-bottom: var(--space-3xl);
+}
+
+.featured-image {
+    position: relative;
+    height: 400px;
+}
+
+.featured-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.article-category {
+    position: absolute;
+    top: var(--space-lg);
+    left: var(--space-lg);
+    padding: 0.5rem 1rem;
+    background: var(--color-primary);
+    color: var(--color-dark);
+    border-radius: var(--radius-full);
+    font-size: var(--text-sm);
+    font-weight: 600;
+}
+
+.featured-content {
+    padding: var(--space-3xl);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.article-date {
+    color: var(--color-gray-500);
+    font-size: var(--text-sm);
+    margin-bottom: var(--space-md);
+}
+
+.featured-content h2 {
+    margin-bottom: var(--space-md);
+}
+
+.featured-content p {
+    color: var(--color-gray-600);
+    line-height: 1.8;
+    margin-bottom: var(--space-lg);
+}
+
+.article-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-primary);
+    font-weight: 600;
+    transition: gap var(--transition-base);
+}
+
+.article-link:hover {
+    gap: 1rem;
+}
+
+/* Articles Grid */
+.articles-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-xl);
+    margin-bottom: var(--space-3xl);
+}
+
+.blog-card {
+    background: var(--color-white);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-base);
+}
+
+.blog-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-xl);
+}
+
+.blog-card-image {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.blog-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-slow);
+}
+
+.blog-card:hover .blog-card-image img {
+    transform: scale(1.05);
+}
+
+.blog-card-content {
+    padding: var(--space-lg);
+}
+
+.blog-card-content h3 {
+    margin: var(--space-sm) 0;
+}
+
+.blog-card-content p {
+    color: var(--color-gray-600);
+    line-height: 1.6;
+    margin-bottom: var(--space-md);
+}
+
+/* Newsletter CTA */
+.newsletter-cta {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+    border-radius: var(--radius-xl);
+    padding: var(--space-3xl);
+    text-align: center;
+}
+
+.newsletter-content h2 {
+    color: var(--color-dark);
+    margin-bottom: var(--space-sm);
+}
+
+.newsletter-content p {
+    color: var(--color-dark);
+    margin-bottom: var(--space-xl);
+}
+
+.newsletter-form {
+    display: flex;
+    gap: var(--space-md);
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.newsletter-form input {
+    flex: 1;
+    padding: var(--space-md);
+    border: 2px solid transparent;
+    border-radius: var(--radius-md);
+    font-size: var(--text-base);
+}
+
+.newsletter-form input:focus {
+    outline: none;
+    border-color: var(--color-dark);
+}
+
+.newsletter-form .btn {
+    white-space: nowrap;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .featured-article {
+        grid-template-columns: 1fr;
+    }
+    
+    .articles-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .articles-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .newsletter-form {
+        flex-direction: column;
+    }
+}
+</style>
+
+<script>
+document.getElementById('newsletterForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const email = this.querySelector('input[type="email"]').value;
+    const button = this.querySelector('button');
+    const originalText = button.innerHTML;
+    
+    button.innerHTML = '<i class="ri-loader-4-line"></i> Inscription...';
+    button.disabled = true;
+    
+    try {
+        const response = await fetch('/api/newsletter', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            button.innerHTML = '<i class="ri-check-line"></i> Inscrit !';
+            this.querySelector('input').value = '';
+            
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }, 3000);
+        } else {
+            throw new Error(result.error);
+        }
+    } catch (error) {
+        button.innerHTML = originalText;
+        button.disabled = false;
+        alert('Erreur lors de l\'inscription. Veuillez réessayer.');
+    }
+});
+</script>
+{% endblock %}
+

@@ -1,0 +1,513 @@
+{% extends "base.html" %}
+
+{% block title %}{{ service.title }} - Globibat{% endblock %}
+
+{% block content %}
+<!-- Service Hero -->
+<section class="service-hero">
+    <div class="service-hero-bg"></div>
+    <div class="container">
+        <div class="service-hero-content">
+            <span class="service-label" data-animation="fade-up">Service</span>
+            <h1 class="service-hero-title" data-animation="fade-up" data-delay="0.1">{{ service.title }}</h1>
+            <p class="service-hero-description" data-animation="fade-up" data-delay="0.2">
+                {{ service.description }}
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Service Content -->
+<section class="service-detail section-padding">
+    <div class="container">
+        <div class="service-grid">
+            <!-- Main Content -->
+            <div class="service-main">
+                <div class="service-intro" data-animation="fade-up">
+                    <h2>Notre expertise en {{ service.title|lower }}</h2>
+                    <p>{{ service.long_description }}</p>
+                </div>
+
+                <!-- Points forts -->
+                <div class="service-benefits" data-animation="fade-up">
+                    <h3>Nos points forts</h3>
+                    <div class="benefits-grid">
+                        {% for benefit in service.benefits %}
+                        <div class="benefit-item">
+                            <i class="ri-check-double-line"></i>
+                            <span>{{ benefit }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Process -->
+                <div class="service-process" data-animation="fade-up">
+                    <h3>Notre processus</h3>
+                    <div class="process-steps">
+                        <div class="process-step">
+                            <span class="step-number">1</span>
+                            <h4>Analyse</h4>
+                            <p>Évaluation détaillée de vos besoins</p>
+                        </div>
+                        <div class="process-step">
+                            <span class="step-number">2</span>
+                            <h4>Devis</h4>
+                            <p>Proposition transparente et détaillée</p>
+                        </div>
+                        <div class="process-step">
+                            <span class="step-number">3</span>
+                            <h4>Réalisation</h4>
+                            <p>Exécution professionnelle des travaux</p>
+                        </div>
+                        <div class="process-step">
+                            <span class="step-number">4</span>
+                            <h4>Garantie</h4>
+                            <p>Suivi et garantie sur tous nos travaux</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery -->
+                {% if service.gallery %}
+                <div class="service-gallery" data-animation="fade-up">
+                    <h3>Nos réalisations</h3>
+                    <div class="gallery-grid">
+                        {% for image in service.gallery %}
+                        <div class="gallery-item">
+                            <img src="{{ image }}" alt="{{ service.title }} - Réalisation {{ loop.index }}">
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- FAQ -->
+                {% if service.faq %}
+                <div class="service-faq" data-animation="fade-up">
+                    <h3>Questions fréquentes</h3>
+                    <div class="faq-list">
+                        {% for item in service.faq %}
+                        <details class="faq-item">
+                            <summary>{{ item.question }}</summary>
+                            <p>{{ item.answer }}</p>
+                        </details>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Sidebar -->
+            <div class="service-sidebar">
+                <!-- Quick Info -->
+                <div class="sidebar-card" data-animation="fade-left">
+                    <h4>Informations rapides</h4>
+                    <ul class="info-list">
+                        <li>
+                            <i class="ri-time-line"></i>
+                            <span>Intervention sous 48h</span>
+                        </li>
+                        <li>
+                            <i class="ri-map-pin-line"></i>
+                            <span>{{ service.zones|join(', ') }}</span>
+                        </li>
+                        <li>
+                            <i class="ri-price-tag-3-line"></i>
+                            <span>{{ service.price_range }}</span>
+                        </li>
+                        <li>
+                            <i class="ri-shield-check-line"></i>
+                            <span>Garantie 10 ans</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- CTA -->
+                <div class="sidebar-card cta-card" data-animation="fade-left" data-delay="0.2">
+                    <h4>Besoin de ce service ?</h4>
+                    <p>Contactez-nous pour un devis gratuit et sans engagement</p>
+                    <a href="/contact" class="btn btn-primary btn-block">
+                        <i class="ri-file-text-line"></i> Demander un devis
+                    </a>
+                    <a href="tel:+41215050062" class="btn btn-outline btn-block">
+                        <i class="ri-phone-line"></i> +41 21 505 00 62
+                    </a>
+                </div>
+
+                <!-- Other Services -->
+                <div class="sidebar-card" data-animation="fade-left" data-delay="0.3">
+                    <h4>Autres services</h4>
+                    <ul class="services-list">
+                        {% for key, other_service in services.items() %}
+                        {% if key != service.slug %}
+                        <li>
+                            <a href="/services/{{ other_service.slug }}">
+                                <i class="{{ other_service.icon }}"></i>
+                                <span>{{ other_service.title }}</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Bottom CTA -->
+<section class="bottom-cta">
+    <div class="container">
+        <div class="cta-content" data-animation="fade-up">
+            <h2>Prêt à démarrer votre projet ?</h2>
+            <p>Nos experts sont à votre disposition pour vous conseiller</p>
+            <div class="cta-buttons">
+                <a href="/contact" class="btn btn-white btn-large">Obtenir un devis</a>
+                <a href="/realisations" class="btn btn-outline-white btn-large">Voir nos réalisations</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+/* Service Hero */
+.service-hero {
+    position: relative;
+    padding: 150px 0 80px;
+    background: linear-gradient(135deg, var(--color-dark), var(--color-secondary));
+    color: var(--color-white);
+}
+
+.service-hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.1;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.service-label {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-full);
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: var(--space-md);
+}
+
+.service-hero-title {
+    font-size: var(--text-4xl);
+    margin-bottom: var(--space-md);
+}
+
+.service-hero-description {
+    font-size: var(--text-xl);
+    opacity: 0.9;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Service Grid */
+.service-grid {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: var(--space-3xl);
+}
+
+/* Main Content */
+.service-intro {
+    margin-bottom: var(--space-3xl);
+}
+
+.service-intro h2 {
+    margin-bottom: var(--space-md);
+}
+
+.service-intro p {
+    font-size: var(--text-lg);
+    line-height: 1.8;
+    color: var(--color-gray-600);
+}
+
+/* Benefits */
+.service-benefits {
+    margin-bottom: var(--space-3xl);
+}
+
+.service-benefits h3 {
+    margin-bottom: var(--space-lg);
+}
+
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+}
+
+.benefit-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-md);
+    background: var(--color-sand);
+    border-radius: var(--radius-md);
+}
+
+.benefit-item i {
+    color: var(--color-primary);
+    font-size: 1.5rem;
+}
+
+/* Process */
+.service-process {
+    margin-bottom: var(--space-3xl);
+}
+
+.service-process h3 {
+    margin-bottom: var(--space-lg);
+}
+
+.process-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-lg);
+}
+
+.process-step {
+    text-align: center;
+}
+
+.step-number {
+    display: inline-flex;
+    width: 60px;
+    height: 60px;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-primary);
+    color: var(--color-dark);
+    border-radius: var(--radius-full);
+    font-size: var(--text-xl);
+    font-weight: bold;
+    margin-bottom: var(--space-md);
+}
+
+.process-step h4 {
+    margin-bottom: var(--space-sm);
+}
+
+.process-step p {
+    color: var(--color-gray-600);
+    font-size: var(--text-sm);
+}
+
+/* Gallery */
+.service-gallery {
+    margin-bottom: var(--space-3xl);
+}
+
+.service-gallery h3 {
+    margin-bottom: var(--space-lg);
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-md);
+}
+
+.gallery-item {
+    position: relative;
+    padding-bottom: 75%;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+}
+
+.gallery-item img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-slow);
+}
+
+.gallery-item:hover img {
+    transform: scale(1.05);
+}
+
+/* FAQ */
+.service-faq h3 {
+    margin-bottom: var(--space-lg);
+}
+
+.faq-item {
+    background: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    margin-bottom: var(--space-sm);
+}
+
+.faq-item summary {
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.faq-item summary::after {
+    content: '+';
+    font-size: 1.5rem;
+    color: var(--color-primary);
+}
+
+.faq-item[open] summary::after {
+    content: '−';
+}
+
+.faq-item p {
+    margin-top: var(--space-md);
+    color: var(--color-gray-600);
+}
+
+/* Sidebar */
+.sidebar-card {
+    background: var(--color-white);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    box-shadow: var(--shadow-md);
+    margin-bottom: var(--space-lg);
+}
+
+.sidebar-card h4 {
+    margin-bottom: var(--space-md);
+}
+
+.info-list {
+    list-style: none;
+}
+
+.info-list li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm) 0;
+    border-bottom: 1px solid var(--color-gray-100);
+}
+
+.info-list li:last-child {
+    border-bottom: none;
+}
+
+.info-list i {
+    color: var(--color-primary);
+}
+
+/* CTA Card */
+.cta-card {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+    color: var(--color-dark);
+}
+
+.cta-card p {
+    margin-bottom: var(--space-lg);
+}
+
+.btn-block {
+    width: 100%;
+    margin-bottom: var(--space-sm);
+}
+
+/* Services List */
+.services-list {
+    list-style: none;
+}
+
+.services-list li {
+    margin-bottom: var(--space-sm);
+}
+
+.services-list a {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-base);
+}
+
+.services-list a:hover {
+    background: var(--color-sand);
+    transform: translateX(5px);
+}
+
+/* Bottom CTA */
+.bottom-cta {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+    padding: var(--space-3xl) 0;
+}
+
+.bottom-cta .cta-content {
+    text-align: center;
+}
+
+.bottom-cta h2 {
+    color: var(--color-dark);
+    margin-bottom: var(--space-sm);
+}
+
+.bottom-cta p {
+    color: var(--color-dark);
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-xl);
+}
+
+.btn-white {
+    background: var(--color-white);
+    color: var(--color-dark);
+}
+
+.btn-outline-white {
+    border-color: var(--color-white);
+    color: var(--color-white);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .service-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .process-steps {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .benefits-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .process-steps {
+        grid-template-columns: 1fr;
+    }
+    
+    .cta-buttons {
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %}
+

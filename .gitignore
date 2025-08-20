@@ -4,19 +4,31 @@ __pycache__/
 *$py.class
 *.so
 .Python
-venv/
 env/
+venv/
 ENV/
+env.bak/
+venv.bak/
+*.egg-info/
+dist/
+build/
 
 # Flask
 instance/
 .webassets-cache
+.env
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
+*~
 
 # OS
 .DS_Store
@@ -25,21 +37,27 @@ Thumbs.db
 # Logs
 *.log
 
-# Database
-*.db
-*.sqlite
-*.sqlite3
+# Uploads
+uploads/
+app/static/uploads/
+globibat/static/uploads/
 
-# Environment
-.env
-.env.local
+# Test files
+test_*.py
+fix_*.py
+import_*.py
 
-# Testing
+# Sync files
+sync_config.py
+sync_manager.py
+
+# Node (si jamais)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Autres
+*.bak
+*.tmp
 .coverage
 htmlcov/
-.pytest_cache/
-
-# Build
-dist/
-build/
-*.egg-info/

@@ -27,13 +27,21 @@
                    placeholder="Matricule employé"
                    id="matriculeInput">
             <div class="badge-actions">
-                <button class="btn btn-success" onclick="badge('entree')">
-                    <i class="ri-login-box-line"></i>
-                    <span>Entrée</span>
+                <button class="btn btn-success" onclick="badge('matin')">
+                    <i class="ri-sunrise-line"></i>
+                    <span>Matin</span>
                 </button>
-                <button class="btn btn-danger" onclick="badge('sortie')">
-                    <i class="ri-logout-box-line"></i>
-                    <span>Sortie</span>
+                <button class="btn btn-warning" onclick="badge('midi')">
+                    <i class="ri-restaurant-line"></i>
+                    <span>Midi</span>
+                </button>
+                <button class="btn btn-info" onclick="badge('reprise')">
+                    <i class="ri-refresh-line"></i>
+                    <span>Reprise</span>
+                </button>
+                <button class="btn btn-danger" onclick="badge('soir')">
+                    <i class="ri-moon-line"></i>
+                    <span>Soir</span>
                 </button>
             </div>
         </div>
@@ -211,14 +219,26 @@
 
 <script>
 function badge(type) {
-    const matricule = document.getElementById('matriculeInput').value;
+    const matricule = document.getElementById('matriculeInput').value.toUpperCase();
     if (!matricule) {
         alert('Veuillez entrer un matricule');
         return;
     }
-    
-    // Appel API pour enregistrer le badge
-    console.log('Badge:', type, matricule);
+    fetch('/api/badge/check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ matricule, type })
+    })
+    .then(r => r.json())
+    .then(res => {
+        if (res.success) {
+            alert(res.message);
+            window.location.reload();
+        } else {
+            alert(res.message || 'Erreur');
+        }
+    })
+    .catch(() => alert('Erreur réseau'));
 }
 </script>
 {% endblock %}

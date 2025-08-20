@@ -1,0 +1,350 @@
+{% extends "base_elite.html" %}
+
+{% block title %}{{ chantier.nom }} - Détails chantier{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">{{ chantier.nom }}</h1>
+        <p class="page-subtitle">{{ chantier.client.nom if chantier.client else 'Client non défini' }}</p>
+    </div>
+    <div class="header-actions">
+        <button class="btn btn-secondary" onclick="editChantier({{ chantier.id }})">
+            <i class="ri-edit-line"></i>
+            <span>Modifier</span>
+        </button>
+        <a href="/chantiers" class="btn btn-ghost">
+            <i class="ri-arrow-left-line"></i>
+            <span>Retour</span>
+        </a>
+    </div>
+</div>
+
+<div class="detail-grid">
+    <!-- Informations générales -->
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Informations générales</h2>
+        </div>
+        <div class="info-grid">
+            <div class="info-item">
+                <span class="info-label">Adresse</span>
+                <span class="info-value">{{ chantier.adresse or '-' }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Chef de chantier</span>
+                <span class="info-value">
+                    {% if chantier.chef_chantier %}
+                        {{ chantier.chef_chantier.prenom }} {{ chantier.chef_chantier.nom }}
+                    {% else %}
+                        Non assigné
+                    {% endif %}
+                </span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Date de début</span>
+                <span class="info-value">{{ chantier.date_debut.strftime('%d/%m/%Y') if chantier.date_debut else '-' }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Date de fin prévue</span>
+                <span class="info-value">{{ chantier.date_fin_prevue.strftime('%d/%m/%Y') if chantier.date_fin_prevue else '-' }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Statut</span>
+                <span class="badge badge-{{ 'success' if chantier.statut == 'termine' else 'info' if chantier.statut == 'en_cours' else 'warning' }}">
+                    {{ chantier.statut }}
+                </span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Progression</span>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: {{ (chantier.budget_consomme / chantier.budget_initial * 100) if chantier.budget_initial else 0 }}%"></div>
+                </div>
+                <span class="text-sm text-muted">{{ "%.0f"|format((chantier.budget_consomme / chantier.budget_initial * 100) if chantier.budget_initial else 0) }}%</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Budget -->
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Budget</h2>
+        </div>
+        <div class="budget-stats">
+            <div class="budget-item">
+                <div class="budget-label">Budget initial</div>
+                <div class="budget-value">{{ "{:,.0f}".format(chantier.budget_initial) }} €</div>
+            </div>
+            <div class="budget-item">
+                <div class="budget-label">Consommé</div>
+                <div class="budget-value text-orange">{{ "{:,.0f}".format(chantier.budget_consomme) }} €</div>
+            </div>
+            <div class="budget-item">
+                <div class="budget-label">Restant</div>
+                <div class="budget-value text-green">{{ "{:,.0f}".format(chantier.budget_initial - chantier.budget_consomme) }} €</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Employés affectés -->
+<div class="card mt-lg">
+    <div class="card-header">
+        <h2 class="card-title">Équipe</h2>
+        <button class="btn btn-primary btn-sm">
+            <i class="ri-user-add-line"></i> Affecter un employé
+        </button>
+    </div>
+    <div class="team-grid">
+        {% if chantier.chef_chantier %}
+        <div class="team-member">
+            <div class="member-avatar">
+                {{ chantier.chef_chantier.prenom[0] }}{{ chantier.chef_chantier.nom[0] }}
+            </div>
+            <div class="member-info">
+                <div class="member-name">{{ chantier.chef_chantier.prenom }} {{ chantier.chef_chantier.nom }}</div>
+                <div class="member-role">Chef de chantier</div>
+            </div>
+        </div>
+        {% endif %}
+        <!-- Ajouter d'autres membres d'équipe si disponible -->
+    </div>
+</div>
+
+<!-- Documents -->
+<div class="card mt-lg">
+    <div class="card-header">
+        <h2 class="card-title">Documents</h2>
+        <button class="btn btn-primary btn-sm" onclick="uploadDocument()">
+            <i class="ri-upload-2-line"></i> Ajouter un document
+        </button>
+    </div>
+    <div class="documents-list">
+        <div class="document-item">
+            <i class="ri-file-pdf-line document-icon text-red"></i>
+            <div class="document-info">
+                <div class="document-name">Plan architectural.pdf</div>
+                <div class="document-meta">Ajouté le 15/01/2025 • 2.3 MB</div>
+            </div>
+            <button class="btn btn-ghost btn-sm">
+                <i class="ri-download-2-line"></i>
+            </button>
+        </div>
+        <div class="document-item">
+            <i class="ri-file-excel-line document-icon text-green"></i>
+            <div class="document-info">
+                <div class="document-name">Budget détaillé.xlsx</div>
+                <div class="document-meta">Ajouté le 10/01/2025 • 156 KB</div>
+            </div>
+            <button class="btn btn-ghost btn-sm">
+                <i class="ri-download-2-line"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+.detail-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--grid-gap);
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-lg);
+    padding: var(--space-lg);
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.info-label {
+    font-size: var(--text-sm);
+    color: var(--gris-medium);
+    font-weight: 600;
+}
+
+.info-value {
+    font-size: var(--text-base);
+    color: var(--noir-profond);
+}
+
+.progress-bar {
+    height: 8px;
+    background: var(--gris-neutre);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: var(--space-xs) 0;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--bleu-accent), var(--orange-construction));
+    border-radius: 4px;
+    transition: width var(--duration-base) var(--ease-out-quart);
+}
+
+.budget-stats {
+    padding: var(--space-lg);
+}
+
+.budget-item {
+    padding: var(--space-md) 0;
+    border-bottom: 1px solid var(--gris-neutre);
+}
+
+.budget-item:last-child {
+    border-bottom: none;
+}
+
+.budget-label {
+    font-size: var(--text-sm);
+    color: var(--gris-medium);
+    margin-bottom: var(--space-xs);
+}
+
+.budget-value {
+    font-size: var(--text-xl);
+    font-weight: 700;
+}
+
+.text-orange {
+    color: var(--orange-construction);
+}
+
+.text-green {
+    color: var(--vert-validation);
+}
+
+.text-red {
+    color: var(--rouge-alerte);
+}
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: var(--space-md);
+    padding: var(--space-lg);
+}
+
+.team-member {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    background: var(--gris-froid);
+    border-radius: 12px;
+}
+
+.member-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--bleu-accent), var(--orange-construction));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+.member-info {
+    flex: 1;
+}
+
+.member-name {
+    font-weight: 600;
+}
+
+.member-role {
+    font-size: var(--text-sm);
+    color: var(--gris-medium);
+}
+
+.documents-list {
+    padding: var(--space-lg);
+}
+
+.document-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    border: 1px solid var(--gris-neutre);
+    border-radius: 12px;
+    margin-bottom: var(--space-sm);
+    transition: all var(--duration-fast) var(--ease-out-quart);
+}
+
+.document-item:hover {
+    background: var(--gris-froid);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.document-icon {
+    font-size: 32px;
+}
+
+.document-info {
+    flex: 1;
+}
+
+.document-name {
+    font-weight: 600;
+}
+
+.document-meta {
+    font-size: var(--text-sm);
+    color: var(--gris-medium);
+}
+
+.btn-sm {
+    padding: var(--space-xs) var(--space-md);
+    font-size: var(--text-sm);
+}
+
+@media (max-width: 768px) {
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<script>
+function editChantier(id) {
+    window.location.href = '/chantiers#edit=' + id;
+}
+
+function uploadDocument() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg';
+    input.onchange = (e) => {
+        if (e.target.files.length > 0) {
+            const file = e.target.files[0];
+            const formData = new FormData();
+            formData.append('file', file);
+            fetch('/api/upload', {
+                method: 'POST',
+                body: formData
+            }).then(r => r.json()).then(res => {
+                if (res.success) {
+                    alert('Document ajouté: ' + res.filename);
+                    location.reload();
+                }
+            });
+        }
+    };
+    input.click();
+}
+</script>
+{% endblock %}

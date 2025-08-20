@@ -111,6 +111,12 @@
                             <span>Paramètres</span>
                         </a>
                     </div>
+                    <div class="nav-item">
+                        <a href="{{ url_for('sync_page') }}" class="nav-link {% if request.endpoint == 'sync_page' %}active{% endif %}">
+                            <i class="ri-refresh-line nav-icon"></i>
+                            <span>Sync VPS</span>
+                        </a>
+                    </div>
                 </div>
             </nav>
             
@@ -414,29 +420,41 @@
             }
         });
         
-        // Animate elements on scroll
+        // Animate elements on scroll - Correction pour éviter la disparition
         gsap.utils.toArray('.card').forEach(card => {
-            gsap.from(card, {
-                y: 30,
-                opacity: 0,
-                duration: 0.8,
-                scrollTrigger: {
-                    trigger: card,
-                    start: 'top 85%',
-                    once: true
+            gsap.fromTo(card, 
+                {
+                    y: 30,
+                    opacity: 0
+                },
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.8,
+                    scrollTrigger: {
+                        trigger: card,
+                        start: 'top 85%',
+                        once: true
+                    }
                 }
-            });
+            );
         });
         
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             cursor.init();
             
-            // Animate page load
+            // Animate page load - Correction du bug d'affichage
             gsap.timeline()
-                .from('.sidebar', { x: -100, opacity: 0, duration: 0.6, ease: 'power3.out' })
-                .from('.header', { y: -50, opacity: 0, duration: 0.6, ease: 'power3.out' }, '-=0.3')
-                .from('.main-content > *', { y: 30, opacity: 0, duration: 0.6, stagger: 0.1, ease: 'power3.out' }, '-=0.3');
+                .fromTo('.sidebar', 
+                    { x: -100, opacity: 0 }, 
+                    { x: 0, opacity: 1, duration: 0.6, ease: 'power3.out' })
+                .fromTo('.header', 
+                    { y: -50, opacity: 0 }, 
+                    { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }, '-=0.3')
+                .fromTo('.main-content > *', 
+                    { y: 30, opacity: 0 }, 
+                    { y: 0, opacity: 1, duration: 0.6, stagger: 0.1, ease: 'power3.out' }, '-=0.3');
         });
         
         // WebSocket connection

@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Page non trouvée - Globibat{% endblock %}
+
+{% block content %}
+<section class="error-page">
+    <div class="container">
+        <div class="error-content">
+            <h1 class="error-code" data-animation="fade-up">404</h1>
+            <h2 class="error-title" data-animation="fade-up" data-delay="0.2">Page non trouvée</h2>
+            <p class="error-description" data-animation="fade-up" data-delay="0.3">
+                Désolé, la page que vous recherchez n'existe pas ou a été déplacée.
+            </p>
+            <div class="error-actions" data-animation="fade-up" data-delay="0.4">
+                <a href="/" class="btn btn-primary">
+                    <i class="ri-home-line"></i> Retour à l'accueil
+                </a>
+                <a href="/contact" class="btn btn-outline">
+                    <i class="ri-customer-service-line"></i> Nous contacter
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.error-page {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    padding: var(--space-4xl) 0;
+}
+
+.error-content {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.error-code {
+    font-size: 10rem;
+    font-weight: 900;
+    color: var(--color-primary);
+    line-height: 1;
+    margin-bottom: var(--space-lg);
+}
+
+.error-title {
+    font-size: var(--text-3xl);
+    margin-bottom: var(--space-md);
+}
+
+.error-description {
+    font-size: var(--text-lg);
+    color: var(--color-gray-600);
+    margin-bottom: var(--space-xl);
+}
+
+.error-actions {
+    display: flex;
+    gap: var(--space-md);
+    justify-content: center;
+}
+
+@media (max-width: 768px) {
+    .error-code {
+        font-size: 6rem;
+    }
+    
+    .error-actions {
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %}

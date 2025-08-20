@@ -26,24 +26,47 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors'
 }).addTo(map);
 
-// Marqueurs d'exemple
-const locations = [
-    { lat: 48.8566, lng: 2.3522, title: "Chantier Paris Centre", type: "chantier" },
-    { lat: 48.8734, lng: 2.2950, title: "Villa Martinez", type: "chantier" },
-    { lat: 48.8924, lng: 2.3444, title: "Jean Dupont", type: "employe" }
-];
-
-locations.forEach(loc => {
-    const icon = L.divIcon({
+// Marqueurs des chantiers
+{% for chantier in chantiers %}
+{% if chantier.latitude and chantier.longitude %}
+L.marker([{{ chantier.latitude }}, {{ chantier.longitude }}], {
+    icon: L.divIcon({
         className: 'custom-marker',
-        html: `<div class="marker-${loc.type}"><i class="ri-${loc.type === 'chantier' ? 'building' : 'user'}-line"></i></div>`,
+        html: '<div class="marker-chantier"><i class="ri-building-line"></i></div>',
         iconSize: [40, 40]
-    });
-    
-    L.marker([loc.lat, loc.lng], { icon })
-        .addTo(map)
-        .bindPopup(loc.title);
-});
+    })
+})
+.addTo(map)
+.bindPopup(`
+    <b>{{ chantier.nom }}</b><br>
+    {{ chantier.adresse or 'Adresse non définie' }}<br>
+    <span class="badge badge-{{ 'success' if chantier.statut == 'termine' else 'info' }}">{{ chantier.statut }}</span>
+`);
+{% endif %}
+{% endfor %}
+
+// Marqueurs des employés
+{% for employe in employes %}
+{% if employe.latitude and employe.longitude %}
+L.marker([{{ employe.latitude }}, {{ employe.longitude }}], {
+    icon: L.divIcon({
+        className: 'custom-marker',
+        html: '<div class="marker-employe"><i class="ri-user-line"></i></div>',
+        iconSize: [40, 40]
+    })
+})
+.addTo(map)
+.bindPopup(`
+    <b>{{ employe.prenom }} {{ employe.nom }}</b><br>
+    {{ employe.poste }}<br>
+    {{ employe.departement or '' }}
+`);
+{% endif %}
+{% endfor %}
+
+// Corriger le redimensionnement après animations (évite la disparition)
+setTimeout(() => { map.invalidateSize(); }, 300);
+window.addEventListener('resize', () => map.invalidateSize());
 </script>
 
 <style>

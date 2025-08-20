@@ -255,6 +255,13 @@
             margin-top: 24px;
         }
         
+        .action-buttons-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
         .action-btn {
             padding: 24px;
             border: none;
@@ -299,6 +306,26 @@
             color: white;
         }
         
+        .action-btn.matin {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: white;
+        }
+        
+        .action-btn.midi {
+            background: linear-gradient(135deg, #F59E0B, #D97706);
+            color: white;
+        }
+        
+        .action-btn.reprise {
+            background: linear-gradient(135deg, #3B82F6, #2563EB);
+            color: white;
+        }
+        
+        .action-btn.soir {
+            background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+            color: white;
+        }
+        
         .action-btn:active {
             transform: scale(0.95);
         }
@@ -310,6 +337,48 @@
         .action-btn.selected {
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
             transform: scale(1.05);
+        }
+        
+        .action-btn.badge {
+            background: linear-gradient(135deg, var(--bleu), #0F172A);
+            color: white;
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        /* Badge info */
+        .badge-info {
+            margin-top: 24px;
+            padding: 20px;
+            background: var(--gris-clair);
+            border-radius: 16px;
+        }
+        
+        .info-text {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        
+        .info-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        
+        .info-list li {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #444;
+        }
+        
+        .info-list i {
+            font-size: 16px;
+            color: var(--bleu);
         }
         
         /* Success animation */
@@ -480,6 +549,36 @@
             to { transform: rotate(360deg); }
         }
         
+        /* Error toast */
+        .error-toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--rouge);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            box-shadow: 0 4px 20px rgba(220, 38, 38, 0.3);
+            animation: slideDown 0.3s ease-out;
+            z-index: 1001;
+        }
+        
+        @keyframes slideDown {
+            from {
+                transform: translateX(-50%) translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
+        }
+        
         /* Responsive */
         @media (max-height: 700px) {
             .status-icon {
@@ -540,14 +639,22 @@
                    autocorrect="off"
                    autocapitalize="characters">
             
-            <div class="action-buttons">
-                <button class="action-btn arrive" id="btnArrive" onclick="selectAction('arrive')">
-                    <i class="ri-login-box-line"></i>
-                    <span>ARRIVÉE</span>
+            <div class="action-buttons-grid">
+                <button class="action-btn matin" id="btnMatin" onclick="submitBadgeWithType('matin')">
+                    <i class="ri-sunrise-line"></i>
+                    <span>Arrivée Matin</span>
                 </button>
-                <button class="action-btn depart" id="btnDepart" onclick="selectAction('depart')">
-                    <i class="ri-logout-box-line"></i>
-                    <span>DÉPART</span>
+                <button class="action-btn midi" id="btnMidi" onclick="submitBadgeWithType('midi')">
+                    <i class="ri-restaurant-line"></i>
+                    <span>Pause Midi</span>
+                </button>
+                <button class="action-btn reprise" id="btnReprise" onclick="submitBadgeWithType('reprise')">
+                    <i class="ri-refresh-line"></i>
+                    <span>Reprise Midi</span>
+                </button>
+                <button class="action-btn soir" id="btnSoir" onclick="submitBadgeWithType('soir')">
+                    <i class="ri-moon-line"></i>
+                    <span>Départ Soir</span>
                 </button>
             </div>
         </div>
@@ -582,7 +689,6 @@
     </div>
     
     <script>
-        let selectedAction = null;
         let recentHistory = [];
         
         // Time update
@@ -598,29 +704,10 @@
         updateTime();
         setInterval(updateTime, 1000);
         
-        // Action selection
-        function selectAction(type) {
-            selectedAction = type;
-            
-            // Update UI
-            document.querySelectorAll('.action-btn').forEach(btn => {
-                btn.classList.remove('selected');
-            });
-            
-            if (type === 'arrive') {
-                document.getElementById('btnArrive').classList.add('selected');
-            } else {
-                document.getElementById('btnDepart').classList.add('selected');
-            }
-            
-            // Focus input
+        // Focus on input when page loads
+        window.addEventListener('load', () => {
             document.getElementById('matriculeInput').focus();
-            
-            // Vibrate if available
-            if (navigator.vibrate) {
-                navigator.vibrate(50);
-            }
-        }
+        });
         
         // Handle badge submission
         document.getElementById('matriculeInput').addEventListener('keypress', (e) => {
@@ -629,7 +716,9 @@
             }
         });
         
-        function submitBadge() {
+        let currentBadgeType = null;
+        
+        function submitBadgeWithType(type) {
             const matricule = document.getElementById('matriculeInput').value.toUpperCase();
             
             if (!matricule) {
@@ -637,8 +726,27 @@
                 return;
             }
             
-            if (!selectedAction) {
-                showError('Veuillez sélectionner Arrivée ou Départ');
+            currentBadgeType = type;
+            
+            // Show loading
+            document.getElementById('loading').classList.add('show');
+            
+            // Get geolocation
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    position => sendBadgeWithAction(matricule, type, position.coords),
+                    error => sendBadgeWithAction(matricule, type, null)
+                );
+            } else {
+                sendBadgeWithAction(matricule, type, null);
+            }
+        }
+        
+        function submitBadge() {
+            const matricule = document.getElementById('matriculeInput').value.toUpperCase();
+            
+            if (!matricule) {
+                showError('Veuillez entrer votre matricule');
                 return;
             }
             
@@ -658,8 +766,44 @@
         
         function sendBadge(matricule, coords) {
             const data = {
+                matricule: matricule
+            };
+            
+            if (coords) {
+                data.latitude = coords.latitude;
+                data.longitude = coords.longitude;
+            }
+            
+            fetch('/api/badge/check', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                document.getElementById('loading').classList.remove('show');
+                
+                if (result.success) {
+                    showSuccess(result);
+                    addToHistory(result);
+                    resetForm();
+                    updatePresentCount();
+                } else {
+                    showError(result.message);
+                }
+            })
+            .catch(error => {
+                document.getElementById('loading').classList.remove('show');
+                showError('Erreur de connexion');
+            });
+        }
+        
+        function sendBadgeWithAction(matricule, type, coords) {
+            const data = {
                 matricule: matricule,
-                type: selectedAction === 'arrive' ? 'arrivee_matin' : 'depart_soir'
+                type: type
             };
             
             if (coords) {
@@ -697,8 +841,19 @@
             const overlay = document.getElementById('successOverlay');
             const now = new Date();
             
-            document.getElementById('successTitle').textContent = 
-                selectedAction === 'arrive' ? 'Bonne journée !' : 'À demain !';
+            // Déterminer le titre selon l'action
+            let title = 'Badge enregistré !';
+            if (data.action_type === 'arrivee_matin') {
+                title = 'Bonne journée !';
+            } else if (data.action_type === 'depart_midi') {
+                title = 'Bon appétit !';
+            } else if (data.action_type === 'arrivee_apres_midi') {
+                title = 'Bon retour !';
+            } else if (data.action_type === 'depart_soir') {
+                title = 'Bonne soirée !';
+            }
+            
+            document.getElementById('successTitle').textContent = title;
             document.getElementById('successMessage').textContent = data.message;
             document.getElementById('successTime').textContent = 
                 now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
@@ -737,10 +892,17 @@
         }
         
         function addToHistory(data) {
+            // Déterminer le type pour l'icône
+            let iconType = 'in';
+            if (data.action_type === 'depart_midi' || data.action_type === 'depart_soir') {
+                iconType = 'out';
+            }
+            
             const historyItem = {
                 name: data.employee.name,
                 time: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
-                type: selectedAction
+                type: iconType,
+                action: data.action_type
             };
             
             recentHistory.unshift(historyItem);

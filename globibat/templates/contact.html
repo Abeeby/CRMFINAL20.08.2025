@@ -1,0 +1,807 @@
+{% extends "base.html" %}
+
+{% block title %}Contact & Devis Gratuit | Globibat Nyon{% endblock %}
+
+{% block content %}
+<!-- Contact Hero -->
+<section class="contact-hero">
+    <div class="container">
+        <div class="contact-hero-content">
+            <h1 class="contact-hero-title" data-animation="fade-up">Contactez-nous</h1>
+            <p class="contact-hero-description" data-animation="fade-up" data-delay="0.2">
+                Obtenez votre devis gratuit sous 48h
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Content -->
+<section class="contact-section section-padding">
+    <div class="container">
+        <div class="contact-grid">
+            <!-- Formulaire Multi-étapes -->
+            <div class="contact-form-wrapper" data-animation="fade-right">
+                <h2>Demande de devis</h2>
+                <p>Remplissez ce formulaire et nous vous répondrons dans les plus brefs délais</p>
+                
+                <!-- Progress Bar -->
+                <div class="form-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-steps">
+                        <div class="progress-step active" data-step="1">
+                            <span class="step-number">1</span>
+                            <span class="step-label">Projet</span>
+                        </div>
+                        <div class="progress-step" data-step="2">
+                            <span class="step-number">2</span>
+                            <span class="step-label">Détails</span>
+                        </div>
+                        <div class="progress-step" data-step="3">
+                            <span class="step-number">3</span>
+                            <span class="step-label">Contact</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <form id="contactForm" class="contact-form" action="/api/contact" method="POST">
+                    <!-- Étape 1: Type de projet -->
+                    <div class="form-step active" data-step="1">
+                        <h3>Quel est votre projet ?</h3>
+                        
+                        <div class="project-types">
+                            <label class="project-type-card">
+                                <input type="radio" name="project_type" value="renovation" required>
+                                <div class="card-content">
+                                    <i class="ri-home-heart-line"></i>
+                                    <span>Rénovation</span>
+                                </div>
+                            </label>
+                            
+                            <label class="project-type-card">
+                                <input type="radio" name="project_type" value="construction">
+                                <div class="card-content">
+                                    <i class="ri-building-line"></i>
+                                    <span>Construction</span>
+                                </div>
+                            </label>
+                            
+                            <label class="project-type-card">
+                                <input type="radio" name="project_type" value="electricite">
+                                <div class="card-content">
+                                    <i class="ri-flashlight-line"></i>
+                                    <span>Électricité</span>
+                                </div>
+                            </label>
+                            
+                            <label class="project-type-card">
+                                <input type="radio" name="project_type" value="metallerie">
+                                <div class="card-content">
+                                    <i class="ri-tools-line"></i>
+                                    <span>Métallerie</span>
+                                </div>
+                            </label>
+                            
+                            <label class="project-type-card">
+                                <input type="radio" name="project_type" value="serrurerie">
+                                <div class="card-content">
+                                    <i class="ri-key-line"></i>
+                                    <span>Serrurerie</span>
+                                </div>
+                            </label>
+                            
+                            <label class="project-type-card">
+                                <input type="radio" name="project_type" value="autre">
+                                <div class="card-content">
+                                    <i class="ri-more-line"></i>
+                                    <span>Autre</span>
+                                </div>
+                            </label>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Urgence du projet</label>
+                            <select name="urgency" required>
+                                <option value="">Sélectionner</option>
+                                <option value="urgent">Urgent (< 48h)</option>
+                                <option value="semaine">Cette semaine</option>
+                                <option value="mois">Ce mois-ci</option>
+                                <option value="planifie">Projet planifié</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-navigation">
+                            <button type="button" class="btn btn-primary btn-next">
+                                Suivant <i class="ri-arrow-right-line"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Étape 2: Détails -->
+                    <div class="form-step" data-step="2">
+                        <h3>Détails du projet</h3>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Surface approximative (m²)</label>
+                                <input type="number" name="surface" placeholder="Ex: 120">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Budget estimé</label>
+                                <select name="budget">
+                                    <option value="">Sélectionner</option>
+                                    <option value="< 10k">< 10'000 CHF</option>
+                                    <option value="10-50k">10'000 - 50'000 CHF</option>
+                                    <option value="50-100k">50'000 - 100'000 CHF</option>
+                                    <option value="100-250k">100'000 - 250'000 CHF</option>
+                                    <option value="> 250k">> 250'000 CHF</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Localisation</label>
+                                <input type="text" name="location" placeholder="Ville ou code postal" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Délai souhaité</label>
+                                <input type="text" name="timeline" placeholder="Ex: 3 mois">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Description du projet</label>
+                            <textarea name="description" rows="5" placeholder="Décrivez votre projet en détail..." required></textarea>
+                        </div>
+                        
+                        <div class="form-navigation">
+                            <button type="button" class="btn btn-outline btn-prev">
+                                <i class="ri-arrow-left-line"></i> Précédent
+                            </button>
+                            <button type="button" class="btn btn-primary btn-next">
+                                Suivant <i class="ri-arrow-right-line"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Étape 3: Coordonnées -->
+                    <div class="form-step" data-step="3">
+                        <h3>Vos coordonnées</h3>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Nom complet *</label>
+                                <input type="text" name="name" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Société</label>
+                                <input type="text" name="company">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Email *</label>
+                                <input type="email" name="email" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Téléphone *</label>
+                                <input type="tel" name="phone" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Meilleur moment pour vous contacter</label>
+                            <select name="contact_time">
+                                <option value="">Indifférent</option>
+                                <option value="matin">Matin (8h-12h)</option>
+                                <option value="apres-midi">Après-midi (12h-18h)</option>
+                                <option value="soir">Soir (18h-20h)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="newsletter" value="yes">
+                                <span>Je souhaite recevoir les actualités Globibat</span>
+                            </label>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="terms" required>
+                                <span>J'accepte les <a href="#" target="_blank">conditions générales</a> *</span>
+                            </label>
+                        </div>
+                        
+                        <div class="form-navigation">
+                            <button type="button" class="btn btn-outline btn-prev">
+                                <i class="ri-arrow-left-line"></i> Précédent
+                            </button>
+                            <button type="submit" class="btn btn-primary btn-large">
+                                <i class="ri-send-plane-line"></i> Envoyer ma demande
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Success Message -->
+                    <div class="form-success" style="display: none;">
+                        <div class="success-icon">
+                            <i class="ri-check-line"></i>
+                        </div>
+                        <h2>Demande envoyée avec succès !</h2>
+                        <p>Nous avons bien reçu votre demande de devis.</p>
+                        <p>Notre équipe vous contactera dans les <strong>48 heures</strong>.</p>
+                        <p class="reference">Référence : <span id="devisReference"></span></p>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Informations de contact -->
+            <div class="contact-info-wrapper" data-animation="fade-left">
+                <div class="contact-info-card">
+                    <h3>Contact direct</h3>
+                    
+                    <div class="contact-item">
+                        <i class="ri-phone-line"></i>
+                        <div>
+                            <strong>Téléphone</strong>
+                            <a href="tel:+41215050062">+41 21 505 00 62</a>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i class="ri-mail-line"></i>
+                        <div>
+                            <strong>Email</strong>
+                            <a href="mailto:info@globibat.com">info@globibat.com</a>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i class="ri-map-pin-line"></i>
+                        <div>
+                            <strong>Zone d'intervention</strong>
+                            <p>Nyon, District de Nyon<br>
+                            Canton de Vaud, Genève<br>
+                            Suisse romande</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i class="ri-time-line"></i>
+                        <div>
+                            <strong>Horaires</strong>
+                            <p>Lundi - Vendredi : 7h00 - 18h00<br>
+                            Samedi : 8h00 - 12h00<br>
+                            Urgences : 7j/7</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Urgences -->
+                <div class="urgency-card">
+                    <h4><i class="ri-alarm-warning-line"></i> Urgences 24h/24</h4>
+                    <p>Pour les urgences (électricité, serrurerie), nous intervenons 7j/7</p>
+                    <a href="tel:+41215050062" class="btn btn-primary btn-block">
+                        <i class="ri-phone-line"></i> Appeler maintenant
+                    </a>
+                </div>
+                
+                <!-- FAQ rapide -->
+                <div class="quick-faq">
+                    <h4>Questions fréquentes</h4>
+                    <details>
+                        <summary>Combien de temps pour recevoir un devis ?</summary>
+                        <p>Nous nous engageons à vous fournir un devis détaillé sous 48h après la visite.</p>
+                    </details>
+                    <details>
+                        <summary>Les devis sont-ils gratuits ?</summary>
+                        <p>Oui, tous nos devis sont gratuits et sans engagement.</p>
+                    </details>
+                    <details>
+                        <summary>Quelle est votre zone d'intervention ?</summary>
+                        <p>Nous intervenons dans tout le canton de Vaud, Genève et la Suisse romande.</p>
+                    </details>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Map Section -->
+<section class="map-section">
+    <div class="map-container">
+        <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d44074.45531290824!2d6.2!3d46.38!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x478c65!2sNyon!5e0!3m2!1sfr!2sch!4v1"
+            width="100%" 
+            height="450" 
+            style="border:0;" 
+            allowfullscreen="" 
+            loading="lazy">
+        </iframe>
+    </div>
+</section>
+
+<style>
+/* Contact Hero */
+.contact-hero {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+    padding: 150px 0 80px;
+    text-align: center;
+    color: var(--color-dark);
+}
+
+.contact-hero-title {
+    font-size: var(--text-4xl);
+    margin-bottom: var(--space-md);
+}
+
+.contact-hero-description {
+    font-size: var(--text-xl);
+    opacity: 0.9;
+}
+
+/* Contact Grid */
+.contact-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--space-3xl);
+}
+
+/* Form Wrapper */
+.contact-form-wrapper {
+    background: var(--color-white);
+    padding: var(--space-xl);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+}
+
+.contact-form-wrapper h2 {
+    margin-bottom: var(--space-sm);
+}
+
+.contact-form-wrapper > p {
+    color: var(--color-gray-600);
+    margin-bottom: var(--space-xl);
+}
+
+/* Form Progress */
+.form-progress {
+    margin-bottom: var(--space-xl);
+}
+
+.progress-bar {
+    height: 4px;
+    background: var(--color-gray-200);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: var(--space-lg);
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--color-primary);
+    transition: width var(--transition-base);
+    width: 33.33%;
+}
+
+.progress-steps {
+    display: flex;
+    justify-content: space-between;
+}
+
+.progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-sm);
+    opacity: 0.5;
+    transition: opacity var(--transition-base);
+}
+
+.progress-step.active {
+    opacity: 1;
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    background: var(--color-gray-300);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: var(--color-gray-600);
+    transition: all var(--transition-base);
+}
+
+.progress-step.active .step-number {
+    background: var(--color-primary);
+    color: var(--color-dark);
+}
+
+.step-label {
+    font-size: var(--text-sm);
+    color: var(--color-gray-600);
+}
+
+/* Form Steps */
+.form-step {
+    display: none;
+}
+
+.form-step.active {
+    display: block;
+    animation: fadeIn 0.5s;
+}
+
+.form-step h3 {
+    margin-bottom: var(--space-lg);
+}
+
+/* Project Types */
+.project-types {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+}
+
+.project-type-card {
+    position: relative;
+    cursor: pointer;
+}
+
+.project-type-card input {
+    position: absolute;
+    opacity: 0;
+}
+
+.project-type-card .card-content {
+    padding: var(--space-lg);
+    border: 2px solid var(--color-gray-300);
+    border-radius: var(--radius-md);
+    text-align: center;
+    transition: all var(--transition-base);
+}
+
+.project-type-card input:checked + .card-content {
+    border-color: var(--color-primary);
+    background: linear-gradient(135deg, rgba(212,175,55,0.1), rgba(212,175,55,0.05));
+}
+
+.project-type-card i {
+    font-size: 2rem;
+    color: var(--color-primary);
+    margin-bottom: var(--space-sm);
+    display: block;
+}
+
+/* Form Elements */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+}
+
+.form-group {
+    margin-bottom: var(--space-md);
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: var(--space-sm);
+    font-weight: 500;
+    color: var(--color-gray-700);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: var(--space-sm);
+    border: 1px solid var(--color-gray-300);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-base);
+    transition: border-color var(--transition-base);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    cursor: pointer;
+}
+
+.checkbox-label input {
+    margin-top: 5px;
+}
+
+.form-navigation {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-md);
+    margin-top: var(--space-xl);
+}
+
+.form-navigation .btn-next {
+    margin-left: auto;
+}
+
+/* Success Message */
+.form-success {
+    text-align: center;
+    padding: var(--space-3xl) var(--space-lg);
+}
+
+.success-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #10b981, #34d399);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--space-lg);
+}
+
+.success-icon i {
+    font-size: 3rem;
+    color: white;
+}
+
+.reference {
+    background: var(--color-gray-100);
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    margin: var(--space-lg) 0;
+}
+
+.reference span {
+    font-weight: bold;
+    color: var(--color-primary);
+}
+
+/* Contact Info */
+.contact-info-card {
+    background: var(--color-white);
+    padding: var(--space-xl);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    margin-bottom: var(--space-lg);
+}
+
+.contact-item {
+    display: flex;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+}
+
+.contact-item i {
+    font-size: 1.5rem;
+    color: var(--color-primary);
+    flex-shrink: 0;
+}
+
+.contact-item strong {
+    display: block;
+    margin-bottom: var(--space-xs);
+}
+
+.contact-item a {
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+.contact-item p {
+    color: var(--color-gray-600);
+    margin: 0;
+}
+
+/* Urgency Card */
+.urgency-card {
+    background: linear-gradient(135deg, var(--color-danger), #ef4444);
+    color: white;
+    padding: var(--space-lg);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-lg);
+}
+
+.urgency-card h4 {
+    color: white;
+    margin-bottom: var(--space-sm);
+}
+
+.urgency-card p {
+    margin-bottom: var(--space-md);
+    opacity: 0.9;
+}
+
+/* Quick FAQ */
+.quick-faq {
+    background: var(--color-gray-100);
+    padding: var(--space-lg);
+    border-radius: var(--radius-lg);
+}
+
+.quick-faq h4 {
+    margin-bottom: var(--space-md);
+}
+
+.quick-faq details {
+    background: var(--color-white);
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-sm);
+}
+
+.quick-faq summary {
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--color-dark);
+}
+
+.quick-faq details[open] summary {
+    margin-bottom: var(--space-sm);
+    color: var(--color-primary);
+}
+
+.quick-faq p {
+    color: var(--color-gray-600);
+    margin: 0;
+}
+
+/* Map */
+.map-container {
+    width: 100%;
+    height: 450px;
+    filter: grayscale(20%);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .contact-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .project-types {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .project-types {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-navigation {
+        flex-direction: column;
+    }
+    
+    .form-navigation .btn-next {
+        margin-left: 0;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('contactForm');
+    const steps = document.querySelectorAll('.form-step');
+    const progressSteps = document.querySelectorAll('.progress-step');
+    const progressFill = document.getElementById('progressFill');
+    let currentStep = 1;
+    
+    // Navigation
+    document.querySelectorAll('.btn-next').forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (validateStep(currentStep)) {
+                goToStep(currentStep + 1);
+            }
+        });
+    });
+    
+    document.querySelectorAll('.btn-prev').forEach(btn => {
+        btn.addEventListener('click', () => {
+            goToStep(currentStep - 1);
+        });
+    });
+    
+    function goToStep(step) {
+        // Hide current step
+        steps[currentStep - 1].classList.remove('active');
+        progressSteps[currentStep - 1].classList.remove('active');
+        
+        // Show new step
+        currentStep = step;
+        steps[currentStep - 1].classList.add('active');
+        progressSteps[currentStep - 1].classList.add('active');
+        
+        // Update progress bar
+        const progress = (currentStep / steps.length) * 100;
+        progressFill.style.width = progress + '%';
+        
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    function validateStep(step) {
+        const currentStepElement = steps[step - 1];
+        const requiredFields = currentStepElement.querySelectorAll('[required]');
+        let isValid = true;
+        
+        requiredFields.forEach(field => {
+            if (!field.value || (field.type === 'radio' && !currentStepElement.querySelector(`input[name="${field.name}"]:checked`))) {
+                isValid = false;
+                field.classList.add('error');
+            } else {
+                field.classList.remove('error');
+            }
+        });
+        
+        if (!isValid) {
+            alert('Veuillez remplir tous les champs obligatoires');
+        }
+        
+        return isValid;
+    }
+    
+    // Form submission
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        if (!validateStep(3)) return;
+        
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData);
+        
+        // Show loading
+        const submitBtn = form.querySelector('[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="ri-loader-4-line"></i> Envoi en cours...';
+        submitBtn.disabled = true;
+        
+        try {
+            const response = await fetch('/api/contact', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                // Show success message
+                document.querySelector('.contact-form').style.display = 'none';
+                document.querySelector('.form-progress').style.display = 'none';
+                document.querySelector('.form-success').style.display = 'block';
+                document.getElementById('devisReference').textContent = result.reference;
+            } else {
+                throw new Error(result.error || 'Une erreur est survenue');
+            }
+        } catch (error) {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+            alert(error.message);
+        }
+    });
+});
+</script>
+{% endblock %}

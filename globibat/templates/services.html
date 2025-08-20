@@ -1,0 +1,431 @@
+{% extends "base.html" %}
+
+{% block title %}Nos Services - Construction & Rénovation | Globibat{% endblock %}
+
+{% block content %}
+<!-- Services Hero -->
+<section class="page-hero">
+    <div class="page-hero-bg"></div>
+    <div class="container">
+        <div class="page-hero-content">
+            <h1 class="page-hero-title" data-animation="fade-up">Nos Services</h1>
+            <p class="page-hero-description" data-animation="fade-up" data-delay="0.2">
+                Solutions complètes pour tous vos projets de construction et rénovation
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Services Grid -->
+<section class="services-page section-padding">
+    <div class="container">
+        <div class="services-intro" data-animation="fade-up">
+            <p class="lead">
+                Depuis plus de 20 ans, Globibat propose une gamme complète de services 
+                dans le domaine de la construction et de la rénovation en Suisse romande. 
+                Notre expertise couvre tous les aspects de vos projets, de la conception à la réalisation.
+            </p>
+        </div>
+        
+        <div class="services-grid">
+            {% for key, service in services.items() %}
+            <div class="service-card-extended" data-animation="stagger">
+                <div class="service-card-image">
+                    <img src="{{ url_for('static', filename='images/services/' + service.image) }}" 
+                         alt="{{ service.title }}" loading="lazy">
+                    <div class="service-card-overlay">
+                        <a href="/services/{{ service.slug }}" class="btn btn-white">
+                            Découvrir <i class="ri-arrow-right-line"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="service-card-content">
+                    <div class="service-icon">
+                        <i class="{{ service.icon }}"></i>
+                    </div>
+                    <h3 class="service-title">{{ service.title }}</h3>
+                    <p class="service-description">{{ service.description }}</p>
+                    
+                    <div class="service-features">
+                        <h4>Points forts :</h4>
+                        <ul>
+                            {% for benefit in service.benefits %}
+                            <li><i class="ri-check-line"></i> {{ benefit }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    
+                    <div class="service-footer">
+                        <div class="service-price">
+                            <span class="label">Tarif :</span>
+                            <span class="value">{{ service.price_range }}</span>
+                        </div>
+                        <div class="service-zones">
+                            <span class="label">Zones :</span>
+                            <div class="zones-list">
+                                {% for zone in service.zones[:3] %}
+                                <span class="zone-tag">{{ zone }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <a href="/services/{{ service.slug }}" class="service-link" data-cursor="hover">
+                        En savoir plus <i class="ri-arrow-right-line"></i>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- CTA Section -->
+        <div class="services-cta" data-animation="fade-up">
+            <div class="cta-card">
+                <h2>Besoin d'un service sur mesure ?</h2>
+                <p>Nous adaptons nos prestations à vos besoins spécifiques</p>
+                <div class="cta-buttons">
+                    <a href="/contact" class="btn btn-primary btn-large">
+                        <i class="ri-file-text-line"></i> Demander un devis
+                    </a>
+                    <a href="tel:+41215050062" class="btn btn-outline btn-large">
+                        <i class="ri-phone-line"></i> +41 21 505 00 62
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Pourquoi nous choisir -->
+<section class="why-us section-padding bg-light">
+    <div class="container">
+        <div class="section-header" data-animation="fade-up">
+            <span class="section-label">Avantages</span>
+            <h2 class="section-title">Pourquoi choisir Globibat ?</h2>
+        </div>
+        
+        <div class="advantages-grid">
+            <div class="advantage-card" data-animation="stagger">
+                <div class="advantage-icon">
+                    <i class="ri-shield-check-line"></i>
+                </div>
+                <h3>Garantie décennale</h3>
+                <p>Tous nos travaux sont couverts par une garantie complète de 10 ans</p>
+            </div>
+            
+            <div class="advantage-card" data-animation="stagger">
+                <div class="advantage-icon">
+                    <i class="ri-team-line"></i>
+                </div>
+                <h3>Équipes certifiées</h3>
+                <p>Personnel qualifié et formé aux dernières normes suisses</p>
+            </div>
+            
+            <div class="advantage-card" data-animation="stagger">
+                <div class="advantage-icon">
+                    <i class="ri-time-line"></i>
+                </div>
+                <h3>Délais respectés</h3>
+                <p>98% de nos chantiers sont livrés dans les délais convenus</p>
+            </div>
+            
+            <div class="advantage-card" data-animation="stagger">
+                <div class="advantage-icon">
+                    <i class="ri-24-hours-line"></i>
+                </div>
+                <h3>Service 7j/7</h3>
+                <p>Interventions d'urgence disponibles tous les jours</p>
+            </div>
+            
+            <div class="advantage-card" data-animation="stagger">
+                <div class="advantage-icon">
+                    <i class="ri-price-tag-3-line"></i>
+                </div>
+                <h3>Prix transparents</h3>
+                <p>Devis détaillés gratuits et sans surprise</p>
+            </div>
+            
+            <div class="advantage-card" data-animation="stagger">
+                <div class="advantage-icon">
+                    <i class="ri-leaf-line"></i>
+                </div>
+                <h3>Éco-responsable</h3>
+                <p>Matériaux durables et pratiques respectueuses de l'environnement</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+/* Page Hero */
+.page-hero {
+    position: relative;
+    padding: 150px 0 80px;
+    background: linear-gradient(135deg, var(--color-dark), var(--color-secondary));
+    color: var(--color-white);
+    text-align: center;
+}
+
+.page-hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.1;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.page-hero-title {
+    font-size: var(--text-4xl);
+    margin-bottom: var(--space-md);
+}
+
+.page-hero-description {
+    font-size: var(--text-xl);
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Services Page */
+.services-intro {
+    max-width: 800px;
+    margin: 0 auto var(--space-3xl);
+    text-align: center;
+}
+
+.lead {
+    font-size: var(--text-lg);
+    line-height: 1.8;
+    color: var(--color-gray-600);
+}
+
+.service-card-extended {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    background: var(--color-white);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    margin-bottom: var(--space-xl);
+    transition: all var(--transition-base);
+}
+
+.service-card-extended:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-xl);
+}
+
+.service-card-image {
+    position: relative;
+    height: 100%;
+    min-height: 350px;
+    overflow: hidden;
+}
+
+.service-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-slow);
+}
+
+.service-card-extended:hover .service-card-image img {
+    transform: scale(1.05);
+}
+
+.service-card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity var(--transition-base);
+}
+
+.service-card-extended:hover .service-card-overlay {
+    opacity: 1;
+}
+
+.btn-white {
+    background: var(--color-white);
+    color: var(--color-dark);
+    border-color: var(--color-white);
+}
+
+.btn-white:hover {
+    background: transparent;
+    color: var(--color-white);
+}
+
+.service-card-content {
+    padding: var(--space-xl);
+    display: flex;
+    flex-direction: column;
+}
+
+.service-features {
+    margin: var(--space-md) 0;
+    padding: var(--space-md);
+    background: var(--color-gray-100);
+    border-radius: var(--radius-md);
+}
+
+.service-features h4 {
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-gray-600);
+    margin-bottom: var(--space-sm);
+}
+
+.service-features ul {
+    list-style: none;
+}
+
+.service-features li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-gray-700);
+}
+
+.service-features i {
+    color: var(--color-primary);
+}
+
+.service-footer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-md);
+    margin: var(--space-md) 0;
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--color-gray-200);
+}
+
+.service-price .label,
+.service-zones .label {
+    display: block;
+    font-size: var(--text-sm);
+    color: var(--color-gray-600);
+    margin-bottom: 0.25rem;
+}
+
+.service-price .value {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+.zones-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.service-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-primary);
+    font-weight: 600;
+    margin-top: auto;
+    transition: gap var(--transition-base);
+}
+
+.service-link:hover {
+    gap: 1rem;
+}
+
+/* Services CTA */
+.services-cta {
+    margin-top: var(--space-3xl);
+}
+
+.cta-card {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+    color: var(--color-dark);
+    padding: var(--space-3xl);
+    border-radius: var(--radius-xl);
+    text-align: center;
+}
+
+.cta-card h2 {
+    color: var(--color-dark);
+    margin-bottom: var(--space-sm);
+}
+
+.cta-card p {
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-xl);
+}
+
+/* Advantages */
+.advantages-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-lg);
+}
+
+.advantage-card {
+    text-align: center;
+    padding: var(--space-xl);
+    background: var(--color-white);
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-base);
+}
+
+.advantage-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.advantage-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto var(--space-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+    color: var(--color-dark);
+    border-radius: var(--radius-lg);
+    font-size: 2rem;
+}
+
+.advantage-card h3 {
+    font-size: var(--text-xl);
+    margin-bottom: var(--space-sm);
+}
+
+.advantage-card p {
+    color: var(--color-gray-600);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .service-card-extended {
+        grid-template-columns: 1fr;
+    }
+    
+    .service-card-image {
+        height: 250px;
+        min-height: unset;
+    }
+}
+
+@media (max-width: 768px) {
+    .services-cta .cta-buttons {
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %}

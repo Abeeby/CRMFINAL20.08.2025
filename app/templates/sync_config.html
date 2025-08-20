@@ -1,0 +1,470 @@
+{% extends "base_elite.html" %}
+
+{% block title %}Configuration Synchronisation VPS{% endblock %}
+
+{% block content %}
+<div class="sync-config-container">
+    <div class="page-header">
+        <h1>⚙️ Configuration Synchronisation VPS</h1>
+        <p>Configurez la synchronisation entre votre CRM local et le VPS</p>
+    </div>
+
+    <!-- Statut de synchronisation -->
+    <div class="sync-status-card">
+        <h2>📊 Statut Actuel</h2>
+        <div class="status-grid">
+            <div class="status-item">
+                <span class="label">État:</span>
+                <span id="sync-state" class="value">Non configuré</span>
+            </div>
+            <div class="status-item">
+                <span class="label">Dernière sync:</span>
+                <span id="last-sync" class="value">Jamais</span>
+            </div>
+            <div class="status-item">
+                <span class="label">Mode:</span>
+                <span id="sync-mode" class="value">-</span>
+            </div>
+            <div class="status-item">
+                <span class="label">Auto-sync:</span>
+                <span id="auto-sync" class="value">Désactivé</span>
+            </div>
+        </div>
+        <button class="btn btn-primary" onclick="syncNow()">
+            <i class="ri-refresh-line"></i> Synchroniser Maintenant
+        </button>
+    </div>
+
+    <!-- Configuration -->
+    <div class="config-card">
+        <h2>🔧 Configuration VPS</h2>
+        <form id="sync-config-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Hôte VPS</label>
+                    <input type="text" id="vps-host" placeholder="exemple.com ou IP">
+                </div>
+                <div class="form-group">
+                    <label>Port SSH</label>
+                    <input type="number" id="vps-port" value="22">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Utilisateur</label>
+                    <input type="text" id="vps-user" placeholder="root">
+                </div>
+                <div class="form-group">
+                    <label>Mot de passe</label>
+                    <input type="password" id="vps-password" placeholder="••••••••">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>URL Base de données</label>
+                <input type="text" id="vps-db-url" placeholder="mysql://user:pass@host/database">
+                <small>Format: mysql://user:password@host:port/database</small>
+            </div>
+
+            <div class="form-group">
+                <label>URL API (optionnel)</label>
+                <input type="text" id="vps-api-url" placeholder="https://votre-vps.com/api">
+            </div>
+
+            <div class="form-group">
+                <label>Clé API (optionnel)</label>
+                <input type="text" id="vps-api-key" placeholder="Clé secrète API">
+            </div>
+        </form>
+    </div>
+
+    <!-- Options de synchronisation -->
+    <div class="options-card">
+        <h2>⚡ Options de Synchronisation</h2>
+        <form id="sync-options-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Mode de synchronisation</label>
+                    <select id="sync-mode-select">
+                        <option value="bidirectional">Bidirectionnel</option>
+                        <option value="pull">Pull (VPS → Local)</option>
+                        <option value="push">Push (Local → VPS)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Résolution des conflits</label>
+                    <select id="conflict-resolution">
+                        <option value="latest">Plus récent</option>
+                        <option value="vps_priority">Priorité VPS</option>
+                        <option value="local_priority">Priorité Local</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Intervalle (minutes)</label>
+                    <input type="number" id="sync-interval" value="5" min="1">
+                </div>
+                <div class="form-group">
+                    <label>Synchronisation automatique</label>
+                    <label class="switch">
+                        <input type="checkbox" id="auto-sync-toggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Entités à synchroniser</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" checked> Employés</label>
+                    <label><input type="checkbox" checked> Pointages</label>
+                    <label><input type="checkbox" checked> Clients</label>
+                    <label><input type="checkbox" checked> Chantiers</label>
+                    <label><input type="checkbox" checked> Factures</label>
+                    <label><input type="checkbox" checked> Devis</label>
+                    <label><input type="checkbox" checked> Leads</label>
+                </div>
+            </div>
+
+            <button type="button" class="btn btn-success" onclick="saveConfig()">
+                <i class="ri-save-line"></i> Sauvegarder Configuration
+            </button>
+        </form>
+    </div>
+
+    <!-- Logs de synchronisation -->
+    <div class="logs-card">
+        <h2>📝 Logs de Synchronisation</h2>
+        <div id="sync-logs" class="logs-container">
+            <p class="no-logs">Aucun log disponible</p>
+        </div>
+    </div>
+</div>
+
+<style>
+.sync-config-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.page-header {
+    margin-bottom: 30px;
+}
+
+.page-header h1 {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.sync-status-card, .config-card, .options-card, .logs-card {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.status-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.status-item .label {
+    font-size: 12px;
+    color: #666;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.status-item .value {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+}
+
+.form-group input,
+.form-group select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.form-group small {
+    margin-top: 5px;
+    color: #666;
+    font-size: 12px;
+}
+
+.checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 6px;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 24px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #4CAF50;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+.logs-container {
+    max-height: 300px;
+    overflow-y: auto;
+    background: #f8f9fa;
+    border-radius: 6px;
+    padding: 15px;
+}
+
+.log-entry {
+    padding: 8px;
+    margin-bottom: 5px;
+    border-left: 3px solid #ddd;
+    background: white;
+    font-family: monospace;
+    font-size: 13px;
+}
+
+.log-entry.info {
+    border-left-color: #2196F3;
+}
+
+.log-entry.success {
+    border-left-color: #4CAF50;
+}
+
+.log-entry.error {
+    border-left-color: #f44336;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+}
+
+.btn-primary {
+    background: #2196F3;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #1976D2;
+}
+
+.btn-success {
+    background: #4CAF50;
+    color: white;
+}
+
+.btn-success:hover {
+    background: #45a049;
+}
+
+.no-logs {
+    text-align: center;
+    color: #999;
+    padding: 20px;
+}
+</style>
+
+<script>
+// Charger le statut au chargement
+document.addEventListener('DOMContentLoaded', function() {
+    loadSyncStatus();
+    loadConfig();
+    
+    // Actualiser le statut toutes les 10 secondes
+    setInterval(loadSyncStatus, 10000);
+});
+
+function loadSyncStatus() {
+    fetch('/api/sync/status')
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                document.getElementById('sync-state').textContent = 'Non configuré';
+                return;
+            }
+            
+            document.getElementById('sync-state').textContent = data.is_syncing ? 'En cours...' : 'Prêt';
+            document.getElementById('last-sync').textContent = data.last_sync ? 
+                new Date(data.last_sync).toLocaleString() : 'Jamais';
+            document.getElementById('sync-mode').textContent = data.mode || '-';
+            document.getElementById('auto-sync').textContent = data.auto_sync_enabled ? 'Activé' : 'Désactivé';
+            
+            // Afficher les logs
+            if (data.recent_logs && data.recent_logs.length > 0) {
+                const logsContainer = document.getElementById('sync-logs');
+                logsContainer.innerHTML = '';
+                data.recent_logs.forEach(log => {
+                    const entry = document.createElement('div');
+                    entry.className = `log-entry ${log.level.toLowerCase()}`;
+                    entry.textContent = `[${new Date(log.timestamp).toLocaleTimeString()}] ${log.message}`;
+                    logsContainer.appendChild(entry);
+                });
+            }
+        })
+        .catch(error => {
+            // console.error('Erreur chargement statut:', error);
+        });
+}
+
+function loadConfig() {
+    fetch('/api/sync/config')
+        .then(response => response.json())
+        .then(data => {
+            if (data.vps) {
+                document.getElementById('vps-host').value = data.vps.host || '';
+                document.getElementById('vps-port').value = data.vps.port || 22;
+                document.getElementById('vps-user').value = data.vps.username || '';
+                document.getElementById('vps-api-url').value = data.vps.api_endpoint || '';
+            }
+            
+            if (data.sync_options) {
+                document.getElementById('sync-mode-select').value = data.sync_options.mode || 'bidirectional';
+                document.getElementById('conflict-resolution').value = data.sync_options.conflict_resolution || 'latest';
+                document.getElementById('auto-sync-toggle').checked = data.sync_options.auto_sync || false;
+            }
+        })
+        .catch(error => {
+            // console.error('Erreur chargement config:', error);
+        });
+}
+
+function syncNow() {
+    if (confirm('Lancer une synchronisation maintenant ?')) {
+        fetch('/api/sync/now', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'}
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert('Synchronisation lancée !');
+            setTimeout(loadSyncStatus, 1000);
+        })
+        .catch(error => {
+            alert('Erreur lors du lancement de la synchronisation');
+        });
+    }
+}
+
+function saveConfig() {
+    const config = {
+        vps: {
+            host: document.getElementById('vps-host').value,
+            port: parseInt(document.getElementById('vps-port').value),
+            username: document.getElementById('vps-user').value,
+            password: document.getElementById('vps-password').value,
+            database_url: document.getElementById('vps-db-url').value,
+            api_endpoint: document.getElementById('vps-api-url').value,
+            api_key: document.getElementById('vps-api-key').value
+        },
+        sync_options: {
+            mode: document.getElementById('sync-mode-select').value,
+            conflict_resolution: document.getElementById('conflict-resolution').value,
+            auto_sync: document.getElementById('auto-sync-toggle').checked,
+            sync_interval: parseInt(document.getElementById('sync-interval').value) * 60
+        }
+    };
+    
+    fetch('/api/sync/config', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(config)
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert('Configuration sauvegardée !');
+        loadSyncStatus();
+    })
+    .catch(error => {
+        alert('Erreur lors de la sauvegarde');
+    });
+}
+</script>
+{% endblock %}

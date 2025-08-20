@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <!-- SEO Meta Tags -->
+    <title>{% block title %}Globibat - Construction & Rénovation à Nyon{% endblock %}</title>
+    <meta name="description" content="{% block description %}Entreprise de construction, rénovation et transformation à Nyon. Électricité, métallerie, serrurerie. Interventions rapides en Suisse romande. Devis gratuit.{% endblock %}">
+    <meta name="keywords" content="construction Nyon, rénovation Vaud, électricien Genève, métallerie Suisse romande, Globibat">
+    <meta name="author" content="Globibat">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.globibat.ch{{ request.path }}">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.globibat.ch{{ request.path }}">
+    <meta property="og:title" content="{% block og_title %}Globibat - Construction & Rénovation Suisse Romande{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Votre partenaire construction à Nyon. Rénovation, électricité, métallerie. Devis gratuit.{% endblock %}">
+    <meta property="og:image" content="https://www.globibat.ch/static/images/og-image.jpg">
+    <meta property="og:locale" content="fr_CH">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://www.globibat.ch{{ request.path }}">
+    <meta name="twitter:title" content="{% block twitter_title %}Globibat - Construction Nyon{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}Construction et rénovation en Suisse romande{% endblock %}">
+    <meta name="twitter:image" content="https://www.globibat.ch/static/images/twitter-image.jpg">
+    
+    <!-- Geo Tags -->
+    <meta name="geo.region" content="CH-VD">
+    <meta name="geo.placename" content="Nyon">
+    <meta name="geo.position" content="46.3833;6.2348">
+    <meta name="ICBM" content="46.3833, 6.2348">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.0.0/fonts/remixicon.css" rel="stylesheet">
+    
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <!-- Schema.org LocalBusiness -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        "name": "Globibat",
+        "description": "Entreprise de construction et rénovation à Nyon",
+        "url": "https://www.globibat.ch",
+        "telephone": "+41215050062",
+        "email": "info@globibat.com",
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Nyon",
+            "addressRegion": "VD",
+            "postalCode": "1260",
+            "addressCountry": "CH"
+        },
+        "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": 46.3833,
+            "longitude": 6.2348
+        },
+        "openingHours": "Mo-Fr 07:00-18:00, Sa 08:00-12:00",
+        "priceRange": "$$",
+        "areaServed": ["Nyon", "District de Nyon", "Vaud", "Genève", "Suisse romande"],
+        "sameAs": [
+            "https://www.linkedin.com/company/globibat",
+            "https://www.facebook.com/globibat",
+            "https://www.instagram.com/globibat"
+        ]
+    }
+    </script>
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <!-- Preloader -->
+    <div class="preloader" id="preloader">
+        <div class="preloader-inner">
+            <div class="preloader-logo">
+                <svg width="60" height="60" viewBox="0 0 60 60">
+                    <circle cx="30" cy="30" r="28" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="175" stroke-dashoffset="175">
+                        <animate attributeName="stroke-dashoffset" values="175;0" dur="1.5s" fill="freeze"/>
+                    </circle>
+                </svg>
+                <span class="preloader-text">GLOBIBAT</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Custom Cursor -->
+    <div class="custom-cursor" id="cursor"></div>
+    <div class="custom-cursor-follower" id="cursor-follower"></div>
+    
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="container">
+            <nav class="navbar">
+                <!-- Logo -->
+                <a href="/" class="logo" data-cursor="hover">
+                    <span class="logo-text">GLOBIBAT</span>
+                    <span class="logo-tagline">Construction & Rénovation</span>
+                </a>
+                
+                <!-- Navigation -->
+                <div class="nav-menu" id="navMenu">
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a href="/" class="nav-link" data-cursor="hover">Accueil</a>
+                        </li>
+                        <li class="nav-item has-dropdown">
+                            <a href="/services" class="nav-link" data-cursor="hover">
+                                Services <i class="ri-arrow-down-s-line"></i>
+                            </a>
+                            <div class="dropdown-menu">
+                                <a href="/services/electricite-depannage" class="dropdown-link">
+                                    <i class="ri-flashlight-line"></i> Électricité
+                                </a>
+                                <a href="/services/construction-metallique" class="dropdown-link">
+                                    <i class="ri-tools-line"></i> Métallerie
+                                </a>
+                                <a href="/services/renovation-transformation" class="dropdown-link">
+                                    <i class="ri-home-heart-line"></i> Rénovation
+                                </a>
+                                <a href="/services/serrurerie-depannage" class="dropdown-link">
+                                    <i class="ri-key-line"></i> Serrurerie
+                                </a>
+                                <a href="/services/nettoyage-conciergerie" class="dropdown-link">
+                                    <i class="ri-sparkles-line"></i> Nettoyage
+                                </a>
+                                <a href="/services/demenagement-debarras" class="dropdown-link">
+                                    <i class="ri-truck-line"></i> Déménagement
+                                </a>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/realisations" class="nav-link" data-cursor="hover">Réalisations</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/a-propos" class="nav-link" data-cursor="hover">À propos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/calculateur-de-volume" class="nav-link" data-cursor="hover">Calculateur</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/contact" class="nav-link" data-cursor="hover">Contact</a>
+                        </li>
+                    </ul>
+                    
+                    <!-- Mobile Contact -->
+                    <div class="nav-mobile-contact">
+                        <a href="tel:+41215050062" class="btn btn-primary btn-block">
+                            <i class="ri-phone-line"></i> +41 21 505 00 62
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- CTA & Mobile Toggle -->
+                <div class="nav-actions">
+                    <a href="tel:+41215050062" class="nav-phone" data-cursor="hover">
+                        <i class="ri-phone-line"></i>
+                        <span>+41 21 505 00 62</span>
+                    </a>
+                    <a href="/contact" class="btn btn-primary nav-cta" data-cursor="hover">
+                        Demander un devis
+                    </a>
+                    
+                    <!-- Mobile Menu Toggle -->
+                    <button class="nav-toggle" id="navToggle" aria-label="Menu">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Sticky CTA (appears after scroll) -->
+    <div class="sticky-cta" id="stickyCTA">
+        <div class="container">
+            <div class="sticky-cta-content">
+                <span class="sticky-cta-text">Besoin d'un devis rapide ?</span>
+                <div class="sticky-cta-buttons">
+                    <a href="tel:+41215050062" class="btn btn-outline-white btn-sm" data-cursor="hover">
+                        <i class="ri-phone-line"></i> Appeler
+                    </a>
+                    <a href="/contact" class="btn btn-primary btn-sm" data-cursor="hover">
+                        Devis gratuit
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-top">
+                <div class="footer-grid">
+                    <!-- Company Info -->
+                    <div class="footer-column">
+                        <h3 class="footer-title">Globibat</h3>
+                        <p class="footer-description">
+                            Votre partenaire construction et rénovation en Suisse romande depuis plus de 20 ans.
+                        </p>
+                        <div class="footer-badges">
+                            <span class="badge">Normes SIA</span>
+                            <span class="badge">RC Pro</span>
+                            <span class="badge">Certifié</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Services -->
+                    <div class="footer-column">
+                        <h4 class="footer-subtitle">Services</h4>
+                        <ul class="footer-links">
+                            <li><a href="/services/electricite-depannage" data-cursor="hover">Électricité</a></li>
+                            <li><a href="/services/construction-metallique" data-cursor="hover">Construction métallique</a></li>
+                            <li><a href="/services/renovation-transformation" data-cursor="hover">Rénovation</a></li>
+                            <li><a href="/services/serrurerie-depannage" data-cursor="hover">Serrurerie</a></li>
+                            <li><a href="/services/nettoyage-conciergerie" data-cursor="hover">Nettoyage</a></li>
+                            <li><a href="/services/demenagement-debarras" data-cursor="hover">Déménagement</a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Zones -->
+                    <div class="footer-column">
+                        <h4 class="footer-subtitle">Zones d'intervention</h4>
+                        <ul class="footer-links">
+                            <li>Nyon</li>
+                            <li>District de Nyon</li>
+                            <li>Canton de Vaud</li>
+                            <li>Genève</li>
+                            <li>La Côte</li>
+                            <li>Suisse romande</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Contact -->
+                    <div class="footer-column">
+                        <h4 class="footer-subtitle">Contact</h4>
+                        <div class="footer-contact">
+                            <a href="tel:+41215050062" class="footer-contact-item" data-cursor="hover">
+                                <i class="ri-phone-line"></i>
+                                +41 21 505 00 62
+                            </a>
+                            <a href="mailto:info@globibat.com" class="footer-contact-item" data-cursor="hover">
+                                <i class="ri-mail-line"></i>
+                                info@globibat.com
+                            </a>
+                            <div class="footer-contact-item">
+                                <i class="ri-time-line"></i>
+                                Lun-Ven: 7h-18h<br>
+                                Sam: 8h-12h
+                            </div>
+                        </div>
+                        
+                        <!-- Social -->
+                        <div class="footer-social">
+                            <a href="#" class="social-link" data-cursor="hover" aria-label="LinkedIn">
+                                <i class="ri-linkedin-fill"></i>
+                            </a>
+                            <a href="#" class="social-link" data-cursor="hover" aria-label="Facebook">
+                                <i class="ri-facebook-fill"></i>
+                            </a>
+                            <a href="#" class="social-link" data-cursor="hover" aria-label="Instagram">
+                                <i class="ri-instagram-line"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; {{ current_year }} Globibat. Tous droits réservés.</p>
+                <div class="footer-legal">
+                    <a href="/mentions-legales" data-cursor="hover">Mentions légales</a>
+                    <a href="/politique-confidentialite" data-cursor="hover">Confidentialité</a>
+                    <a href="/sitemap.xml" data-cursor="hover">Sitemap</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Back to Top -->
+    <button class="back-to-top" id="backToTop" aria-label="Retour en haut" data-cursor="hover">
+        <i class="ri-arrow-up-line"></i>
+    </button>
+    
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/TextPlugin.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

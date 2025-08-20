@@ -1,0 +1,456 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Section avec vidéo/animation -->
+<section class="hero" id="hero">
+    <div class="hero-background">
+        <video autoplay muted loop playsinline class="hero-video">
+            <source src="{{ url_for('static', filename='videos/construction-hero.mp4') }}" type="video/mp4">
+        </video>
+        <div class="hero-overlay"></div>
+    </div>
+    
+    <div class="hero-content">
+        <div class="container">
+            <div class="hero-text">
+                <span class="hero-subtitle" data-aos="fade-up">Excellence & Innovation depuis 1994</span>
+                <h1 class="hero-title" data-aos="fade-up" data-aos-delay="100">
+                    <span class="hero-line">Construisons ensemble</span>
+                    <span class="hero-line">votre projet d'exception</span>
+                </h1>
+                <p class="hero-description" data-aos="fade-up" data-aos-delay="200">
+                    Leader de la construction et rénovation premium en Suisse romande.<br>
+                    Plus de 500 projets réalisés avec passion et expertise.
+                </p>
+                <div class="hero-buttons" data-aos="fade-up" data-aos-delay="300">
+                    <a href="/devis" class="btn btn-primary btn-large">
+                        <i class="ri-file-text-line"></i>
+                        Devis gratuit sous 48h
+                    </a>
+                    <a href="/projets" class="btn btn-outline btn-large">
+                        <i class="ri-gallery-line"></i>
+                        Voir nos réalisations
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Statistiques animées -->
+            <div class="hero-stats" data-aos="fade-up" data-aos-delay="400">
+                <div class="stat-item">
+                    <span class="stat-number" data-counter="30">0</span>
+                    <span class="stat-label">Ans d'expérience</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" data-counter="500">0</span>+
+                    <span class="stat-label">Projets réalisés</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" data-counter="50">0</span>
+                    <span class="stat-label">Experts qualifiés</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" data-counter="98">0</span>%
+                    <span class="stat-label">Clients satisfaits</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scroll indicator -->
+    <div class="hero-scroll">
+        <div class="mouse">
+            <div class="wheel"></div>
+        </div>
+        <span>Défiler</span>
+    </div>
+</section>
+
+<!-- Services Section -->
+<section class="services-section section-padding" id="services">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <span class="section-subtitle">Nos expertises</span>
+            <h2 class="section-title">Services premium adaptés à vos besoins</h2>
+            <p class="section-description">
+                De la conception à la réalisation, nous vous accompagnons dans tous vos projets
+            </p>
+        </div>
+        
+        <div class="services-grid">
+            {% for key, service in services.items() %}
+            <div class="service-card" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+                <div class="service-icon">
+                    <i class="ri-{{ service.icon }}"></i>
+                </div>
+                <h3 class="service-title">{{ service.title }}</h3>
+                <p class="service-description">{{ service.description }}</p>
+                <ul class="service-features">
+                    {% for feature in service.features[:3] %}
+                    <li><i class="ri-check-line"></i> {{ feature }}</li>
+                    {% endfor %}
+                </ul>
+                <div class="service-footer">
+                    <span class="service-price">Dès {{ service.price_range.split('-')[0] }}</span>
+                    <a href="/services/{{ service.slug }}" class="service-link">
+                        En savoir plus <i class="ri-arrow-right-line"></i>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="services-cta" data-aos="fade-up">
+            <a href="/services" class="btn btn-primary">
+                Découvrir tous nos services
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Projets récents -->
+<section class="projects-section section-padding bg-light">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <span class="section-subtitle">Portfolio</span>
+            <h2 class="section-title">Nos dernières réalisations</h2>
+            <p class="section-description">
+                Découvrez l'excellence de notre savoir-faire à travers nos projets récents
+            </p>
+        </div>
+        
+        <!-- Filtres -->
+        <div class="projects-filters" data-aos="fade-up">
+            <button class="filter-btn active" data-filter="all">Tous</button>
+            <button class="filter-btn" data-filter="renovation">Rénovation</button>
+            <button class="filter-btn" data-filter="construction">Construction</button>
+            <button class="filter-btn" data-filter="isolation">Isolation</button>
+        </div>
+        
+        <!-- Projets carousel -->
+        <div class="projects-carousel swiper" data-aos="fade-up">
+            <div class="swiper-wrapper">
+                {% for project in projects %}
+                <div class="swiper-slide">
+                    <div class="project-card">
+                        <div class="project-image">
+                            <img src="{{ url_for('static', filename='images/projects/' + project.image) }}" 
+                                 alt="{{ project.title }}" loading="lazy">
+                            <div class="project-overlay">
+                                <div class="project-category">{{ project.category }}</div>
+                                <a href="/projets/{{ project.id }}" class="project-view">
+                                    <i class="ri-eye-line"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="project-content">
+                            <h3 class="project-title">{{ project.title }}</h3>
+                            <div class="project-meta">
+                                <span><i class="ri-map-pin-line"></i> {{ project.location }}</span>
+                                <span><i class="ri-calendar-line"></i> {{ project.year }}</span>
+                            </div>
+                            <p class="project-description">{{ project.description }}</p>
+                            <div class="project-stats">
+                                <div class="stat">
+                                    <span class="label">Budget</span>
+                                    <span class="value">{{ project.budget }}</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="label">Surface</span>
+                                    <span class="value">{{ project.surface }}</span>
+                                </div>
+                            </div>
+                            <a href="/projets/{{ project.id }}" class="project-link">
+                                Voir le projet <i class="ri-arrow-right-line"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+        </div>
+        
+        <div class="projects-cta" data-aos="fade-up">
+            <a href="/projets" class="btn btn-primary">
+                Voir toutes nos réalisations
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Processus de travail -->
+<section class="process-section section-padding">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <span class="section-subtitle">Notre méthode</span>
+            <h2 class="section-title">Un processus transparent et efficace</h2>
+        </div>
+        
+        <div class="process-timeline">
+            <div class="process-step" data-aos="fade-right">
+                <div class="step-number">01</div>
+                <div class="step-content">
+                    <h3>Consultation initiale</h3>
+                    <p>Analyse de vos besoins et visite sur site pour évaluation complète</p>
+                </div>
+            </div>
+            <div class="process-step" data-aos="fade-left">
+                <div class="step-number">02</div>
+                <div class="step-content">
+                    <h3>Conception & Devis</h3>
+                    <p>Plans détaillés et devis transparent sous 48h</p>
+                </div>
+            </div>
+            <div class="process-step" data-aos="fade-right">
+                <div class="step-number">03</div>
+                <div class="step-content">
+                    <h3>Réalisation</h3>
+                    <p>Exécution par nos équipes qualifiées avec suivi régulier</p>
+                </div>
+            </div>
+            <div class="process-step" data-aos="fade-left">
+                <div class="step-number">04</div>
+                <div class="step-content">
+                    <h3>Livraison & Garantie</h3>
+                    <p>Réception des travaux et garantie décennale</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Témoignages -->
+<section class="testimonials-section section-padding bg-light">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <span class="section-subtitle">Témoignages</span>
+            <h2 class="section-title">Ils nous font confiance</h2>
+        </div>
+        
+        <div class="testimonials-carousel swiper" data-aos="fade-up">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <div class="testimonial-card">
+                        <div class="testimonial-rating">
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                        </div>
+                        <p class="testimonial-text">
+                            "Globibat a transformé notre villa avec un professionnalisme exemplaire. 
+                            Le résultat dépasse nos attentes. Je recommande vivement !"
+                        </p>
+                        <div class="testimonial-author">
+                            <img src="{{ url_for('static', filename='images/testimonials/client1.jpg') }}" alt="Client">
+                            <div>
+                                <h4>Marie Dubois</h4>
+                                <span>Villa à Cologny</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="testimonial-card">
+                        <div class="testimonial-rating">
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                        </div>
+                        <p class="testimonial-text">
+                            "Isolation parfaite de notre immeuble. 40% d'économies sur le chauffage 
+                            dès le premier hiver. Équipe compétente et délais respectés."
+                        </p>
+                        <div class="testimonial-author">
+                            <img src="{{ url_for('static', filename='images/testimonials/client2.jpg') }}" alt="Client">
+                            <div>
+                                <h4>Jean-Pierre Martin</h4>
+                                <span>Immeuble à Lausanne</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="testimonial-card">
+                        <div class="testimonial-rating">
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                        </div>
+                        <p class="testimonial-text">
+                            "Rénovation complète de notre appartement haussmannien. 
+                            Finitions impeccables et respect du cachet historique. Bravo !"
+                        </p>
+                        <div class="testimonial-author">
+                            <img src="{{ url_for('static', filename='images/testimonials/client3.jpg') }}" alt="Client">
+                            <div>
+                                <h4>Sophie Laurent</h4>
+                                <span>Appartement Eaux-Vives</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-content" data-aos="zoom-in">
+            <h2 class="cta-title">Prêt à concrétiser votre projet ?</h2>
+            <p class="cta-description">
+                Obtenez votre devis personnalisé gratuit sous 48h
+            </p>
+            <div class="cta-buttons">
+                <a href="/devis" class="btn btn-white btn-large">
+                    <i class="ri-file-text-line"></i>
+                    Demander un devis
+                </a>
+                <a href="tel:+41221234567" class="btn btn-outline-white btn-large">
+                    <i class="ri-phone-line"></i>
+                    +41 22 123 45 67
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Partenaires -->
+<section class="partners-section section-padding">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <span class="section-subtitle">Partenaires & Certifications</span>
+            <h2 class="section-title">Ils garantissent notre excellence</h2>
+        </div>
+        
+        <div class="partners-grid" data-aos="fade-up">
+            <div class="partner-item">
+                <img src="{{ url_for('static', filename='images/partners/minergie.png') }}" alt="Minergie">
+            </div>
+            <div class="partner-item">
+                <img src="{{ url_for('static', filename='images/partners/sia.png') }}" alt="SIA">
+            </div>
+            <div class="partner-item">
+                <img src="{{ url_for('static', filename='images/partners/suissetec.png') }}" alt="Suissetec">
+            </div>
+            <div class="partner-item">
+                <img src="{{ url_for('static', filename='images/partners/eco-bau.png') }}" alt="Eco-Bau">
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Initialisation des animations au chargement
+document.addEventListener('DOMContentLoaded', function() {
+    // Counter animation pour les statistiques
+    const counters = document.querySelectorAll('[data-counter]');
+    const speed = 200;
+    
+    const animateCounter = (counter) => {
+        const target = +counter.getAttribute('data-counter');
+        const increment = target / speed;
+        
+        const updateCounter = () => {
+            const current = +counter.innerText;
+            if (current < target) {
+                counter.innerText = Math.ceil(current + increment);
+                setTimeout(updateCounter, 10);
+            } else {
+                counter.innerText = target;
+            }
+        };
+        updateCounter();
+    };
+    
+    // Observer pour déclencher l'animation au scroll
+    const observerOptions = {
+        threshold: 0.5,
+        rootMargin: '0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                animateCounter(entry.target);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+    
+    counters.forEach(counter => observer.observe(counter));
+    
+    // Swiper pour les projets
+    new Swiper('.projects-carousel', {
+        slidesPerView: 1,
+        spaceBetween: 30,
+        loop: true,
+        autoplay: {
+            delay: 5000,
+            disableOnInteraction: false
+        },
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true
+        },
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+        breakpoints: {
+            768: {
+                slidesPerView: 2
+            },
+            1024: {
+                slidesPerView: 3
+            }
+        }
+    });
+    
+    // Swiper pour les témoignages
+    new Swiper('.testimonials-carousel', {
+        slidesPerView: 1,
+        spaceBetween: 30,
+        loop: true,
+        autoplay: {
+            delay: 7000,
+            disableOnInteraction: false
+        },
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true
+        },
+        breakpoints: {
+            768: {
+                slidesPerView: 2
+            },
+            1024: {
+                slidesPerView: 3
+            }
+        }
+    });
+    
+    // Filtres projets
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            filterBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            // Ici on pourrait filtrer les projets
+        });
+    });
+});
+</script>
+{% endblock %}

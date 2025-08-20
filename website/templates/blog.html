@@ -1,0 +1,538 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Blog Hero -->
+<section class="blog-hero">
+    <div class="container">
+        <div class="blog-hero-content">
+            <h1 class="blog-hero-title" data-aos="fade-up">Blog Construction & Rénovation</h1>
+            <p class="blog-hero-description" data-aos="fade-up" data-aos-delay="100">
+                Conseils d'experts, guides pratiques et actualités du BTP en Suisse romande
+            </p>
+            
+            <!-- Search Bar -->
+            <div class="blog-search" data-aos="fade-up" data-aos-delay="200">
+                <form class="search-form">
+                    <input type="text" placeholder="Rechercher un article..." class="search-input">
+                    <button type="submit" class="search-btn">
+                        <i class="ri-search-line"></i>
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Categories -->
+            <div class="blog-categories" data-aos="fade-up" data-aos-delay="300">
+                <a href="#" class="category-tag active">Tous</a>
+                <a href="#" class="category-tag">Isolation</a>
+                <a href="#" class="category-tag">Rénovation</a>
+                <a href="#" class="category-tag">Construction</a>
+                <a href="#" class="category-tag">Normes 2026</a>
+                <a href="#" class="category-tag">Aides & Subventions</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Article -->
+<section class="featured-article section-padding">
+    <div class="container">
+        <div class="featured-card" data-aos="fade-up">
+            <div class="featured-image">
+                <img src="{{ url_for('static', filename='images/blog/isolation-2026.jpg') }}" 
+                     alt="Isolation thermique Genève 2026" loading="lazy">
+                <span class="featured-badge">Article vedette</span>
+            </div>
+            <div class="featured-content">
+                <div class="article-meta">
+                    <span class="meta-category">Isolation</span>
+                    <span class="meta-date">15 Janvier 2024</span>
+                    <span class="meta-read">8 min de lecture</span>
+                </div>
+                <h2 class="featured-title">
+                    <a href="/blog/isolation-thermique-geneve-2026">
+                        Isolation Thermique à Genève : Nouvelles Normes 2026 et Aides Cantonales
+                    </a>
+                </h2>
+                <p class="featured-excerpt">
+                    Découvrez tout ce qu'il faut savoir sur les nouvelles exigences énergétiques 2026 
+                    en Suisse romande. Subventions jusqu'à 40%, déductions fiscales, retour sur investissement : 
+                    notre guide complet pour optimiser votre projet d'isolation.
+                </p>
+                <div class="featured-footer">
+                    <a href="/blog/isolation-thermique-geneve-2026" class="btn btn-primary">
+                        Lire l'article complet <i class="ri-arrow-right-line"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Articles Grid -->
+<section class="articles-section section-padding bg-light">
+    <div class="container">
+        <div class="articles-grid">
+            {% for article in articles %}
+            <article class="article-card" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+                <div class="article-image">
+                    <img src="{{ url_for('static', filename='images/blog/' + article.slug + '.jpg') }}" 
+                         alt="{{ article.title }}" loading="lazy">
+                    <span class="article-category">{{ article.category }}</span>
+                </div>
+                <div class="article-content">
+                    <div class="article-meta">
+                        <span class="meta-date">{{ article.date }}</span>
+                        <span class="meta-read">{{ article.read_time }}</span>
+                    </div>
+                    <h3 class="article-title">
+                        <a href="/blog/{{ article.slug }}">{{ article.title }}</a>
+                    </h3>
+                    <p class="article-excerpt">{{ article.excerpt }}</p>
+                    <a href="/blog/{{ article.slug }}" class="article-link">
+                        Lire la suite <i class="ri-arrow-right-line"></i>
+                    </a>
+                </div>
+            </article>
+            {% endfor %}
+            
+            <!-- More articles -->
+            <article class="article-card" data-aos="fade-up">
+                <div class="article-image">
+                    <img src="{{ url_for('static', filename='images/blog/minergie-certification.jpg') }}" 
+                         alt="Certification Minergie" loading="lazy">
+                    <span class="article-category">Certification</span>
+                </div>
+                <div class="article-content">
+                    <div class="article-meta">
+                        <span class="meta-date">20 Décembre 2023</span>
+                        <span class="meta-read">6 min</span>
+                    </div>
+                    <h3 class="article-title">
+                        <a href="/blog/certification-minergie-guide">
+                            Certification Minergie : Guide Complet pour votre Projet
+                        </a>
+                    </h3>
+                    <p class="article-excerpt">
+                        Tout savoir sur la certification Minergie : avantages, coûts, démarches et retour sur investissement.
+                    </p>
+                    <a href="/blog/certification-minergie-guide" class="article-link">
+                        Lire la suite <i class="ri-arrow-right-line"></i>
+                    </a>
+                </div>
+            </article>
+            
+            <article class="article-card" data-aos="fade-up">
+                <div class="article-image">
+                    <img src="{{ url_for('static', filename='images/blog/renovation-appartement.jpg') }}" 
+                         alt="Rénovation appartement ancien" loading="lazy">
+                    <span class="article-category">Rénovation</span>
+                </div>
+                <div class="article-content">
+                    <div class="article-meta">
+                        <span class="meta-date">15 Décembre 2023</span>
+                        <span class="meta-read">10 min</span>
+                    </div>
+                    <h3 class="article-title">
+                        <a href="/blog/renovation-appartement-ancien">
+                            Rénover un Appartement Ancien : Pièges à Éviter
+                        </a>
+                    </h3>
+                    <p class="article-excerpt">
+                        Les erreurs courantes lors de la rénovation d'un bien ancien et nos conseils pour les éviter.
+                    </p>
+                    <a href="/blog/renovation-appartement-ancien" class="article-link">
+                        Lire la suite <i class="ri-arrow-right-line"></i>
+                    </a>
+                </div>
+            </article>
+            
+            <article class="article-card" data-aos="fade-up">
+                <div class="article-image">
+                    <img src="{{ url_for('static', filename='images/blog/cout-construction.jpg') }}" 
+                         alt="Coût construction maison" loading="lazy">
+                    <span class="article-category">Construction</span>
+                </div>
+                <div class="article-content">
+                    <div class="article-meta">
+                        <span class="meta-date">10 Décembre 2023</span>
+                        <span class="meta-read">12 min</span>
+                    </div>
+                    <h3 class="article-title">
+                        <a href="/blog/cout-construction-maison-2024">
+                            Coût de Construction d'une Maison en 2024 : Analyse Détaillée
+                        </a>
+                    </h3>
+                    <p class="article-excerpt">
+                        Breakdown complet des coûts de construction en Suisse romande avec exemples concrets.
+                    </p>
+                    <a href="/blog/cout-construction-maison-2024" class="article-link">
+                        Lire la suite <i class="ri-arrow-right-line"></i>
+                    </a>
+                </div>
+            </article>
+        </div>
+        
+        <!-- Pagination -->
+        <div class="pagination" data-aos="fade-up">
+            <a href="#" class="page-link disabled">
+                <i class="ri-arrow-left-line"></i>
+            </a>
+            <a href="#" class="page-link active">1</a>
+            <a href="#" class="page-link">2</a>
+            <a href="#" class="page-link">3</a>
+            <span class="page-dots">...</span>
+            <a href="#" class="page-link">8</a>
+            <a href="#" class="page-link">
+                <i class="ri-arrow-right-line"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter CTA -->
+<section class="newsletter-section">
+    <div class="container">
+        <div class="newsletter-box" data-aos="zoom-in">
+            <div class="newsletter-content">
+                <h2>Restez informé des dernières actualités BTP</h2>
+                <p>Recevez nos conseils d'experts et les nouvelles réglementations directement dans votre boîte mail</p>
+            </div>
+            <form class="newsletter-form" action="/api/newsletter" method="POST">
+                <input type="email" name="email" placeholder="Votre adresse email" required>
+                <button type="submit" class="btn btn-primary">
+                    S'abonner <i class="ri-send-plane-line"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<style>
+/* Blog Styles */
+.blog-hero {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    padding: 150px 0 80px;
+    color: white;
+    text-align: center;
+}
+
+.blog-hero-title {
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    margin-bottom: 20px;
+}
+
+.blog-hero-description {
+    font-size: 1.25rem;
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto 40px;
+}
+
+.blog-search {
+    max-width: 500px;
+    margin: 0 auto 40px;
+}
+
+.search-form {
+    display: flex;
+    background: white;
+    border-radius: 50px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+}
+
+.search-input {
+    flex: 1;
+    padding: 15px 25px;
+    border: none;
+    font-size: 16px;
+}
+
+.search-btn {
+    padding: 0 25px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.search-btn:hover {
+    background: var(--primary-dark);
+}
+
+.blog-categories {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.category-tag {
+    padding: 8px 20px;
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 25px;
+    color: white;
+    transition: all 0.3s;
+}
+
+.category-tag:hover,
+.category-tag.active {
+    background: white;
+    color: var(--primary);
+}
+
+.featured-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+}
+
+.featured-image {
+    position: relative;
+    height: 400px;
+}
+
+.featured-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.featured-badge {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: var(--secondary);
+    color: white;
+    padding: 5px 15px;
+    border-radius: 25px;
+    font-size: 14px;
+}
+
+.featured-content {
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.featured-title {
+    font-size: 2rem;
+    margin: 20px 0;
+}
+
+.featured-title a {
+    color: var(--dark);
+}
+
+.featured-excerpt {
+    color: var(--gray-600);
+    line-height: 1.8;
+    margin-bottom: 30px;
+}
+
+.articles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 30px;
+}
+
+.article-card {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.article-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+}
+
+.article-image {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.article-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+}
+
+.article-card:hover .article-image img {
+    transform: scale(1.05);
+}
+
+.article-category {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: var(--primary);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 5px;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.article-content {
+    padding: 25px;
+}
+
+.article-meta {
+    display: flex;
+    gap: 15px;
+    font-size: 14px;
+    color: var(--gray-600);
+    margin-bottom: 15px;
+}
+
+.article-title {
+    font-size: 1.25rem;
+    margin-bottom: 15px;
+}
+
+.article-title a {
+    color: var(--dark);
+}
+
+.article-excerpt {
+    color: var(--gray-600);
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.article-link {
+    color: var(--primary);
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: gap 0.3s;
+}
+
+.article-link:hover {
+    gap: 10px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 60px;
+}
+
+.page-link {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--gray-300);
+    border-radius: 5px;
+    color: var(--gray-700);
+    transition: all 0.3s;
+}
+
+.page-link:hover {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.page-link.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.page-link.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.page-dots {
+    color: var(--gray-500);
+}
+
+.newsletter-section {
+    background: linear-gradient(135deg, var(--dark), var(--gray-900));
+    padding: 80px 0;
+}
+
+.newsletter-box {
+    background: white;
+    border-radius: 15px;
+    padding: 50px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 40px;
+    align-items: center;
+}
+
+.newsletter-content h2 {
+    margin-bottom: 10px;
+}
+
+.newsletter-form {
+    display: flex;
+    gap: 15px;
+}
+
+.newsletter-form input {
+    padding: 15px 20px;
+    border: 1px solid var(--gray-300);
+    border-radius: 5px;
+    min-width: 300px;
+}
+
+@media (max-width: 1024px) {
+    .featured-card {
+        grid-template-columns: 1fr;
+    }
+    
+    .articles-grid {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+    
+    .newsletter-box {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    
+    .newsletter-form {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 768px) {
+    .blog-categories {
+        padding: 0 20px;
+    }
+    
+    .featured-content {
+        padding: 25px;
+    }
+    
+    .featured-title {
+        font-size: 1.5rem;
+    }
+    
+    .articles-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}

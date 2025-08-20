@@ -1,0 +1,526 @@
+{% extends "base.html" %}
+
+{% block title %}À Propos - Globibat | Construction & Rénovation depuis 20 ans{% endblock %}
+
+{% block content %}
+<!-- About Hero -->
+<section class="page-hero">
+    <div class="page-hero-bg"></div>
+    <div class="container">
+        <div class="page-hero-content">
+            <h1 class="page-hero-title" data-animation="fade-up">À Propos de Globibat</h1>
+            <p class="page-hero-description" data-animation="fade-up" data-delay="0.2">
+                Plus de 20 ans d'excellence dans la construction et la rénovation en Suisse romande
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Histoire & Valeurs -->
+<section class="about-story section-padding">
+    <div class="container">
+        <div class="story-grid">
+            <div class="story-content" data-animation="fade-right">
+                <span class="section-label">Notre Histoire</span>
+                <h2>Bâtir la confiance depuis 2004</h2>
+                <p>
+                    Fondée en 2004 à Nyon, Globibat est née de la passion commune de professionnels 
+                    du bâtiment désireux d'offrir des services de construction et rénovation de qualité 
+                    supérieure en Suisse romande.
+                </p>
+                <p>
+                    Au fil des années, nous avons développé une expertise unique dans tous les domaines 
+                    de la construction : électricité, métallerie, rénovation, serrurerie, et bien plus. 
+                    Notre approche centrée sur le client et notre engagement envers l'excellence nous ont 
+                    permis de réaliser plus de 500 projets réussis.
+                </p>
+                <p>
+                    Aujourd'hui, avec une équipe de 50 professionnels qualifiés, nous continuons à 
+                    transformer les espaces de vie et de travail de nos clients avec la même passion 
+                    et le même dévouement qu'au premier jour.
+                </p>
+            </div>
+            <div class="story-image" data-animation="fade-left">
+                <img src="{{ url_for('static', filename='images/about/team.jpg') }}" alt="Équipe Globibat">
+                <div class="experience-badge">
+                    <span class="number">20+</span>
+                    <span class="label">Années d'expérience</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Valeurs -->
+<section class="values-section section-padding bg-light">
+    <div class="container">
+        <div class="section-header" data-animation="fade-up">
+            <span class="section-label">Nos Valeurs</span>
+            <h2 class="section-title">Ce qui nous guide au quotidien</h2>
+        </div>
+        
+        <div class="values-grid">
+            <div class="value-card" data-animation="stagger">
+                <div class="value-icon">
+                    <i class="ri-hand-heart-line"></i>
+                </div>
+                <h3>Engagement</h3>
+                <p>Nous nous investissons pleinement dans chaque projet, du plus petit au plus grand</p>
+            </div>
+            
+            <div class="value-card" data-animation="stagger">
+                <div class="value-icon">
+                    <i class="ri-shield-star-line"></i>
+                </div>
+                <h3>Excellence</h3>
+                <p>La qualité n'est pas une option, c'est notre standard pour tous les travaux</p>
+            </div>
+            
+            <div class="value-card" data-animation="stagger">
+                <div class="value-icon">
+                    <i class="ri-group-line"></i>
+                </div>
+                <h3>Confiance</h3>
+                <p>Relations transparentes et honnêtes avec nos clients et partenaires</p>
+            </div>
+            
+            <div class="value-card" data-animation="stagger">
+                <div class="value-icon">
+                    <i class="ri-lightbulb-line"></i>
+                </div>
+                <h3>Innovation</h3>
+                <p>Adoption des dernières techniques et technologies du bâtiment</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Équipe -->
+<section class="team-section section-padding">
+    <div class="container">
+        <div class="section-header" data-animation="fade-up">
+            <span class="section-label">Notre Équipe</span>
+            <h2 class="section-title">Des experts passionnés à votre service</h2>
+        </div>
+        
+        <div class="team-stats" data-animation="fade-up">
+            <div class="stat-item">
+                <span class="stat-number" data-count="50">0</span>
+                <span class="stat-label">Professionnels qualifiés</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" data-count="15">0</span>
+                <span class="stat-label">Corps de métier</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" data-count="100">0</span>
+                <span class="stat-suffix">%</span>
+                <span class="stat-label">Formés et certifiés</span>
+            </div>
+        </div>
+        
+        <div class="team-grid">
+            <div class="team-member" data-animation="stagger">
+                <div class="member-image">
+                    <img src="{{ url_for('static', filename='images/team/director.jpg') }}" alt="Directeur">
+                </div>
+                <h4>Direction</h4>
+                <p>Gestion stratégique et développement</p>
+            </div>
+            
+            <div class="team-member" data-animation="stagger">
+                <div class="member-image">
+                    <img src="{{ url_for('static', filename='images/team/architect.jpg') }}" alt="Architecture">
+                </div>
+                <h4>Bureau d'études</h4>
+                <p>Conception et planification</p>
+            </div>
+            
+            <div class="team-member" data-animation="stagger">
+                <div class="member-image">
+                    <img src="{{ url_for('static', filename='images/team/foreman.jpg') }}" alt="Chef de chantier">
+                </div>
+                <h4>Chefs de chantier</h4>
+                <p>Coordination et supervision</p>
+            </div>
+            
+            <div class="team-member" data-animation="stagger">
+                <div class="member-image">
+                    <img src="{{ url_for('static', filename='images/team/workers.jpg') }}" alt="Équipes">
+                </div>
+                <h4>Équipes terrain</h4>
+                <p>Réalisation et excellence</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Certifications -->
+<section class="certifications-section section-padding bg-light">
+    <div class="container">
+        <div class="section-header" data-animation="fade-up">
+            <span class="section-label">Certifications</span>
+            <h2 class="section-title">Nos garanties de qualité</h2>
+        </div>
+        
+        <div class="certifications-grid">
+            <div class="certification-card" data-animation="stagger">
+                <img src="{{ url_for('static', filename='images/certifications/sia.png') }}" alt="SIA">
+                <h4>Normes SIA</h4>
+                <p>Respect strict des normes de la Société suisse des ingénieurs et architectes</p>
+            </div>
+            
+            <div class="certification-card" data-animation="stagger">
+                <img src="{{ url_for('static', filename='images/certifications/minergie.png') }}" alt="Minergie">
+                <h4>Minergie</h4>
+                <p>Certification pour les constructions à haute efficacité énergétique</p>
+            </div>
+            
+            <div class="certification-card" data-animation="stagger">
+                <img src="{{ url_for('static', filename='images/certifications/eco-bau.png') }}" alt="Eco-Bau">
+                <h4>Eco-Bau</h4>
+                <p>Construction durable et écologique</p>
+            </div>
+            
+            <div class="certification-card" data-animation="stagger">
+                <img src="{{ url_for('static', filename='images/certifications/suissetec.png') }}" alt="Suissetec">
+                <h4>Suissetec</h4>
+                <p>Association suisse de la technique du bâtiment</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Sécurité -->
+<section class="safety-section section-padding">
+    <div class="container">
+        <div class="safety-content">
+            <div class="safety-text" data-animation="fade-right">
+                <span class="section-label">Sécurité</span>
+                <h2>La sécurité, notre priorité absolue</h2>
+                <p>
+                    Chez Globibat, la sécurité de nos équipes et de nos clients est primordiale. 
+                    Nous appliquons les normes de sécurité les plus strictes sur tous nos chantiers.
+                </p>
+                <ul class="safety-list">
+                    <li><i class="ri-check-double-line"></i> Formation continue du personnel</li>
+                    <li><i class="ri-check-double-line"></i> Équipements de protection individuelle obligatoires</li>
+                    <li><i class="ri-check-double-line"></i> Audits de sécurité réguliers</li>
+                    <li><i class="ri-check-double-line"></i> Assurance RC professionnelle complète</li>
+                    <li><i class="ri-check-double-line"></i> Respect des normes SUVA</li>
+                </ul>
+            </div>
+            <div class="safety-stats" data-animation="fade-left">
+                <div class="safety-stat">
+                    <span class="stat-icon"><i class="ri-shield-check-line"></i></span>
+                    <span class="stat-value">0</span>
+                    <span class="stat-desc">Accidents graves en 2023</span>
+                </div>
+                <div class="safety-stat">
+                    <span class="stat-icon"><i class="ri-award-line"></i></span>
+                    <span class="stat-value">100%</span>
+                    <span class="stat-desc">Personnel formé sécurité</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="about-cta section-padding">
+    <div class="container">
+        <div class="cta-content" data-animation="fade-up">
+            <h2>Prêt à travailler avec nous ?</h2>
+            <p>Découvrez comment Globibat peut transformer votre projet en réalité</p>
+            <div class="cta-buttons">
+                <a href="/contact" class="btn btn-primary btn-large">
+                    <i class="ri-file-text-line"></i> Demander un devis
+                </a>
+                <a href="/realisations" class="btn btn-outline-white btn-large">
+                    <i class="ri-gallery-line"></i> Voir nos réalisations
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+/* About Specific Styles */
+.story-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3xl);
+    align-items: center;
+}
+
+.story-content h2 {
+    margin: var(--space-md) 0;
+}
+
+.story-content p {
+    color: var(--color-gray-600);
+    line-height: 1.8;
+    margin-bottom: var(--space-md);
+}
+
+.story-image {
+    position: relative;
+}
+
+.story-image img {
+    width: 100%;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+}
+
+.experience-badge {
+    position: absolute;
+    bottom: -30px;
+    right: 30px;
+    background: var(--color-primary);
+    color: var(--color-dark);
+    padding: var(--space-lg);
+    border-radius: var(--radius-lg);
+    text-align: center;
+    box-shadow: var(--shadow-xl);
+}
+
+.experience-badge .number {
+    display: block;
+    font-size: var(--text-3xl);
+    font-weight: 800;
+}
+
+.experience-badge .label {
+    font-size: var(--text-sm);
+    font-weight: 600;
+}
+
+/* Values */
+.values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-lg);
+}
+
+.value-card {
+    text-align: center;
+    padding: var(--space-xl);
+    background: var(--color-white);
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-base);
+}
+
+.value-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-xl);
+}
+
+.value-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto var(--space-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+    color: var(--color-dark);
+    border-radius: var(--radius-full);
+    font-size: 2rem;
+}
+
+/* Team */
+.team-stats {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-3xl);
+    margin: var(--space-3xl) 0;
+    padding: var(--space-xl) 0;
+    border-top: 1px solid var(--color-gray-200);
+    border-bottom: 1px solid var(--color-gray-200);
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    font-size: var(--text-4xl);
+    font-weight: 800;
+    color: var(--color-primary);
+}
+
+.stat-suffix {
+    font-size: var(--text-3xl);
+    font-weight: 800;
+    color: var(--color-primary);
+}
+
+.stat-label {
+    display: block;
+    margin-top: var(--space-sm);
+    color: var(--color-gray-600);
+}
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-lg);
+}
+
+.team-member {
+    text-align: center;
+}
+
+.member-image {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto var(--space-md);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+}
+
+.member-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.team-member h4 {
+    margin-bottom: var(--space-sm);
+}
+
+.team-member p {
+    color: var(--color-gray-600);
+}
+
+/* Certifications */
+.certifications-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-lg);
+}
+
+.certification-card {
+    background: var(--color-white);
+    padding: var(--space-xl);
+    border-radius: var(--radius-lg);
+    text-align: center;
+    transition: all var(--transition-base);
+}
+
+.certification-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.certification-card img {
+    height: 80px;
+    object-fit: contain;
+    margin-bottom: var(--space-md);
+    filter: grayscale(100%);
+    transition: filter var(--transition-base);
+}
+
+.certification-card:hover img {
+    filter: grayscale(0%);
+}
+
+/* Safety */
+.safety-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3xl);
+    align-items: center;
+}
+
+.safety-list {
+    list-style: none;
+    margin-top: var(--space-lg);
+}
+
+.safety-list li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+    color: var(--color-gray-700);
+}
+
+.safety-list i {
+    color: var(--color-primary);
+    font-size: 1.25rem;
+}
+
+.safety-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-lg);
+}
+
+.safety-stat {
+    background: var(--color-gray-100);
+    padding: var(--space-xl);
+    border-radius: var(--radius-lg);
+    text-align: center;
+}
+
+.stat-icon {
+    display: block;
+    font-size: 3rem;
+    color: var(--color-primary);
+    margin-bottom: var(--space-md);
+}
+
+.stat-value {
+    display: block;
+    font-size: var(--text-3xl);
+    font-weight: 800;
+    color: var(--color-dark);
+    margin-bottom: var(--space-sm);
+}
+
+.stat-desc {
+    color: var(--color-gray-600);
+    font-size: var(--text-sm);
+}
+
+/* About CTA */
+.about-cta {
+    background: linear-gradient(135deg, var(--color-dark), var(--color-secondary));
+    color: var(--color-white);
+}
+
+.about-cta .cta-content {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.about-cta h2 {
+    color: var(--color-white);
+    margin-bottom: var(--space-md);
+}
+
+.about-cta p {
+    font-size: var(--text-lg);
+    opacity: 0.9;
+    margin-bottom: var(--space-xl);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .story-grid,
+    .safety-content {
+        grid-template-columns: 1fr;
+        gap: var(--space-xl);
+    }
+    
+    .team-stats {
+        flex-direction: column;
+        gap: var(--space-lg);
+    }
+}
+</style>
+{% endblock %}

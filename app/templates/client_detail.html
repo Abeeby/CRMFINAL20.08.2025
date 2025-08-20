@@ -1,0 +1,258 @@
+{% extends "base_elite.html" %}
+
+{% block title %}{{ client.nom }} - Détails client{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">{{ client.nom }}</h1>
+        <p class="page-subtitle">{{ client.type_client|default('Client') }}</p>
+    </div>
+    <div class="header-actions">
+        <button class="btn btn-secondary" onclick="editClient({{ client.id }})">
+            <i class="ri-edit-line"></i>
+            <span>Modifier</span>
+        </button>
+        <a href="/clients" class="btn btn-ghost">
+            <i class="ri-arrow-left-line"></i>
+            <span>Retour</span>
+        </a>
+    </div>
+</div>
+
+<div class="detail-grid">
+    <!-- Informations générales -->
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Informations générales</h2>
+        </div>
+        <div class="info-grid">
+            <div class="info-item">
+                <span class="info-label">Contact</span>
+                <span class="info-value">{{ client.contact or '-' }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Email</span>
+                <span class="info-value">{{ client.email or '-' }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Téléphone</span>
+                <span class="info-value">{{ client.telephone or '-' }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Adresse</span>
+                <span class="info-value">{{ client.adresse or '-' }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Code postal</span>
+                <span class="info-value">{{ client.code_postal or '-' }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Ville</span>
+                <span class="info-value">{{ client.ville or '-' }}</span>
+            </div>
+        </div>
+        {% if client.notes %}
+        <div class="notes-section">
+            <h3>Notes</h3>
+            <p>{{ client.notes }}</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Statistiques -->
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Statistiques</h2>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-value">{{ client.chantiers|length }}</div>
+                <div class="stat-label">Chantiers</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">{{ client.devis|length }}</div>
+                <div class="stat-label">Devis</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">{{ client.factures|length }}</div>
+                <div class="stat-label">Factures</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">{{ "{:,.0f}".format(client.factures|sum(attribute='montant_ttc')|default(0)) }} €</div>
+                <div class="stat-label">CA Total</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chantiers du client -->
+<div class="card mt-lg">
+    <div class="card-header">
+        <h2 class="card-title">Chantiers</h2>
+        <button class="btn btn-primary btn-sm">
+            <i class="ri-add-line"></i> Nouveau chantier
+        </button>
+    </div>
+    <div class="table-container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Adresse</th>
+                    <th>Date début</th>
+                    <th>Statut</th>
+                    <th>Budget</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for chantier in client.chantiers %}
+                <tr>
+                    <td>{{ chantier.nom }}</td>
+                    <td>{{ chantier.adresse or '-' }}</td>
+                    <td>{{ chantier.date_debut.strftime('%d/%m/%Y') if chantier.date_debut else '-' }}</td>
+                    <td>
+                        <span class="badge badge-{{ 'success' if chantier.statut == 'termine' else 'info' }}">
+                            {{ chantier.statut }}
+                        </span>
+                    </td>
+                    <td>{{ "{:,.0f}".format(chantier.budget_initial) }} €</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Factures du client -->
+<div class="card mt-lg">
+    <div class="card-header">
+        <h2 class="card-title">Factures</h2>
+        <button class="btn btn-primary btn-sm">
+            <i class="ri-add-line"></i> Nouvelle facture
+        </button>
+    </div>
+    <div class="table-container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Numéro</th>
+                    <th>Date</th>
+                    <th>Montant TTC</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for facture in client.factures %}
+                <tr>
+                    <td>{{ facture.numero }}</td>
+                    <td>{{ facture.date_facture.strftime('%d/%m/%Y') if facture.date_facture else '-' }}</td>
+                    <td>{{ "{:,.2f}".format(facture.montant_ttc) }} €</td>
+                    <td>
+                        <span class="badge badge-{{ 'success' if facture.statut == 'payee' else 'warning' }}">
+                            {{ facture.statut }}
+                        </span>
+                    </td>
+                    <td>
+                        <a class="btn btn-ghost btn-sm" href="/api/factures/{{ facture.id }}/pdf">
+                            <i class="ri-download-line"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+.detail-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--grid-gap);
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-lg);
+    padding: var(--space-lg);
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.info-label {
+    font-size: var(--text-sm);
+    color: var(--gris-medium);
+    font-weight: 600;
+}
+
+.info-value {
+    font-size: var(--text-base);
+    color: var(--noir-profond);
+}
+
+.notes-section {
+    padding: var(--space-lg);
+    background: var(--gris-froid);
+    border-radius: 8px;
+    margin: var(--space-lg);
+}
+
+.notes-section h3 {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    margin-bottom: var(--space-sm);
+    color: var(--gris-medium);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-lg);
+    padding: var(--space-lg);
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-value {
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    color: var(--bleu-accent);
+    margin-bottom: var(--space-xs);
+}
+
+.stat-label {
+    font-size: var(--text-sm);
+    color: var(--gris-medium);
+}
+
+.btn-sm {
+    padding: var(--space-xs) var(--space-md);
+    font-size: var(--text-sm);
+}
+
+@media (max-width: 768px) {
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<script>
+function editClient(id) {
+    // Rediriger vers la page clients avec l'ID pour ouvrir le modal
+    window.location.href = '/clients#edit=' + id;
+}
+</script>
+{% endblock %}

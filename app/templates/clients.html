@@ -9,13 +9,17 @@
         <p class="page-subtitle">Gestion de votre portefeuille clients</p>
     </div>
     <div class="header-actions">
-        <button class="btn btn-secondary">
+        <a class="btn btn-secondary" href="/api/export/clients">
             <i class="ri-download-2-line"></i>
             <span>Exporter</span>
-        </button>
-        <button class="btn btn-primary" onclick="openModal('clientModal')">
+        </a>
+        <button class="btn btn-primary" onclick="openClientModal()">
             <i class="ri-add-line"></i>
             <span>Nouveau client</span>
+        </button>
+        <button class="btn btn-secondary" onclick="openUploadModal()">
+            <i class="ri-upload-2-line"></i>
+            <span>Importer (PDF/Excel)</span>
         </button>
     </div>
 </div>
@@ -46,21 +50,21 @@
                             </div>
                         </div>
                     </td>
-                    <td>{{ client.contact_nom or '-' }}</td>
+                    <td>{{ client.contact or '-' }}</td>
                     <td>{{ client.email or '-' }}</td>
                     <td>{{ client.telephone or '-' }}</td>
                     <td>
                         <span class="badge badge-info">{{ client.chantiers|length }} projets</span>
                     </td>
-                    <td class="font-semibold">{{ "{:,.0f}".format(client.factures|sum(attribute='montant_total')|default(0)) }} €</td>
+                    <td class="font-semibold">{{ "{:,.0f}".format(client.factures|sum(attribute='montant_ttc')|default(0)) }} €</td>
                     <td>
                         <div class="flex gap-xs">
                             <button class="btn btn-ghost" onclick="editClient({{ client.id }})">
                                 <i class="ri-edit-line"></i>
                             </button>
-                            <button class="btn btn-ghost" onclick="viewClient({{ client.id }})">
+                            <a class="btn btn-ghost" href="/clients/{{ client.id }}">
                                 <i class="ri-eye-line"></i>
-                            </button>
+                            </a>
                         </div>
                     </td>
                 </tr>
@@ -96,18 +100,68 @@
 }
 </style>
 
+<!-- Modals -->
+<div id="clientModal" class="modal" style="display:none">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="clientModalTitle">Nouveau client</h2>
+      <button class="close-btn" onclick="closeClientModal()">&times;</button>
+    </div>
+    <form id="clientForm" onsubmit="saveClient(event)">
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Nom *</label><input name="nom" class="form-control" required></div>
+          <div class="form-group"><label class="form-label">Type</label><input name="type_client" class="form-control" placeholder="particulier / entreprise / collectivité"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Contact</label><input name="contact" class="form-control"></div>
+          <div class="form-group"><label class="form-label">Téléphone</label><input name="telephone" class="form-control"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Email</label><input name="email" type="email" class="form-control"></div>
+          <div class="form-group"><label class="form-label">Ville</label><input name="ville" class="form-control"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Adresse</label><input name="adresse" class="form-control"></div>
+          <div class="form-group"><label class="form-label">Code postal</label><input name="code_postal" class="form-control"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Notes</label><textarea name="notes" class="form-control" rows="3"></textarea></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeClientModal()">Annuler</button>
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+      </div>
+    </form>
+  </div>
+  <style>.modal{position:fixed;inset:0;background:rgba(0,0,0,.35)}.modal-content{background:#fff;border-radius:12px;max-width:880px;margin:5vh auto;padding:0;overflow:hidden}.modal-header,.modal-footer{padding:16px 20px;border-bottom:1px solid var(--border-color)}.modal-footer{border-bottom:0;border-top:1px solid var(--border-color)}.modal-body{padding:20px}.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:768px){.form-row{grid-template-columns:1fr}}</style>
+</div>
+
+<div id="uploadModal" class="modal" style="display:none">
+  <div class="modal-content">
+    <div class="modal-header"><h2>Importer un fichier</h2><button class="close-btn" onclick="closeUploadModal()">&times;</button></div>
+    <div class="modal-body">
+      <input type="file" id="uploadInput" accept=".pdf,.xlsx,.xls,.csv" />
+      <p class="text-sm text-muted mt-sm">Formats autorisés: PDF, Excel (.xlsx/.xls), CSV</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeUploadModal()">Annuler</button>
+      <button class="btn btn-primary" onclick="doUpload()">Importer</button>
+    </div>
+  </div>
+</div>
+
 <script>
-function openModal(modalId) {
-    // Implémenter l'ouverture du modal
-    console.log('Ouvrir modal:', modalId);
-}
+let currentClientId = null;
+function openClientModal(){ currentClientId=null; document.getElementById('clientModalTitle').textContent='Nouveau client'; document.getElementById('clientForm').reset(); document.getElementById('clientModal').style.display='block'; }
+function closeClientModal(){ document.getElementById('clientModal').style.display='none'; }
+function editClient(id){ currentClientId=id; document.getElementById('clientModalTitle').textContent='Modifier client'; fetch('/api/clients').then(r=>r.json()).then(list=>{ const c=list.find(x=>x.id===id); if(!c) return; const f=document.getElementById('clientForm'); (['nom','type_client','contact','telephone','email','ville','adresse','code_postal','notes']).forEach(k=>{ if(f[k]) f[k].value=c[k]||''; }); document.getElementById('clientModal').style.display='block'; }); }
+function saveClient(e){ e.preventDefault(); const data=Object.fromEntries(new FormData(e.target)); const url=currentClientId?`/api/clients/${currentClientId}`:'/api/clients'; const method=currentClientId?'PUT':'POST'; fetch(url,{method,headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}).then(r=>r.json()).then(res=>{ if(res.success){ closeClientModal(); location.reload(); } else { alert(res.message||'Erreur'); }}); }
 
-function editClient(id) {
-    console.log('Éditer client:', id);
-}
+function openUploadModal(){ document.getElementById('uploadModal').style.display='block'; }
+function closeUploadModal(){ document.getElementById('uploadModal').style.display='none'; }
+function doUpload(){ const input=document.getElementById('uploadInput'); if(!input.files.length){ alert('Choisissez un fichier'); return; } const form=new FormData(); form.append('file', input.files[0]); fetch('/api/upload',{method:'POST', body: form}).then(r=>r.json()).then(res=>{ if(res.success){ alert('Import réussi: '+res.filename); closeUploadModal(); } else { alert(res.message||'Erreur import'); } }); }
 
-function viewClient(id) {
-    console.log('Voir client:', id);
-}
+// Fermer modals en cliquant dehors
+window.addEventListener('click', (e)=>{ ['clientModal','uploadModal'].forEach(id=>{ const m=document.getElementById(id); if(m && e.target===m) m.style.display='none'; }); });
 </script>
 {% endblock %}

@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}Mentions Légales - Globibat{% endblock %}
+
+{% block content %}
+<!-- Legal Hero -->
+<section class="legal-hero">
+    <div class="container">
+        <h1 data-animation="fade-up">Mentions Légales</h1>
+        <p data-animation="fade-up" data-delay="0.1">Dernière mise à jour : {{ current_year }}</p>
+    </div>
+</section>
+
+<!-- Legal Content -->
+<section class="legal-content section-padding">
+    <div class="container">
+        <div class="legal-wrapper">
+            <div class="legal-section" data-animation="fade-up">
+                <h2>1. Éditeur du site</h2>
+                <p><strong>Globibat Sàrl</strong></p>
+                <p>Route des Tattes d'Oie 93<br>
+                1260 Nyon, Suisse</p>
+                <p>CHE-XXX.XXX.XXX (IDE)</p>
+                <p>Téléphone : +41 21 505 00 62<br>
+                Email : info@globibat.com</p>
+            </div>
+
+            <div class="legal-section" data-animation="fade-up">
+                <h2>2. Hébergement</h2>
+                <p><strong>Hostinger International Ltd.</strong></p>
+                <p>61 Lordou Vironos Street<br>
+                6023 Larnaca, Chypre</p>
+                <p>Email : support@hostinger.com</p>
+            </div>
+
+            <div class="legal-section" data-animation="fade-up">
+                <h2>3. Propriété intellectuelle</h2>
+                <p>L'ensemble du contenu de ce site (textes, images, vidéos, logos, marques) est la propriété exclusive de Globibat Sàrl ou de ses partenaires. Toute reproduction, représentation, modification, publication, adaptation totale ou partielle des éléments du site est strictement interdite sans autorisation écrite préalable.</p>
+            </div>
+
+            <div class="legal-section" data-animation="fade-up">
+                <h2>4. Responsabilité</h2>
+                <p>Les informations fournies sur ce site le sont à titre informatif. Globibat Sàrl ne saurait être tenu responsable de l'inexactitude ou de l'inadéquation des informations diffusées.</p>
+                <p>Globibat Sàrl ne peut être tenu responsable des dommages directs ou indirects résultant de l'utilisation de ce site ou de l'impossibilité d'y accéder.</p>
+            </div>
+
+            <div class="legal-section" data-animation="fade-up">
+                <h2>5. Protection des données</h2>
+                <p>Conformément à la nLPD (nouvelle Loi fédérale sur la Protection des Données) et au RGPD (Règlement Général sur la Protection des Données), vous disposez d'un droit d'accès, de rectification, de suppression et de portabilité de vos données personnelles.</p>
+                <p>Pour exercer ces droits ou pour toute question relative à la protection de vos données, contactez-nous à : privacy@globibat.com</p>
+                <p>Consultez notre <a href="/politique_confidentialite">Politique de Confidentialité</a> pour plus d'informations.</p>
+            </div>
+
+            <div class="legal-section" data-animation="fade-up">
+                <h2>6. Cookies</h2>
+                <p>Ce site utilise des cookies pour améliorer l'expérience utilisateur et analyser le trafic. En continuant votre navigation, vous acceptez l'utilisation de cookies conformément à notre politique.</p>
+                <p>Types de cookies utilisés :</p>
+                <ul>
+                    <li>Cookies essentiels : nécessaires au fonctionnement du site</li>
+                    <li>Cookies analytiques : pour comprendre comment les visiteurs utilisent le site</li>
+                    <li>Cookies de préférences : pour mémoriser vos choix et personnaliser votre expérience</li>
+                </ul>
+            </div>
+
+            <div class="legal-section" data-animation="fade-up">
+                <h2>7. Liens externes</h2>
+                <p>Ce site peut contenir des liens vers des sites externes. Globibat Sàrl n'est pas responsable du contenu de ces sites et de leur politique de confidentialité.</p>
+            </div>
+
+            <div class="legal-section" data-animation="fade-up">
+                <h2>8. Droit applicable</h2>
+                <p>Les présentes mentions légales sont régies par le droit suisse. En cas de litige, les tribunaux du canton de Vaud sont compétents.</p>
+            </div>
+
+            <div class="legal-section" data-animation="fade-up">
+                <h2>9. Contact</h2>
+                <p>Pour toute question concernant ces mentions légales, vous pouvez nous contacter :</p>
+                <p>Par email : legal@globibat.com<br>
+                Par téléphone : +41 21 505 00 62<br>
+                Par courrier : Globibat Sàrl, Route des Tattes d'Oie 93, 1260 Nyon, Suisse</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+/* Legal Hero */
+.legal-hero {
+    background: linear-gradient(135deg, var(--color-dark), var(--color-secondary));
+    padding: 150px 0 80px;
+    text-align: center;
+    color: var(--color-white);
+}
+
+.legal-hero h1 {
+    font-size: var(--text-4xl);
+    margin-bottom: var(--space-md);
+}
+
+.legal-hero p {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Legal Content */
+.legal-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.legal-section {
+    background: var(--color-white);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    margin-bottom: var(--space-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.legal-section h2 {
+    color: var(--color-primary);
+    margin-bottom: var(--space-md);
+    font-size: var(--text-2xl);
+}
+
+.legal-section p {
+    color: var(--color-gray-600);
+    line-height: 1.8;
+    margin-bottom: var(--space-md);
+}
+
+.legal-section p:last-child {
+    margin-bottom: 0;
+}
+
+.legal-section ul {
+    margin-left: var(--space-xl);
+    color: var(--color-gray-600);
+    line-height: 1.8;
+}
+
+.legal-section ul li {
+    margin-bottom: var(--space-sm);
+}
+
+.legal-section a {
+    color: var(--color-primary);
+    text-decoration: underline;
+}
+
+.legal-section a:hover {
+    color: var(--color-primary-dark);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .legal-section {
+        padding: var(--space-lg);
+    }
+    
+    .legal-hero h1 {
+        font-size: var(--text-3xl);
+    }
+}
+</style>
+{% endblock %}
+

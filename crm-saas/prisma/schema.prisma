@@ -1,0 +1,240 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String    @id @default(cuid())
+  email           String    @unique
+  passwordHash    String
+  firstName       String?
+  lastName        String?
+  role            String    @default("EMPLOYEE") // ADMIN, SALES_MANAGER, SALES_REP, SUPPORT_MANAGER, SUPPORT_AGENT, FINANCE, HR, EMPLOYEE
+  locale          String    @default("fr-FR")
+  timezone        String    @default("Europe/Paris")
+  avatar          String?
+  active          Boolean   @default(true)
+  emailVerified   Boolean   @default(false)
+  lastLoginAt     DateTime?
+  refreshToken    String?
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  // Relations
+  companies       Company[]
+  deals           Deal[]
+  assignedTickets Ticket[]
+  attendance      Attendance[]
+  activities      Activity[]
+  
+  @@index([email])
+  @@index([role])
+}
+
+model Company {
+  id          String   @id @default(cuid())
+  name        String
+  vat         String?  @unique
+  website     String?
+  industry    String?
+  size        String?
+  revenue     Float?
+  street      String?
+  city        String?
+  postalCode  String?
+  country     String?
+  tags        String?  // Stored as comma-separated
+  notes       String?
+  active      Boolean  @default(true)
+  
+  ownerId     String
+  owner       User     @relation(fields: [ownerId], references: [id])
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  contacts    Contact[]
+  deals       Deal[]
+  tickets     Ticket[]
+  
+  @@index([name])
+  @@index([ownerId])
+  @@index([vat])
+}
+
+model Contact {
+  id             String   @id @default(cuid())
+  firstName      String
+  lastName       String
+  email          String?
+  phone          String?
+  mobile         String?
+  jobTitle       String?
+  department     String?
+  street         String?
+  city           String?
+  postalCode     String?
+  country        String?
+  tags           String?  // Stored as comma-separated
+  consentEmail   Boolean  @default(false)
+  consentPhone   Boolean  @default(false)
+  consentMarketing Boolean @default(false)
+  notes          String?
+  active         Boolean  @default(true)
+  
+  companyId      String?
+  company        Company? @relation(fields: [companyId], references: [id])
+  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  
+  // Relations
+  deals          Deal[]
+  tickets        Ticket[]
+  
+  @@index([email])
+  @@index([companyId])
+  @@index([firstName, lastName])
+}
+
+model Deal {
+  id             String    @id @default(cuid())
+  title          String
+  stage          String    @default("NEW") // NEW, QUALIFIED, PROPOSAL, NEGOTIATION, WON, LOST
+  amount         Float?
+  currency       String    @default("EUR")
+  probability    Int       @default(50)
+  expectedClose  DateTime?
+  source         String?
+  notes          String?
+  tags           String?   // Stored as comma-separated
+  
+  companyId      String
+  company        Company   @relation(fields: [companyId], references: [id])
+  
+  contactId      String?
+  contact        Contact?  @relation(fields: [contactId], references: [id])
+  
+  ownerId        String
+  owner          User      @relation(fields: [ownerId], references: [id])
+  
+  wonAt          DateTime?
+  lostAt         DateTime?
+  lostReason     String?
+  
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  
+  // Relations
+  activities     Activity[]
+  
+  @@index([stage])
+  @@index([companyId])
+  @@index([ownerId])
+}
+
+model Ticket {
+  id           String         @id @default(cuid())
+  number       String         @unique
+  subject      String
+  description  String
+  status       String         @default("NEW") // NEW, OPEN, PENDING, SOLVED, CLOSED
+  priority     String         @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
+  tags         String?        // Stored as comma-separated
+  
+  companyId    String?
+  company      Company?       @relation(fields: [companyId], references: [id])
+  
+  contactId    String?
+  contact      Contact?       @relation(fields: [contactId], references: [id])
+  
+  assigneeId   String?
+  assignee     User?          @relation(fields: [assigneeId], references: [id])
+  
+  firstResponseAt DateTime?
+  resolvedAt      DateTime?
+  closedAt        DateTime?
+  
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  
+  // Relations
+  messages     TicketMessage[]
+  
+  @@index([status])
+  @@index([companyId])
+  @@index([assigneeId])
+  @@index([number])
+}
+
+model TicketMessage {
+  id          String   @id @default(cuid())
+  
+  ticketId    String
+  ticket      Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  
+  authorId    String?
+  authorEmail String
+  authorName  String
+  
+  content     String
+  internal    Boolean  @default(false)
+  
+  createdAt   DateTime @default(now())
+  
+  @@index([ticketId])
+}
+
+model Attendance {
+  id          String           @id @default(cuid())
+  
+  employeeId  String
+  employee    User             @relation(fields: [employeeId], references: [id])
+  
+  type        String           // IN_MORNING, OUT_MORNING, IN_AFTERNOON, OUT_EVENING
+  timestamp   DateTime
+  source      String           @default("WEB") // WEB, MOBILE, QR, MANUAL
+  anomaly     String           @default("NONE") // NONE, MISSING, OVERLAP, LATE, EARLY
+  
+  locationLat Float?
+  locationLng Float?
+  locationAddress String?
+  
+  validated   Boolean          @default(false)
+  validatedBy String?
+  validatedAt DateTime?
+  
+  notes       String?
+  
+  createdAt   DateTime         @default(now())
+  
+  @@unique([employeeId, timestamp, type])
+  @@index([employeeId, timestamp])
+  @@index([type])
+  @@index([anomaly])
+}
+
+model Activity {
+  id          String   @id @default(cuid())
+  type        String   // email, call, meeting, note, status_change
+  subject     String
+  content     String?
+  
+  dealId      String?
+  deal        Deal?    @relation(fields: [dealId], references: [id])
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  
+  createdAt   DateTime @default(now())
+  
+  @@index([dealId])
+  @@index([type])
+  @@index([userId])
+}

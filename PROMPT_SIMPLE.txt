@@ -1,0 +1,17 @@
+PROMPT POUR CONTINUER LE PROJET :
+
+"J'ai développé un CRM SaaS complet en TypeScript/Node.js avec modules RH et badgeage. Le backend est 100% terminé et testé dans /workspace/crm-saas/ avec :
+
+- API REST Express + TypeScript + Prisma + SQLite
+- Auth JWT + 7 modules (badgeage 4x/jour, companies, deals, tickets)  
+- Git initialisé avec remote https://github.com/Abeeby/Saas.git
+- Erreur 403 au git push (permission denied du bot Cursor)
+
+BESOIN URGENT :
+1. Comment pusher sur GitHub malgré l'erreur 403 ? Le code est dans /workspace/crm-saas/, commits faits, remote configuré
+2. Créer un frontend React/Next.js pour consommer l'API (dashboard, badgeage, pipeline)
+3. Déployer sur Vercel
+
+Le serveur tourne sur http://localhost:3333, comptes test : admin@test.com / Admin123!
+
+Peux-tu m'aider à pusher le code et créer le frontend ?"
